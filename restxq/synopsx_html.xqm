@@ -21,7 +21,7 @@ module namespace synopsx_html = 'http://ahn.ens-lyon.fr/synopsx_html';
 import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx' at 'synopsx.xqm';
 
 (: webapp root url :)
-declare variable $synopsx_html:url_base := "http://ahn-basex.cbp.ens-lyon.fr:8984";
+declare variable $synopsx_html:url_base := "http://xml-basex.cbp.ens-lyon.fr:8984";
 (: default namespace :)
 declare variable $synopsx_html:default_ns := "http://ahn-basex.fr/";
 (: default xslt stylesheet :)
@@ -30,13 +30,21 @@ declare variable $synopsx_html:xslt := "/static/xsl/tei2html5.xsl";
 
 
 declare function synopsx_html:notFound($params) {
-	<p>Page not found
-	   <br/>Given parameters were :
+	<html>
+	<head><title>Base {map:get($params,"project")} not found</title></head>
+	<body>
+	   <header>SynopsX</header>
+	   <br/>Nous n'avons pas trouvé ce que vous cherchez...
+	   Les paramètres donnés étaient : 
 	   <br/>{map:get($params,"project")}
 	   <br/>{map:get($params,"dataType")}
 	   <br/>{map:get($params,"value")}
 	   <br/>{map:get($params,"option")}
-	</p>
+	   <p>Voulez-vous préciser la configuration de {map:get($params,"project")} ? 
+	   <br/> <a href="/{map:get($params,"project")}/config">configuer {map:get($params,"project")}</a></p>
+	   <footer>Synopsx vous est proposé par : Atelier des Humanités Numériques - ENS de Lyon</footer>
+	</body>
+	</html>
 };
 
 declare %restxq:path("")
@@ -45,21 +53,16 @@ declare %restxq:path("")
         %output:doctype-public("xhtml")
 function synopsx_html:index() {
   let $params := map {
-      "project" := "synopsx"
-    }                  
-    return 
-  (:synopsx_html:html($params):)
-  (:synopsx:function-lookup("html",map:get($params,"project"),"html")($params) :)
-  <div>Créer un accueil général quand aucune base existante ni fichier de config</div>
+      "project" := "synopsx",
+      "dataType" := "home"
+    } 
+    
+    
+    return synopsx:function-lookup("html",map:get($params,"project"),"html")($params) 
+  
 };
 
-declare %restxq:path("favicon.ico")
-        %output:method("xhtml")
-        %output:omit-xml-declaration("no")
-        %output:doctype-public("xhtml")
-function synopsx_html:favicon() {
-  ""
-};
+
 
 declare %restxq:path("{$project}")
         %output:method("xhtml")
