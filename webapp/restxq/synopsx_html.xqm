@@ -49,7 +49,8 @@ function synopsx_html:index() {
     }                  
     return 
   (:synopsx_html:html($params):)
-  synopsx:function-lookup("html",map:get($params,"project"),"html")($params)
+  (:synopsx:function-lookup("html",map:get($params,"project"),"html")($params) :)
+  <div>Créer un accueil général quand aucune base existante ni fichier de config</div>
 };
 
 declare %restxq:path("favicon.ico")
