@@ -1,0 +1,51 @@
+module namespace common = 'http://ahn.ens-lyon.fr/common';
+
+
+import module namespace hyperprince = 'http://ahn.ens-lyon.fr/hyperprince' at 'hyperprince.xqm';
+import module namespace brede = 'http://ahn.ens-lyon.fr/brede' at 'brede.xqm';
+import module namespace desanti = 'http://ahn.ens-lyon.fr/desanti' at 'desanti.xqm';
+
+
+
+
+declare function common:build-part($partName, $project, $arity){
+  
+  let $namespace := concat('http://ahn.ens-lyon.fr/', $project)
+  let $prefix := $project
+  let $location := concat($project,".xqm")
+  
+  let $specific := function-lookup(xs:QName(concat($project,":", $partName)),$arity)
+  let $generic := function-lookup(xs:QName(concat("common:", $partName)),$arity)
+  let $notFoundProject := function-lookup(xs:QName(concat($project,":notFound")),0)
+  let $notFoundDefault := function-lookup(xs:QName("common:notFound"),0)
+  let $f :=
+    if (not(empty($specific))) then $specific
+    else    if (not(empty($generic))) then $generic
+            else    if (not(empty($notFoundProject))) then $notFoundProject
+                    else $notFoundDefault
+  return $f
+};
+
+
+declare function common:notFound(){
+            
+          <html>
+  { 
+         
+    common:build-part("head","ahn",1)("ahn") }
+    <body>
+      {
+      
+      common:build-part("ahn-nav","ahn",1)("ahn"),
+      common:build-part("header","ahn",1)("ahn"),
+       common:build-part("primary-nav","ahn",1)("ahn")}
+       <p style="text-align: justify;">Page non trouvée... Signaler le souci : amalia at ens-lyon.fr</p>
+      <script src="http://code.jquery.com/jquery.js"></script>
+      <script src="../js/bootstrap.min.js"></script>
+    </body>
+   
+
+   
+  </html>
+};  
+   

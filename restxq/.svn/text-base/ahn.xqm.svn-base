@@ -1,0 +1,243 @@
+module namespace ahn = 'http://ahn.ens-lyon.fr';
+
+
+import module namespace brede = 'http://ahn.ens-lyon.fr/brede' at 'brede.xqm';
+import module namespace desanti = 'http://ahn.ens-lyon.fr/desanti' at 'desanti.xqm';
+import module namespace hyperdonat = 'http://ahn.ens-lyon.fr/hyperdonat' at 'hyperdonat.xqm';
+import module namespace hyperprince = 'http://ahn.ens-lyon.fr/hyperprince' at 'hyperprince.xqm';
+import module namespace morand = 'http://ahn.ens-lyon.fr/morand' at 'morand.xqm';
+import module namespace site_ahn = 'http://ahn.ens-lyon.fr/site_ahn' at 'site_ahn.xqm';
+
+
+declare variable $ahn:xslt := "http://basex.tge-adonis.fr/static/xsl/tei2html5.xsl";
+
+declare function ahn:build-part($partName, $params){
+  let $prefix := map:get($params,"project")
+  let $namespace := concat('http://ahn.ens-lyon.fr/', $prefix)
+  let $location := concat($prefix,".xqm")
+  let $specific := function-lookup(xs:QName(concat($prefix,":", $partName)),1)
+  let $generic := function-lookup(xs:QName(concat("ahn:", $partName)),1)
+  let $f :=
+    if (empty($specific))
+    then $generic
+    else $specific
+    (: et prevoir une 404 :)
+  return $f
+};
+
+
+declare function ahn:notFound($params) {
+    
+	<p>Page non trouvée<br/>
+	Les paramètres transmis étaient :
+	<ul>
+	{ for $param in $params/*
+	      return <li>{string($param/@name)} : {$param/text()}</li>
+	
+	}
+	</ul>
+	</p>
+};
+
+
+
+declare %restxq:path("")
+        %output:method("xhtml")
+        %output:omit-xml-declaration("no")
+        %output:doctype-public("xhtml")
+function ahn:index() {
+  let $params := map {
+      "project" := "ahn"
+    }                  
+    return 
+  ahn:html($params)
+};
+
+declare %restxq:path("{$project}")
+        %output:method("xhtml")
+        %output:omit-xml-declaration("no")
+        %output:doctype-public("xhtml")
+function ahn:index($project) {
+  let $params := map {
+      "project" := $project,
+      "dataType" := "home"
+    }                  
+    return ahn:html($params)
+};
+
+
+
+declare %restxq:path("{$project}/{$dataType}")
+        %output:method("xhtml")
+        %output:omit-xml-declaration("no")
+        %output:doctype-public("xhtml")
+function ahn:index($project, $dataType) {
+    let $params := map {
+      "project" := $project,
+      "dataType" := $dataType
+      }
+    return ahn:html($params)
+};
+
+declare %restxq:path("{$project}/{$dataType}/{$value}")
+        %output:method("xhtml")
+        %output:omit-xml-declaration("no")
+        %output:doctype-public("xhtml")
+function ahn:index($project, $dataType, $value) {
+    let $params := map {
+      "project" := $project,
+      "dataType" := $dataType,
+      "value" := $value
+      }
+    return ahn:html($params)
+};
+
+declare %restxq:path("{$project}/{$dataType}/{$value}/{$option}")
+        %output:method("xhtml")
+        %output:omit-xml-declaration("no")
+        %output:doctype-public("xhtml")
+function ahn:index($project, $dataType, $value, $option) {
+    let $params := map {
+      "project" := $project,
+      "dataType" := $dataType,
+      "value" := $value,
+      "option" := $option
+      }
+    return ahn:html($params)
+};
+
+
+
+declare function ahn:html($params){ 
+    <html>
+      { ahn:build-part("head",$params)($params)
+       ,ahn:build-part("body",$params)($params)
+      }
+   </html>
+};
+
+
+
+declare function ahn:head($params){
+  <head>
+      <title>{map:get($params,"project")}</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
+      <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen"/> 
+      <link href="/static/css/ahn.css" rel="stylesheet" media="screen"/>
+  </head>
+};
+
+
+(: Ne faut-il pas créer une fonction à part pour l'import des scripts js ? (pour que chaque projet importe ses librairies :)
+declare function ahn:body($params){
+   
+  <body>
+      {
+      ahn:build-part("ahn-nav",$params)($params),
+      ahn:build-part("header",$params)($params),
+      ahn:build-part("primary-nav",$params)($params),
+      ahn:build-part("content",$params)($params),
+      ahn:build-part("scripts_js",$params)($params)
+      }
+      
+      
+      
+      
+    </body>
+};
+
+
+declare function ahn:ahn-nav($params){
+  <div class="navbar navbar-inverse" id="ahn-nav">
+      <div class="navbar-inner">
+        <div class="container">
+            <ul class="nav">
+              <li class="active"><a href="/">AHN</a></li>
+              <li><a href="/">Mentions légales</a></li>
+              <li><a href="/">Crédits</a></li>
+              <li><a href="/">Contact</a></li>
+            </ul>
+        </div>
+      </div>
+    </div>
+};
+
+declare function ahn:header($params){
+  <div class="container" id="header">
+    <div class="row">
+      <div class="span5">
+      <div  class="logo" style="border:1px solid #000;background:#ccc;padding:30px;margin:10px 0;">
+      Ici, le logo du projet
+      </div>      
+      </div>
+
+      <div class="span2 offset5">
+      <div  class="logo-tutelle" style="border:1px solid #000;background:#ccc;padding:30px;margin:10px 0;">
+      Ici, les logos des partenaires
+      </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span12">
+      <div style="border:1px solid #000;background:#ccc;width:960px;height:120px;margin:10px 0;">
+      Ici, le bandeau
+      </div>
+      </div>
+    </div>
+  </div>
+};
+
+
+declare function ahn:primary-nav($params){
+   <div class="container navbar" id="primary-nav">
+    <ul class="nav">
+      <li><a href="#about">Navigation du projet</a></li>
+    </ul>
+  </div>
+};
+
+
+declare function ahn:content($params){
+  <div class="container" id="content">
+  	<div class="row">
+      		<div class="span3">{ahn:build-part("secondary",$params)($params)}</div>
+      		<div class="span9">{ahn:build-part("primary",$params)($params)}</div>
+      	</div>
+  </div>    
+};
+
+declare function ahn:primary($params) {
+       <div id="primary">
+          <h2>Accueil</h2>
+          <p>Les projets testant le kit</p>
+          <ul>
+          	<li><a href="/site_ahn">AHN</a></li>
+          	<li><a href="/brede">Bibliothèque Virtuelle Montesquieu</a></li>
+          	<li><a href="/desanti">Archive Numérique Desanti</a></li>
+          	<li><a href="/hyperdonat">Hyperdonat</a></li>
+          	<li><a href="/hyperprince">Hyperprince</a></li>
+          	<li><a href="/morand">Le roman des Morand</a></li>
+          </ul>
+        </div>
+    
+};
+
+declare function ahn:secondary($params) {
+       <div id="secondary">
+          Barre latérale
+        </div>
+    
+};
+
+
+
+ 
+declare function ahn:scripts_js($params) {
+       <div id="scripts_js">
+         <script src="http://code.jquery.com/jquery.js"></script>
+        <script src="http://basex.tge-adonis.fr/static/js/bootstrap.min.js"></script>
+        </div>
+    
+};
+
+
