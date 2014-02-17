@@ -24,14 +24,7 @@ declare namespace xf="http://www.w3.org/2002/xforms";
 
 import module namespace myproject = 'http://ahn.ens-lyon.fr/myproject' at 'myproject.xqm';
 import module namespace synopsx_html = 'http://ahn.ens-lyon.fr/synopsx_html' at 'synopsx_html.xqm';
-import module namespace ahn_commons_html = 'http://ahn.ens-lyon.fr/ahn_commons_html' at 'ahn_commons_html.xqm';
-import module namespace bvm = 'http://ahn.ens-lyon.fr/bvm' at 'bvm.xqm';
-import module namespace desanti = 'http://ahn.ens-lyon.fr/desanti' at 'desanti.xqm';
-import module namespace hyperdonat = 'http://ahn.ens-lyon.fr/hyperdonat' at 'hyperdonat.xqm';
-import module namespace hyperprince = 'http://ahn.ens-lyon.fr/hyperprince' at 'hyperprince.xqm';
-import module namespace morand = 'http://ahn.ens-lyon.fr/morand' at 'morand.xqm';
-import module namespace ampere = 'http://ahn.ens-lyon.fr/ampere' at 'ampere.xqm';
-import module namespace ahn = 'http://ahn.ens-lyon.fr/ahn' at 'ahn.xqm';
+
 
 
 declare function synopsx:get_namespace($project_name, $output_type){
