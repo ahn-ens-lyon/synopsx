@@ -1,0 +1,55 @@
+module namespace site_ahn = 'http://ahn.ens-lyon.fr/site_ahn';
+
+
+
+
+declare function site_ahn:header($params){
+  <div class="container" id="header">
+    <div class="row">
+      <div class="span5">
+        <img src="http://ahn.ens-lyon.fr/sites/default/files/logo_AHN.png" alt="Accueil" width="372" height="105"/>
+      </div>
+      <div class="span2 offset5">
+        <img src="http://ara-domu-omeka.ens-lyon.fr/ahn/sites/all/themes/kitahn/img/logo_Partenaire.png" width="121" height="41" alt="ENS Lyon"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span12">
+      <img src="http://ara-domu-omeka.ens-lyon.fr/ahn/sites/all/themes/kitahn/img/bandeau_AHN.png" width="960" height="138" alt="Hyperprince"/>
+      </div>
+    </div>
+  </div>
+};
+
+
+declare function site_ahn:primary-nav($params){
+   <div class="container navbar" id="primary-nav">
+    <ul class="nav">
+      <li><a href="#about">Accueil</a></li>
+      <li><a href="#about">Participant-e-s</a></li>
+      <li><a href="#about">projects</a></li>
+      <li><a href="#about">Agenda</a></li>
+      <li><a href="#about">Resources</a></li>
+    </ul>
+  </div>
+};
+
+
+declare function site_ahn:content($params){
+  <div class="container">
+
+      <div class="row">
+        <div class="span3">
+          Barre latérale
+        </div>
+        <div class="span9">
+          <h2>Accueil</h2>
+          <h3> Bienvenue sur le site de l’Atelier des Humanités Numériques de l’ENS de Lyon</h3>
+          <p style="text-align: justify;">L’usage de technologies numériques en Sciences Humaines et Sociales a établi un nouveau rapport entre le chercheur et ses sources. Si ces usages ne sont pas nouveaux, ils sont longtemps restés le fait d’une communauté minoritaire au sein des SHS. Mais depuis une 10aine d’années, on assiste à une appropriation généralisée de ces technologies, induisant de nouvelles pratiques et, de fait, un profond renouvellement méthodologique.</p>
+          <p style="text-align: justify;">A l’ENS de Lyon, les différents laboratoires de SHS investissent ces nouvelles pratiques. Afin de mener des analyses et des expérimentations fédérées et de proposer des méthodes génériques et maîtrisées, l’Atelier des Humanités Numériques (AHN) regroupe un réseau d’ingénieurs et de chercheurs travaillant sur différents projects de corpus numériques. De plus, l’AHN, notamment dans sa contribution au project MuTEC, propose des formations aux technologies intervenant dans l’édition numérique de corpus.</p>
+          <p style="text-align: justify;">Du fait de sa démarche exploratoire, l’AHN a besoin de ressources adaptées à une pratique expérimentale du développement logiciel : une forge logicielle collaborative, une mise à disposition souple de serveurs de développement, un accomplagment technique et des lieux de rencontre.</p>
+        </div>
+      </div>
+
+    </div>
+  };
