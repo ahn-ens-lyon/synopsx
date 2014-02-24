@@ -207,17 +207,14 @@ declare function synopsx_html:body($params){
 
 
   declare function synopsx_html:scripts_js($params){
-  <div id="scripts_js">
-  <script src="/static/js/jquery.js"></script>
-    <script src="/static/dist/js/bootstrap.min.js"></script>
-    <script src="/static/js/offcanvas.js"></script>
-    <script src="/static/js/carousel.js"></script>
-    </div>
+  
+  (<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>,
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>)
   };
   
   declare function synopsx_html:css($params){
-  <div id="css">
-        <link href="/static/css/styles.css" rel="stylesheet" />
-  </div>
+  
+        (:<link href="/static/css/mycss.css" rel="stylesheet" />:)
+  
   };
 
