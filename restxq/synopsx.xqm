@@ -26,7 +26,10 @@ import module namespace myproject = 'http://ahn.ens-lyon.fr/myproject' at 'mypro
 import module namespace synopsx_html = 'http://ahn.ens-lyon.fr/synopsx_html' at 'synopsx_html.xqm';
 
 
-
+(: 
+this function checks if the specified output type has been assigned to a specific namespace for this project
+this information stands in the config.xml file
+:)
 declare function synopsx:get_namespace($project_name, $output_type){
   string(db:open($project_name)//*[@name=$output_type||"_output_namespace"][1]/@value)
 };
@@ -36,24 +39,32 @@ declare function synopsx:get_namespace($project_name, $output_type){
 By default, synopsX function is called. :)
 declare function synopsx:function-lookup($function_name, $project_name, $output_type){
   (:TODO : make the inheritage process recursive :)
+  let $function := 
+  if (db:exists($project_name)) then
   
-  let $name := synopsx:get_namespace($project_name,$output_type) || ":" || $function_name
+        let $ns := synopsx:get_namespace($project_name,$output_type)
+        let $name := $ns || ":" || $function_name
    
-  let $specific := function-lookup(xs:QName($name),1)
+        let $specific := if($ns = "") then () else function-lookup(xs:QName($name),1)
   
-  (: Check if the module declares a parent module :)
-  let $parent_module := string(db:open($project_name)//*[@name="parent_module"][1]/@value)
-  (: Checks if the declared parent module has a customization of the generic-templating function :)
-  let $parent := if ($parent_module = "") then ()
+        (: Check if the module declares a parent module :)
+        let $parent_module := string(db:open($project_name)//*[@name="parent_module"][1]/@value)
+        (: Checks if the declared parent module has a customization of the generic-templating function :)
+        let $parent := if ($parent_module = "") then ()
                 else function-lookup(xs:QName(synopsx:get_namespace($parent_module,$output_type)|| ":" || $function_name),1)
-  let $generic := function-lookup(xs:QName(synopsx:get_namespace("synopsx",$output_type) ||":" || $function_name),1)
+        let $generic := function-lookup(xs:QName(synopsx:get_namespace("synopsx",$output_type) ||":" || $function_name),1)
   
-  let $f :=
-    if (not(empty($specific))) then $specific
-    else if (not(empty($parent))) then $parent
-    else if  (not(empty($generic))) then  $generic
-    else function-lookup(xs:QName("synopsx_html:notFound"),1)
-  return $f
+        let $f :=
+            if (not(empty($specific))) then $specific
+            else if (not(empty($parent))) then $parent
+            else if  (not(empty($generic))) then  $generic
+            else function-lookup(xs:QName("synopsx_html:notFound"),1)
+        return $f
+        
+     else let $f := function-lookup(xs:QName("synopsx_html:notFound"), 1)
+     return $f
+     
+     return $function
 };
 
 declare %restxq:path("{$project}/config")
@@ -61,7 +72,7 @@ declare %restxq:path("{$project}/config")
         %output:omit-xml-declaration("yes")
 function synopsx:config($project) {
 let $html := (
-  <?xml-stylesheet href="http://ahn-basex.cbp.ens-lyon.fr:8984/static/xsltforms/xsltforms.xsl" type="text/xsl"?>,
+  <?xml-stylesheet href="http://xml-basex.cbp.ens-lyon.fr:8984/static/xsltforms/xsltforms.xsl" type="text/xsl"?>,
 <?css-conversion no?>,
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
   <head>
@@ -88,7 +99,7 @@ let $html := (
     <div class="right">
       <img src="basex.svg" width="96" />
     </div>
-    <h2>BaseX XForms Demo</h2>
+    <h2>SynopsX - Configuration d'une collection (à faire !!!)</h2>
     <ul>
       <li> In this example, the XForms model is defined in the
         <code>head</code> section of the XML document.</li>
