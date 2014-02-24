@@ -67,10 +67,50 @@ declare function synopsx:function-lookup($function_name, $project_name, $output_
      return $function
 };
 
-declare %restxq:path("{$project}/config")
+declare %restxq:path("synopsx/config")
         %output:method("xml")
         %output:omit-xml-declaration("yes")
-function synopsx:config($project) {
+function synopsx:config() {
+
+ let $result := if (db:exists("synopsx")) then
+                   synopsx:db-exists()
+                 else
+                   synopsx:db-does-not-exist()
+  return $result
+};
+
+declare function synopsx:db-does-not-exist(){
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      <link rel="stylesheet" type="text/css" href="/style.css"/>
+    </head>
+    <body>
+      <div class="right"><img src="/basex.svg" width="96"/></div>
+
+      <p>You have to <a href="/synopsx/create-database">create the database</a> first.</p>
+    </body>
+  </html>
+};
+
+declare %restxq:path("synopsx/create-database")
+        %output:method("xml")
+          %output:omit-xml-declaration("yes")
+ updating function synopsx:create-database() {
+
+let $config := <configuration>
+<item name="parent_module" value=""/>
+<item name="html_output_namespace" value="synopsx_html"/>
+<item name="oai_output_namespace" value="synopsx_oai"/>
+<head/>
+</configuration>
+
+return
+    (db:output(<restxq:redirect>synopsx/config</restxq:redirect>), 
+     db:create("synopsx", $config, "config.xml"))
+};
+
+
+declare function synopsx:db-exists() { 
 let $html := (
   <?xml-stylesheet href="http://xml-basex.cbp.ens-lyon.fr:8984/static/xsltforms/xsltforms.xsl" type="text/xsl"?>,
 <?css-conversion no?>,
