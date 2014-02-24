@@ -215,6 +215,7 @@ declare function synopsx_html:body($params){
   declare function synopsx_html:css($params){
   
         (:<link href="/static/css/mycss.css" rel="stylesheet" />:)
+        ()
   
   };
 
