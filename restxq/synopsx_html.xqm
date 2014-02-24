@@ -144,7 +144,7 @@ declare function synopsx_html:head($params){
         <meta name="author" content="Atelier des Humanités Numériques, ENS de Lyon, France" />
         
         <!-- Bootstrap core CSS -->
-        <link href="/static/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
       
         <!-- CSS spécifiques au corpus -->
         {synopsx:function-lookup("css",map:get($params,"project"),"html")($params)}
