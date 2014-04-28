@@ -22,7 +22,9 @@ You can also use the command line syntax : http://docs.basex.org/wiki/REST#Comma
 
 
 CREATE DB 'config' <!-- http://docs.basex.org/wiki/Commands#CREATE_DB -->
+
 OPEN DB 'config'
+
 ADD synopsx.xml <!-- http://docs.basex.org/wiki/Commands#ADD -->
 ```
 <configuration name="synopsx">
@@ -33,12 +35,15 @@ ADD synopsx.xml <!-- http://docs.basex.org/wiki/Commands#ADD -->
 
 
 CREATE DB 'myproject'
+
 OPEN DB 'myproject'
+
 ADD myproject_data.xml 
 <!-- or ADD TO 'myproject/' myproject_data.zip -->
 
 
 OPEN DB 'config'
+
 ADD myproject.xml
 ```
 <!-- config file for 'myproject' -->
