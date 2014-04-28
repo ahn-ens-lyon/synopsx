@@ -22,16 +22,22 @@ declare namespace db = 'http://basex.org/modules/db';
 declare namespace xslt="http://basex.org/modules/xslt";
 declare namespace xf="http://www.w3.org/2002/xforms";
 
-import module namespace myproject = 'http://ahn.ens-lyon.fr/myproject' at 'myproject.xqm';
-import module namespace synopsx_html = 'http://ahn.ens-lyon.fr/synopsx_html' at 'synopsx_html.xqm';
 
+import module namespace synopsx_html = 'http://ahn.ens-lyon.fr/synopsx_html' at 'synopsx_html.xqm';
+import module namespace ahn = 'http://ahn.ens-lyon.fr/ahn' at 'ahn.xqm';
+import module namespace ahn_commons_html = 'http://ahn.ens-lyon.fr/ahn_commons_html' at 'ahn_commons_html.xqm';
+import module namespace desanti = 'http://ahn.ens-lyon.fr/desanti' at 'desanti.xqm';
+
+
+
+(: import module namespace synodes = 'http://ahn.ens-lyon.fr/synodes' at 'synodes.xqm'; :)
 
 (: 
 this function checks if the specified output type has been assigned to a specific namespace for this project
 this information stands in the config.xml file
 :)
 declare function synopsx:get_namespace($project_name, $output_type){
-  string(db:open($project_name)//*[@name=$output_type||"_output_namespace"][1]/@value)
+  string(db:open('config')//*[@name=$project_name]//output[1]/@value)
 };
 
 
@@ -39,16 +45,19 @@ declare function synopsx:get_namespace($project_name, $output_type){
 By default, synopsX function is called. :)
 declare function synopsx:function-lookup($function_name, $project_name, $output_type){
   (:TODO : make the inheritage process recursive :)
+  
   let $function := 
-  if (db:exists($project_name)) then
+  if(db:exists($project_name)) then
+  
+  
   
         let $ns := synopsx:get_namespace($project_name,$output_type)
-        let $name := $ns || ":" || $function_name
+        
    
-        let $specific := if($ns = "") then () else function-lookup(xs:QName($name),1)
-  
+        let $specific := if($ns = "") then () else function-lookup(xs:QName($ns || ":" || $function_name),1)
         (: Check if the module declares a parent module :)
-        let $parent_module := string(db:open($project_name)//*[@name="parent_module"][1]/@value)
+        let $parent_module := string(db:open('config')//*[@name=$project_name]//parent[1]/@value)
+        (:let $parent_module := string(db:open("config",$project_name||".xml")//*[@name="parent_module"][1]/@value):)
         (: Checks if the declared parent module has a customization of the generic-templating function :)
         let $parent := if ($parent_module = "") then ()
                 else function-lookup(xs:QName(synopsx:get_namespace($parent_module,$output_type)|| ":" || $function_name),1)
@@ -61,58 +70,61 @@ declare function synopsx:function-lookup($function_name, $project_name, $output_
             else function-lookup(xs:QName("synopsx_html:notFound"),1)
         return $f
         
-     else let $f := function-lookup(xs:QName("synopsx_html:notFound"), 1)
-     return $f
+     
+     
+     
+     
+     else function-lookup(xs:QName("synopsx:no-database"),1)
      
      return $function
 };
 
-declare %restxq:path("synopsx/config")
-        %output:method("xml")
-        %output:omit-xml-declaration("yes")
-function synopsx:config() {
-
- let $result := if (db:exists("synopsx")) then
-                   synopsx:db-exists()
-                 else
-                   synopsx:db-does-not-exist()
-  return $result
+declare function synopsx:no-database($params) {
+	<html>
+	<head><title>Base {map:get($params,"project")} not found</title></head>
+	<body>
+	   <header>SynopsX</header>
+	   <p>Il n'y a pas de base de donnée associée à "{map:get($params,"project")}"
+	   <br/>{map:get($params,"dataType")}
+	   <br/>{map:get($params,"value")}
+	   <br/>{map:get($params,"option")}
+	   </p>
+	   <p>You have to <a href="/{map:get($params,"project")}/create-database">create the database</a> first.
+	   <br/> <a href="/{map:get($params,"project")}/config">configuer {map:get($params,"project")}</a></p>
+	   <footer>Synopsx vous est proposé par : Atelier des Humanités Numériques - ENS de Lyon</footer>
+	</body>
+	</html>
 };
 
-declare function synopsx:db-does-not-exist(){
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-      <link rel="stylesheet" type="text/css" href="/style.css"/>
-    </head>
-    <body>
-      <div class="right"><img src="/basex.svg" width="96"/></div>
 
-      <p>You have to <a href="/synopsx/create-database">create the database</a> first.</p>
-    </body>
-  </html>
-};
 
-declare %restxq:path("synopsx/create-database")
+declare %restxq:path("{$project_name}/create-database/")
         %output:method("xml")
           %output:omit-xml-declaration("yes")
- updating function synopsx:create-database() {
+ updating function synopsx:create-database($project_name) {
 
-let $config := <configuration>
-<item name="parent_module" value=""/>
-<item name="html_output_namespace" value="synopsx_html"/>
-<item name="oai_output_namespace" value="synopsx_oai"/>
-<head/>
-</configuration>
-
-return
-    (db:output(<restxq:redirect>synopsx/config</restxq:redirect>), 
-     db:create("synopsx", $config, "config.xml"))
+(if(db:exists("config")) then () else db:create("config"),
+            db:output(<restxq:redirect>{$project_name}/config/</restxq:redirect>))
+     
 };
 
+declare %restxq:path("synopsx/config/{$project_name}")
+        %output:method("xml")
+          %output:omit-xml-declaration("yes")
+updating function synopsx:db-config($project_name) { 
+let $config := <configuration name="{$project_name}">
+<parent value="synopsx"/>
+<ouput name="html" value="synopsx_html"/>
+<output name="oai" value="synopsx_oai"/>
+<head/>
+</configuration>
+ return (db:add("config", $config, $project_name||".xml"),
+  db:output(<restxq:redirect>/{$project_name}</restxq:redirect>))
+};
 
 declare function synopsx:db-exists() { 
 let $html := (
-  <?xml-stylesheet href="http://xml-basex.cbp.ens-lyon.fr:8984/static/xsltforms/xsltforms.xsl" type="text/xsl"?>,
+  <?xml-stylesheet href="/static/xsltforms/xsltforms.xsl" type="text/xsl"?>,
 <?css-conversion no?>,
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
   <head>
