@@ -80,18 +80,19 @@ declare function synopsx:function-lookup($function_name, $project_name, $output_
      return $function
 };
 
+
 declare function synopsx:no-database($params) {
 	<html>
 	<head><title>Base {map:get($params,"project")} not found</title></head>
 	<body>
 	   <header>SynopsX</header>
-	   <p>Il n'y a pas de base de donnée associée à "{map:get($params,"project")}"
+	   <p>No database found for "{map:get($params,"project")}"
 	   <br/>{map:get($params,"dataType")}
 	   <br/>{map:get($params,"value")}
 	   <br/>{map:get($params,"option")}
 	   </p>
-	   <p>You have to <a href="/{map:get($params,"project")}/create-database">create the database</a> first.</p>
-	   <footer>Synopsx vous est proposé par : Atelier des Humanités Numériques - ENS de Lyon</footer>
+	   <p>You have to <a href="/{map:get($params,"project")}/create-database">create a database</a> first.</p>
+	   <footer>Synopsx is brought to you by Atelier des Humanités Numériques - ENS de Lyon</footer>
 	</body>
 	</html>
 };
@@ -103,9 +104,23 @@ declare %restxq:path("{$project_name}/create-database/")
           %output:omit-xml-declaration("yes")
  updating function synopsx:create-database($project_name) {
 
-(if(db:exists("config")) then () else db:create("config"),
-            db:output(<restxq:redirect>{$project_name}/config/</restxq:redirect>))
-     
+(if(db:exists($project_name)) then () else db:create($project_name),
+            db:output(<restxq:redirect>/{$project_name}/db-exists/</restxq:redirect>))  
+};
+
+
+declare %restxq:path("{$project_name}/db-exists/")
+        %output:method("html")
+          %output:omit-xml-declaration("yes")
+function synopsx:db-exists($project_name) { 
+<html>
+	<head><title>Start your project {$project_name} now !</title></head>
+	<body>
+	   <header>SynopsX</header>
+<section>Add xml data to your database {$project_name} and 
+<br/><a href="/{$project_name}/config">configure your synopsx webapp</a></section>
+</body>
+</html>
 };
 
 declare %restxq:path("{$project_name}/config/")
@@ -122,140 +137,11 @@ let $config := <configuration name="{$project_name}">
   db:output(<restxq:redirect>/{$project_name}</restxq:redirect>))
 };
 
-declare function synopsx:db-exists() { 
-let $html := (
-  <?xml-stylesheet href="/static/xsltforms/xsltforms.xsl" type="text/xsl"?>,
-<?css-conversion no?>,
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
-  <head>
-    <title>AHN XForms Demo</title>
-    <link rel="stylesheet" type="text/css" href="http://ahn-basex.cbp.ens-lyon.fr:8984/static/style.css" />
 
-    <!-- XForms data models -->
-    <xf:model>
-      <xf:instance>
-        <track xmlns="">
-          <metadata>
-            <title>Like A Rolling Stone</title>
-            <artist>Bob Dylan</artist>
-            <date>1965-06-21</date>
-            <genre>Folk</genre>
-          </metadata>
-        </track>
-      </xf:instance>
-      <xf:bind id="_date" nodeset="//date" type="xs:date"/>
-    </xf:model>
-  </head>
 
-  <body>
-    <div class="right">
-      <img src="basex.svg" width="96" />
-    </div>
-    <h2>SynopsX - Configuration d'une collection (à faire !!!)</h2>
-    <ul>
-      <li> In this example, the XForms model is defined in the
-        <code>head</code> section of the XML document.</li>
-      <li> The XForms model consists of an <b>instance</b> and a <b>binding</b>.</li>
-      <li> The instance contains the data, and the binding specifies the type
-        of elements (in this case the <code>date</code> element).</li>
-    </ul>
 
-    <h3>XForm Widgets <small> – coupled to and synchronized with XML Data Model</small></h3>
-    <ul>
-      <li> Whenever you modify data in the edit components, the XML data model will
-        be updated, and all other output and input components will reflect the changes.</li>
-      <li> XForms also cares about type conversion: as the <code>date</code>
-      element is of type <code>xs:date</code>: a date picker is offered.</li>
-    </ul>
-
-    <div>Below, three different views on the XForms model are supplied. Please open the source
-      view of this HTML document to see how the input and output fields are specified.</div>
-    <table width='100%'>
-      <tr>
-        <td width='30%'>
-          <h4>Input Form</h4>
-          <table>
-            <tr>
-              <td>Title:</td>
-              <td><xf:input class="input-medium" ref="/track/metadata/title" incremental="true"/></td>
-            </tr>
-            <tr>
-              <td>Artist:</td>
-              <td><xf:input class="input-medium" ref="//artist" incremental="true"/></td>
-            </tr>
-            <tr>
-              <td>Date:</td>
-              <td><xf:input bind="_date"/></td>
-            </tr>
-            <tr>
-              <td>Genre:</td>
-              <td>
-                <xf:select1 ref="//genre" appearance="minimal" incremental="true">
-                  <xf:item>
-                    <xf:label>Classic Rock</xf:label>
-                    <xf:value>Classic Rock</xf:value>
-                  </xf:item>
-                  <xf:item>
-                    <xf:label>Folk</xf:label>
-                    <xf:value>Folk</xf:value>
-                  </xf:item>
-                  <xf:item>
-                    <xf:label>Metal</xf:label>
-                    <xf:value>Metal</xf:value>
-                  </xf:item>
-                  <xf:item>
-                    <xf:label>Gospel</xf:label>
-                    <xf:value>Gospel</xf:value>
-                  </xf:item>
-                  <xf:item>
-                    <xf:label>Instrumental</xf:label>
-                    <xf:value>Instrumental</xf:value>
-                  </xf:item>
-                  <xf:item>
-                    <xf:label>Soul</xf:label>
-                    <xf:value>Soul</xf:value>
-                  </xf:item>
-                  <xf:item>
-                    <xf:label>Pop</xf:label>
-                    <xf:value>Pop</xf:value>
-                  </xf:item>
-                </xf:select1>
-              </td>
-            </tr>
-          </table>
-        </td>
-        <td width='30%'>
-          <h4>Output Form</h4>
-          <table>
-            <tr>
-              <td>Artist:</td>
-              <td><xf:output ref="//artist"/></td>
-            </tr>
-            <tr>
-              <td>Title:</td>
-              <td><xf:output ref="//title"/></td>
-            </tr>
-            <tr>
-              <td>Date:</td>
-              <td><xf:output ref="//date"/></td>
-            </tr>
-            <tr>
-              <td>Genre:</td>
-              <td><xf:output ref="//genre"/></td>
-            </tr>
-          </table>
-        </td>
-        <td width='40%'>
-          <h4>XML Data Model</h4>
-          <pre>
-            <xf:output value="serialize(., 'yes')"/>
-          </pre>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>)
-(:return xslt:transform($html, "http://ahn-basex.cbp.ens-lyon.fr:8984/static/xsltforms/xsltforms.xsl"):)
-return $html
+declare updating function synopsx:initialize() { 
+            (db:create("config"),
+            db:output(<restxq:redirect>synopsx/config/</restxq:redirect>)) 
 };
 
