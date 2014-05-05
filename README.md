@@ -100,8 +100,21 @@ You can also interact with BaseX with the XQuery syntax for the installation pro
 ```
 
 ```xquery
-    <!-- add the XML sequence to the project database (http://docs.basex.org/wiki/Database_Module#db:add) -->
-    db:add("myproject", 
+<!-- Add XML data to the project database -->
+
+
+```
+
+
+
+```xquery
+    <!-- add the project's config XML sequence to the config database (http://docs.basex.org/wiki/Database_Module#db:add) -->
+
+    <!-- first open the config database (http://docs.basex.org/wiki/Database_Module#db:open) -->
+    
+    db:open("config")
+
+    db:add("config", 
     <configuration name="myproject"> 
         <!-- The @value attribute gives the parent xqm module namespace -->
         <parent value="synopsx"/>  
