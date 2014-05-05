@@ -108,9 +108,9 @@ You can also interact with BaseX with the XQuery syntax for the installation pro
 
 
 ```xquery
-    <!-- add the project's config XML sequence to the config database (http://docs.basex.org/wiki/Database_Module#db:add) -->
-
-    <!-- first open the config database (http://docs.basex.org/wiki/Database_Module#db:open) -->
+    <!-- add the project's config XML sequence to the config database (http://docs.basex.org/wiki/Database_Module#db:add)
+    
+    first open the config database (http://docs.basex.org/wiki/Database_Module#db:open) -->
     
     db:open("config")
 
