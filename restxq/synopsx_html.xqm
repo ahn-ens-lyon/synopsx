@@ -30,38 +30,39 @@ declare variable $synopsx_html:xslt := "/static/xsl/tei2html5.xsl";
 
 
 declare function synopsx_html:notFound($params) {
-	<html>
-	<head><title>Base {map:get($params,"project")} not found</title></head>
-	<body>
-	   <header>SynopsX</header>
-	   <br/>Nous n'avons pas trouvé ce que vous cherchez...
-	   Les paramètres donnés étaient : 
-	   <br/>{map:get($params,"project")}
-	   <br/>{map:get($params,"dataType")}
-	   <br/>{map:get($params,"value")}
-	   <br/>{map:get($params,"option")}
-	   <p>Voulez-vous préciser la configuration de {map:get($params,"project")} ? 
-	   <br/> <a href="/{map:get($params,"project")}/config">configuer {map:get($params,"project")}</a></p>
-	   <footer>Synopsx vous est proposé par : Atelier des Humanités Numériques - ENS de Lyon</footer>
-	</body>
-	</html>
+<html>
+<head><title>Base {map:get($params,"project")} not found</title></head>
+<body>
+<header>SynopsX</header>
+<br/>Nous n'avons pas trouvé ce que vous cherchez...
+Les paramètres donnés étaient :
+<br/>{map:get($params,"project")}
+<br/>{map:get($params,"dataType")}
+<br/>{map:get($params,"value")}
+<br/>{map:get($params,"option")}
+<p>Voulez-vous préciser la configuration de {map:get($params,"project")} ?
+<br/> <a href="/{map:get($params,"project")}/config">configuer {map:get($params,"project")}</a></p>
+<footer>Synopsx vous est proposé par : Atelier des Humanités Numériques - ENS de Lyon</footer>
+</body>
+</html>
 };
 
+
+
+
+
+(: These first five functions analyse the given path and retrieve the data :)
 declare %restxq:path("")
         %output:method("xhtml")
         %output:omit-xml-declaration("no")
         %output:doctype-public("xhtml")
 function synopsx_html:index() {
   let $params := map {
-      "project" := "synopsx",
+      "project" := "desanti",
       "dataType" := "home"
     } 
-    
-    
-    return synopsx:function-lookup("html",map:get($params,"project"),"html")($params) 
-  
+   return synopsx_html:main($params) 
 };
-
 
 
 declare %restxq:path("{$project}")
@@ -73,11 +74,9 @@ function synopsx_html:index($project) {
       "project" := $project,
       "dataType" := "home"
     }                  
-    return 
-    (:synopsx_html:html($params):)
-    synopsx:function-lookup("html",map:get($params,"project"),"html")($params)
-};
-
+    
+    return synopsx_html:main($params)
+}; 
 
 
 declare %restxq:path("{$project}/{$dataType}")
@@ -89,9 +88,7 @@ function synopsx_html:index($project, $dataType) {
       "project" := $project,
       "dataType" := $dataType
       }
-    return 
-    (:synopsx_html:html($params):)
-    synopsx:function-lookup("html",map:get($params,"project"),"html")($params)
+    return synopsx_html:main($params)
 };
 
 declare %restxq:path("{$project}/{$dataType}/{$value}")
@@ -104,9 +101,7 @@ function synopsx_html:index($project, $dataType, $value) {
       "dataType" := $dataType,
       "value" := $value
       }
-    return
-    (:synopsx_html:html($params):)
-    synopsx:function-lookup("html",map:get($params,"project"),"html")($params)
+    return synopsx_html:main($params)
 };
 
 declare %restxq:path("{$project}/{$dataType}/{$value}/{$option}")
@@ -120,8 +115,22 @@ function synopsx_html:index($project, $dataType, $value, $option) {
       "value" := $value,
       "option" := $option
       }
-    return synopsx:function-lookup("html",map:get($params,"project"),"html")($params)
+    
+    return synopsx_html:main($params)
 }; 
+
+
+
+(: Main function (decides what to do wether config data, database, etc. exist or not for this project :)
+declare function synopsx_html:main($params){
+    if(db:exists("config")) then
+            if (db:open('config')//*[@xml:id=map:get($params,"project")]) then synopsx:function-lookup("html",map:get($params,"project"),"html")($params) 
+            else <a href="/{map:get($params,"project")}/config">Please configure your project</a>
+    else <a href="/synopsx/initialize">Please initialize Synopsx</a>
+};
+
+
+
 
 declare function synopsx_html:html($params){ 
     <html lang="fre">
@@ -154,16 +163,18 @@ declare function synopsx_html:head($params){
 
 (: Default html body :)
 declare function synopsx_html:body($params){
-   
-  <body>
+   let $project := map:get($params,"project")
+   return switch ($project)
+   case "synopsx" return
+        <body>
        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-                    <div class="navbar container">SynopsX</div>
+                    <div class="navbar container">{$project}</div>
                 </div>
  
         <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
-        <h1>Welcome to SynopsX !</h1>
+        <h1>Welcome to {map:get($params,"project")} !</h1>
         <p>Synopsx helps Digital Humanists to manage, process and publish their xml data. Start customising it now !</p>
         <p><a class="btn btn-primary btn-lg" role="button">Learn more >>></a></p>
       </div>
@@ -199,10 +210,52 @@ declare function synopsx_html:body($params){
         <p>© Atelier des Humanités Numériques, ENS de Lyon, 2014</p>
       </footer>
     </div> <!-- /container -->
+        </body>
         
-    
-    
-  </body>
+    default return 
+    <body>
+       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+                    <div class="navbar container">{$project}</div>
+                </div>
+ 
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Welcome to {map:get($params,"project")} !</h1>
+        <p>Start customising your webapp now !</p>
+        <p><a class="btn btn-primary btn-lg" role="button">Learn more >>></a></p>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Manage your XML database</h2>
+          
+          <p><a class="btn btn-default" href="#" role="button">Proceed >>></a></p>
+        </div>
+
+        <div class="col-md-4">
+          <h2>Customize your webapp templates with RESTXQ</h2>
+          <p><a class="btn btn-default" href="#" role="button">Proceed >>></a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Can we help ? Get third parties templates</h2>
+          <p>AHN libs</p>
+          <p>Partenaire libs</p>
+          <p>Partenaire libs</p>
+          
+        </div>
+      </div>
+
+      <hr/>
+
+      <footer>
+        <p>© Atelier des Humanités Numériques, ENS de Lyon, 2014</p>
+      </footer>
+    </div> <!-- /container -->
+        </body>
 };
 
 
