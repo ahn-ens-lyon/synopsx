@@ -60,6 +60,8 @@ cd <path_to_basex>/webapp
     
     ### XQuery syntax
     
+You can also interact with BaseX with the XQuery syntax for the installation process : http://docs.basex.org/wiki/Database_Module
+    
     ```xquery
     <!-- create the config database (http://docs.basex.org/wiki/Database_Module#db:create) -->
     db:create("config")
