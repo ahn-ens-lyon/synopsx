@@ -34,14 +34,6 @@ import module namespace synopsx_oai = 'http://ahn.ens-lyon.fr/synopsx_oai' at 's
 
 (: import module namespace synodes = 'http://ahn.ens-lyon.fr/synodes' at 'synodes.xqm'; :)
 
-(: 
-this function checks if the specified output type has been assigned to a specific namespace for this project
-this information stands in the config.xml file
-:)
-declare function synopsx:get_namespace($project_name, $output_type){
-  string(db:open('config')//*[@name=$project_name]//output[1]/@value)
-};
-
 
 (: This function checks whether there is a customization of the generic-templating function. 
 By default, synopsX function is called. :)
@@ -49,21 +41,21 @@ declare function synopsx:function-lookup($function_name, $project_name, $output_
   (:TODO : make the inheritage process recursive :)
   
   let $function := 
-  if(db:exists($project_name)) then
+        if(db:exists($project_name)) then
   
   
-  
-        let $ns := synopsx:get_namespace($project_name,$output_type)
-        
-   
+        (: Checks if the specified output type has been assigned to a specific xqm module namespace for this project.
+        This information stands in the project_name.xml file in the "config" db :)
+        let $ns := string(db:open('config')//*[@xml:id=$project_name]//output[@name=$output_type]/@value)
         let $specific := if($ns = "") then () else function-lookup(xs:QName($ns || ":" || $function_name),1)
+        
         (: Check if the module declares a parent module :)
-        let $parent_module := string(db:open('config')//*[@name=$project_name]//parent[1]/@value)
-        (:let $parent_module := string(db:open("config",$project_name||".xml")//*[@name="parent_module"][1]/@value):)
+        let $parent_module := string(db:open('config')//*[@xml:id=$project_name]//parent[1]/@value)
+        
         (: Checks if the declared parent module has a customization of the generic-templating function :)
         let $parent := if ($parent_module = "") then ()
-                else function-lookup(xs:QName(synopsx:get_namespace($parent_module,$output_type)|| ":" || $function_name),1)
-        let $generic := function-lookup(xs:QName(synopsx:get_namespace("synopsx",$output_type) ||":" || $function_name),1)
+                else function-lookup(xs:QName(db:open('config')//*[@xml:id=$parent_module]//output[@name=$output_type]/@value || ":" || $function_name),1)
+        let $generic := function-lookup(xs:QName(db:open('config')//*[@xml:id='synopsx']//output[@name=$output_type]/@value ||":" || $function_name),1)
   
         let $f :=
             if (not(empty($specific))) then $specific
@@ -73,14 +65,12 @@ declare function synopsx:function-lookup($function_name, $project_name, $output_
         return $f
         
      
+        else function-lookup(xs:QName("synopsx:no-database"),1)
      
-     
-     
-     else function-lookup(xs:QName("synopsx:no-database"),1)
+   
      
      return $function
 };
-
 
 declare function synopsx:no-database($params) {
 	<html>
@@ -105,44 +95,41 @@ declare %restxq:path("{$project_name}/create-database/")
           %output:omit-xml-declaration("yes")
  updating function synopsx:create-database($project_name) {
 
-(if(db:exists($project_name)) then () else db:create($project_name),
-            db:output(<restxq:redirect>/{$project_name}/db-exists/</restxq:redirect>))  
+            (if(db:exists($project_name)) then () else db:create($project_name),
+            db:output(<restxq:redirect>/{$project_name}</restxq:redirect>))  
 };
 
 
-declare %restxq:path("{$project_name}/db-exists/")
-        %output:method("html")
-          %output:omit-xml-declaration("yes")
-function synopsx:db-exists($project_name) { 
-<html>
-	<head><title>Start your project {$project_name} now !</title></head>
-	<body>
-	   <header>SynopsX</header>
-<section>Add xml data to your database {$project_name} and 
-<br/><a href="/{$project_name}/config">configure your synopsx webapp</a></section>
-</body>
-</html>
-};
+
 
 declare %restxq:path("{$project_name}/config/")
         %output:method("xml")
           %output:omit-xml-declaration("yes")
 updating function synopsx:db-config($project_name) { 
-let $config := <configuration name="{$project_name}">
-<parent value="synopsx"/>
-<ouput name="html" value="synopsx_html"/>
+let $config := <configuration xml:id="{$project_name}"/>
+ return (db:add("config", $config, $project_name ||".xml"),
+         db:output(<restxq:redirect>/{$project_name}</restxq:redirect>))
+};
+
+declare %restxq:path("synopsx/config/")
+        %output:method("xml")
+          %output:omit-xml-declaration("yes")
+updating function synopsx:db-config() { 
+let $config := <configuration xml:id="synopsx">
+<output name="html" value="synopsx_html"/>
 <output name="oai" value="synopsx_oai"/>
-<head/>
 </configuration>
- return (db:add("config", $config, $project_name||".xml"),
-  db:output(<restxq:redirect>/{$project_name}</restxq:redirect>))
+ return (db:add("config", $config, "synopsx.xml"),
+         db:output(<restxq:redirect>/synopsx</restxq:redirect>))
 };
 
 
 
-
-declare updating function synopsx:initialize() { 
-            (db:create("config"),
-            db:output(<restxq:redirect>synopsx/config/</restxq:redirect>)) 
+declare %restxq:path("synopsx/initialize")
+        %output:method("xml")
+          %output:omit-xml-declaration("yes")
+updating function synopsx:initialize() { 
+            (db:create('config'),
+            db:output(<restxq:redirect>/synopsx/config/</restxq:redirect>)) 
 };
 
