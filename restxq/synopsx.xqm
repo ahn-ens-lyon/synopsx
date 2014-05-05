@@ -90,8 +90,7 @@ declare function synopsx:no-database($params) {
 	   <br/>{map:get($params,"value")}
 	   <br/>{map:get($params,"option")}
 	   </p>
-	   <p>You have to <a href="/{map:get($params,"project")}/create-database">create the database</a> first.
-	   <br/> <a href="/{map:get($params,"project")}/config">configuer {map:get($params,"project")}</a></p>
+	   <p>You have to <a href="/{map:get($params,"project")}/create-database">create the database</a> first.</p>
 	   <footer>Synopsx vous est proposé par : Atelier des Humanités Numériques - ENS de Lyon</footer>
 	</body>
 	</html>
@@ -109,7 +108,7 @@ declare %restxq:path("{$project_name}/create-database/")
      
 };
 
-declare %restxq:path("synopsx/config/{$project_name}")
+declare %restxq:path("{$project_name}/config/")
         %output:method("xml")
           %output:omit-xml-declaration("yes")
 updating function synopsx:db-config($project_name) { 
