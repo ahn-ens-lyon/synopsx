@@ -24,9 +24,10 @@ declare namespace xf="http://www.w3.org/2002/xforms";
 
 
 import module namespace synopsx_html = 'http://ahn.ens-lyon.fr/synopsx_html' at 'synopsx_html.xqm';
-import module namespace ahn = 'http://ahn.ens-lyon.fr/ahn' at 'ahn.xqm';
-import module namespace ahn_commons_html = 'http://ahn.ens-lyon.fr/ahn_commons_html' at 'ahn_commons_html.xqm';
-import module namespace desanti = 'http://ahn.ens-lyon.fr/desanti' at 'desanti.xqm';
+(:import module namespace ahn = 'http://ahn.ens-lyon.fr/ahn' at 'ahn.xqm';
+:)
+(:import module namespace ahn_commons_html = 'http://ahn.ens-lyon.fr/ahn_commons_html' at 'ahn_commons_html.xqm';:)
+(:import module namespace desanti = 'http://ahn.ens-lyon.fr/desanti' at 'desanti.xqm';:)
 
 
 
