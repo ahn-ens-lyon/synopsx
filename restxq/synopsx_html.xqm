@@ -165,6 +165,7 @@ declare function synopsx_html:head($params){
 declare function synopsx_html:body($params){
    let $project := map:get($params,"project")
    return switch ($project)
+   
    case "synopsx" return
         <body>
        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -232,13 +233,14 @@ declare function synopsx_html:body($params){
       <div class="row">
         <div class="col-md-4">
           <h2>Manage your XML database</h2>
-          
-          <p><a class="btn btn-default" href="#" role="button">Proceed >>></a></p>
+          <p>Add XML files, user... Set your database options. <a href="http://docs.basex.org/wiki/Commands" title="BaseX commands doc">Need help ?</a></p>
+          <p><a class="btn btn-default" href="/rest/{$project}" role="button">Proceed >>></a></p>
         </div>
 
         <div class="col-md-4">
           <h2>Customize your webapp templates with RESTXQ</h2>
-          <p><a class="btn btn-default" href="#" role="button">Proceed >>></a></p>
+          <p>Create new restxq templates and declare them in your config file. <a href="http://docs.basex.org/wiki/RESTXQ" title="BaseX RESTXQ doc">Need help ?</a></p>
+          <p><a class="btn btn-default" href="/rest/config/{$project}.xml" role="button">Proceed >>></a></p>
         </div>
         <div class="col-md-4">
           <h2>Can we help ? Get third parties templates</h2>
