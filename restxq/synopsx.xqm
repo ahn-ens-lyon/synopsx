@@ -102,11 +102,17 @@ declare %restxq:path("{$project_name}/create-database/")
 
 
 
+
 declare %restxq:path("{$project_name}/config/")
         %output:method("xml")
           %output:omit-xml-declaration("yes")
 updating function synopsx:db-config($project_name) { 
-let $config := <configuration xml:id="{$project_name}"/>
+let $config := <configuration xml:id="{$project_name}">
+                <!--
+                <parent value="the namespace of the xqm module your project inherits" />
+                <output name="rdf" value="the namespace of your xqm module dedicated to xquery functions for rdf"/>
+                <output name="oai" value="the namespace of your xqm module dedicated to xquery functions for oai"/>-->
+               </configuration>
  return (db:add("config", $config, $project_name ||".xml"),
          db:output(<restxq:redirect>/{$project_name}</restxq:redirect>))
 };
