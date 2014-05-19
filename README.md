@@ -1,7 +1,7 @@
 SynopsX
 =======
 
-Full XML corpus publishing system developped at ENS Lyon (http://ahn.ens-lyon.fr) based on BaseX
+Full XML corpus publishing system developped at ENS de Lyon (http://ahn.ens-lyon.fr) based on BaseX
 
 Installation
 ------------
