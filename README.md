@@ -1,4 +1,4 @@
-SynopsX
+Synopsx
 =======
 
 Full XML corpus publishing system developped at ENS Lyon (http://ahn.ens-lyon.fr) based on BaseX
