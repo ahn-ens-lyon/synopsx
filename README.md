@@ -1,4 +1,4 @@
-synopsx
+SynopsX
 =======
 
 Full XML corpus publishing system developped at ENS Lyon (http://ahn.ens-lyon.fr)
@@ -10,10 +10,10 @@ Installation
     rm -fr *
     git clone https://github.com/ahn-ens-lyon/synopsx.git .
 ```
-    
+
 Don't forget to change your admin password an
-    
-    
+
+
 Configuration
 -------------
 
@@ -38,7 +38,7 @@ You can also use the command line syntax : http://docs.basex.org/wiki/REST#Comma
     </configuration>
 ```
 
-#### Project database 
+#### Project database
 
 `CREATE DB 'myproject'`
 
@@ -52,7 +52,7 @@ You can also use the command line syntax : http://docs.basex.org/wiki/REST#Comma
 
 ```xml
     <!-- config file for 'myproject' -->
-    <configuration name="myproject"> 
+    <configuration name="myproject">
         <!-- The @value attribute gives the parent xqm module namespace -->
         <parent value="synopsx"/>  
         <!-- The @value attribute gives the output xqm module namespace -->
@@ -80,14 +80,14 @@ You can also interact with BaseX with the XQuery syntax for the installation pro
 
 ```xquery
     <!-- add the XML sequence to the config database (http://docs.basex.org/wiki/Database_Module#db:add) -->
-    db:add("config", 
+    db:add("config",
     <configuration name="synopsx">
         <output name="html" value="synopsx_html"/>
         <output name="oai" value="synopsx_oai"/>
     </configuration>, "synopsx.xml" )
 ```
 
-#### Project database    
+#### Project database
 
 ```xquery
     <!-- create the project database (http://docs.basex.org/wiki/Database_Module#db:create) -->
@@ -109,13 +109,13 @@ You can also interact with BaseX with the XQuery syntax for the installation pro
 
 ```xquery
     <!-- add the project's config XML sequence to the config database (http://docs.basex.org/wiki/Database_Module#db:add)
-    
+
     first open the config database (http://docs.basex.org/wiki/Database_Module#db:open) -->
-    
+
     db:open("config")
 
-    db:add("config", 
-    <configuration name="myproject"> 
+    db:add("config",
+    <configuration name="myproject">
         <!-- The @value attribute gives the parent xqm module namespace -->
         <parent value="synopsx"/>  
         <!-- The @value attribute gives the output xqm module namespace -->
