@@ -1,3 +1,6 @@
+README is not up to date !
+
+
 Synopsx
 =======
 
