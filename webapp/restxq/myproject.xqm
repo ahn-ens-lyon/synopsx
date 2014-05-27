@@ -19,8 +19,6 @@ If not, see <http://www.gnu.org/licenses/>
 
 module namespace myproject = 'http://ahn.ens-lyon.fr/myproject';
 
-import module namespace synopsx_html = 'http://ahn.ens-lyon.fr/synopsx_html' at 'synopsx_html.xqm';
+import module namespace webapp = 'http://ahn.ens-lyon.fr/webapp' at 'webapp.xqm';
 
-declare function myproject:parent () {
-   string('morand')
-};
+
