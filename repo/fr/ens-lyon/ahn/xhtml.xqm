@@ -72,7 +72,7 @@ declare function xhtml:head($params){
         <meta name="author" content="Atelier des Humanités Numériques, ENS de Lyon, France" />
         
         <!-- Bootstrap core CSS -->
-        <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
       
         <!-- CSS spécifiques au corpus -->
         {synopsx:function-lookup("css",map:get($params,"project"),"html")($params)}
@@ -183,11 +183,12 @@ declare function xhtml:body($params){
   declare function xhtml:scripts_js($params){
   
   (<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>,
-    <script src="/static/bootstrap/js/bootstrap.min.js"></script>)
+    <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>)
   };
   
   declare function xhtml:css($params){
   
+        (: Add your own css in the /static directory of your webapp and call it here :)
         (:<link href="/static/css/mycss.css" rel="stylesheet" />:)
         ()
   
