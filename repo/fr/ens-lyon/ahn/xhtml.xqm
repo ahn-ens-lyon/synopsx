@@ -17,24 +17,24 @@ You should have received a copy of the GNU General Public License along with Syn
 If not, see <http://www.gnu.org/licenses/>
 :)
     
-module namespace synopsx_html = 'http://ahn.ens-lyon.fr/synopsx_html';
-import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx' at 'synopsx.xqm';
+module namespace xhtml = 'http://ahn.ens-lyon.fr/xhtml';
+import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
 
 (: webapp root url :)
-declare variable $synopsx_html:url_base := "http://xml-basex.cbp.ens-lyon.fr:8984";
+declare variable $xhtml:url_base := "http://xml-basex.cbp.ens-lyon.fr:8984";
 (: default namespace :)
-declare variable $synopsx_html:default_ns := "http://ahn-basex.fr/";
+declare variable $xhtml:default_ns := "http://ahn-basex.fr/";
 (: default xslt stylesheet :)
-declare variable $synopsx_html:xslt := "/static/xsl/tei2html5.xsl";
+declare variable $xhtml:xslt := "/static/xsl/tei2html5.xsl";
 
 
 
-declare function synopsx_html:notFound($params) {
+declare function xhtml:notFound($params) {
 <html>
 <head><title>Base {map:get($params,"project")} not found</title></head>
 <body>
 <header>SynopsX</header>
-<br/>Nous n'avons pas trouvé ce que vous cherchez...
+<br/>Nous n avons pas trouvé ce que vous cherchez...
 Les paramètres donnés étaient :
 <br/>{map:get($params,"project")}
 <br/>{map:get($params,"dataType")}
@@ -51,88 +51,7 @@ Les paramètres donnés étaient :
 
 
 
-(: These first five functions analyse the given path and retrieve the data :)
-declare %restxq:path("")
-        %output:method("xhtml")
-        %output:omit-xml-declaration("no")
-        %output:doctype-public("xhtml")
-function synopsx_html:index() {
-  let $params := map {
-      "project" := "desanti",
-      "dataType" := "home"
-    } 
-   return synopsx_html:main($params) 
-};
-
-
-declare %restxq:path("{$project}")
-        %output:method("xhtml")
-        %output:omit-xml-declaration("no")
-        %output:doctype-public("xhtml")
-function synopsx_html:index($project) {
-  let $params := map {
-      "project" := $project,
-      "dataType" := "home"
-    }                  
-    
-    return synopsx_html:main($params)
-}; 
-
-
-declare %restxq:path("{$project}/{$dataType}")
-        %output:method("xhtml")
-        %output:omit-xml-declaration("no")
-        %output:doctype-public("xhtml")
-function synopsx_html:index($project, $dataType) {
-    let $params := map {
-      "project" := $project,
-      "dataType" := $dataType
-      }
-    return synopsx_html:main($params)
-};
-
-declare %restxq:path("{$project}/{$dataType}/{$value}")
-        %output:method("xhtml")
-        %output:omit-xml-declaration("no")
-        %output:doctype-public("xhtml")
-function synopsx_html:index($project, $dataType, $value) {
-    let $params := map {
-      "project" := $project,
-      "dataType" := $dataType,
-      "value" := $value
-      }
-    return synopsx_html:main($params)
-};
-
-declare %restxq:path("{$project}/{$dataType}/{$value}/{$option}")
-        %output:method("xhtml")
-        %output:omit-xml-declaration("no")
-        %output:doctype-public("xhtml")
-function synopsx_html:index($project, $dataType, $value, $option) {
-    let $params := map {
-      "project" := $project,
-      "dataType" := $dataType,
-      "value" := $value,
-      "option" := $option
-      }
-    
-    return synopsx_html:main($params)
-}; 
-
-
-
-(: Main function (decides what to do wether config data, database, etc. exist or not for this project :)
-declare function synopsx_html:main($params){
-    if(db:exists("config")) then
-            if (db:open('config')//*[@xml:id=map:get($params,"project")]) then synopsx:function-lookup("html",map:get($params,"project"),"html")($params) 
-            else <a href="/{map:get($params,"project")}/config">Please configure your project</a>
-    else <a href="/synopsx/initialize">Please initialize Synopsx</a>
-};
-
-
-
-
-declare function synopsx_html:html($params){ 
+declare function xhtml:html($params){ 
     <html lang="fre">
       { synopsx:function-lookup("head",map:get($params,"project"),"html")($params)
        ,synopsx:function-lookup("body",map:get($params,"project"),"html")($params)
@@ -143,7 +62,7 @@ declare function synopsx_html:html($params){
 
 
 (: Default html head :)
-declare function synopsx_html:head($params){
+declare function xhtml:head($params){
   <head>
         <title>{map:get($params,"project")}</title>
         
@@ -162,7 +81,7 @@ declare function synopsx_html:head($params){
 
 
 (: Default html body :)
-declare function synopsx_html:body($params){
+declare function xhtml:body($params){
    let $project := map:get($params,"project")
    return switch ($project)
    
@@ -261,13 +180,13 @@ declare function synopsx_html:body($params){
 };
 
 
-  declare function synopsx_html:scripts_js($params){
+  declare function xhtml:scripts_js($params){
   
   (<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>,
     <script src="/static/bootstrap/js/bootstrap.min.js"></script>)
   };
   
-  declare function synopsx_html:css($params){
+  declare function xhtml:css($params){
   
         (:<link href="/static/css/mycss.css" rel="stylesheet" />:)
         ()

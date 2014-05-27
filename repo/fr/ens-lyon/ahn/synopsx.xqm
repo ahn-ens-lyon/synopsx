@@ -18,22 +18,14 @@ If not, see <http://www.gnu.org/licenses/>
 :)
     
 module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
+
 declare namespace db = 'http://basex.org/modules/db';
 declare namespace xslt="http://basex.org/modules/xslt";
 declare namespace xf="http://www.w3.org/2002/xforms";
 
 
-import module namespace synopsx_html = 'http://ahn.ens-lyon.fr/synopsx_html' at 'synopsx_html.xqm';
-import module namespace synopsx_oai = 'http://ahn.ens-lyon.fr/synopsx_oai' at 'synopsx_oai.xqm';
-(:import module namespace ahn = 'http://ahn.ens-lyon.fr/ahn' at 'ahn.xqm';
-:)
-(:import module namespace ahn_commons_html = 'http://ahn.ens-lyon.fr/ahn_commons_html' at 'ahn_commons_html.xqm';:)
-(:import module namespace desanti = 'http://ahn.ens-lyon.fr/desanti' at 'desanti.xqm';:)
-
-
-
-(: import module namespace synodes = 'http://ahn.ens-lyon.fr/synodes' at 'synodes.xqm'; :)
-
+(:import module namespace xhtml = 'http://ahn.ens-lyon.fr/xhtml' at 'xhtml.xqm';
+import module namespace oai = 'http://ahn.ens-lyon.fr/oai' at 'oai.xqm';:)
 
 (: This function checks whether there is a customization of the generic-templating function. 
 By default, synopsX function is called. :)
@@ -122,8 +114,8 @@ declare %restxq:path("synopsx/config/")
           %output:omit-xml-declaration("yes")
 updating function synopsx:db-config() { 
 let $config := <configuration xml:id="synopsx">
-<output name="html" value="synopsx_html"/>
-<output name="oai" value="synopsx_oai"/>
+<output name="xhtml" value="xhtml"/>
+<output name="oai" value="oai"/>
 </configuration>
  return (db:add("config", $config, "synopsx.xml"),
          db:output(<restxq:redirect>/synopsx</restxq:redirect>))

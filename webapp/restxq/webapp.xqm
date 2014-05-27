@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License along with Syn
 If not, see <http://www.gnu.org/licenses/>
 :)
 
+module namespace webapp = 'http://ahn.ens-lyon.fr/webapp';
+import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
+
 (: These five functions analyse the given path and retrieve the data :)
 declare %restxq:path("")
         %output:method("xhtml")
@@ -24,7 +27,7 @@ declare %restxq:path("")
         %output:doctype-public("xhtml")
 function webapp:index() {
   let $params := map {
-      "project" := "desanti",
+      "project" := "synopsx",
       "dataType" := "home"
     } 
    return webapp:main($params) 
@@ -87,11 +90,11 @@ function webapp:index($project, $dataType, $value, $option) {
 
 
 
-(: Main function (decides what to do wether config data, database, etc. exist or not for this project :)
+(: Main function, decides what to do wether config data and database alreadey exist or not for this project :)
 declare function webapp:main($params){
     if(db:exists("config")) then
-            if (db:open('config')//*[@xml:id=map:get($params,"project")]) then synopsx:function-lookup("html",map:get($params,"project"),"html")($params) 
-            else <a href="/{map:get($params,"project")}/config">Please configure your project</a>
+            if (db:open('config')//*[@xml:id=map:get($params,'project')]) then synopsx:function-lookup("html",map:get($params,"project"),"xhtml")($params) 
+            else <a href="/{map:get($params,'project')}/config">Please configure your project</a>
     else <a href="/synopsx/initialize">Please initialize Synopsx</a>
 };
 
