@@ -1,7 +1,11 @@
+README is not up to date !
+
+
 Synopsx
 =======
 
-Full XML corpus publishing system developped at ENS Lyon (http://ahn.ens-lyon.fr) based on BaseX, the XML database !
+
+Full XML corpus publishing system developped at ENS Lyon (http://ahn.ens-lyon.fr) based on BaseX
 
 Installation
 ------------
