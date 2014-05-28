@@ -20,12 +20,7 @@ If not, see <http://www.gnu.org/licenses/>
 module namespace xhtml = 'http://ahn.ens-lyon.fr/xhtml';
 import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
 
-(: webapp root url :)
-declare variable $xhtml:url_base := "http://xml-basex.cbp.ens-lyon.fr:8984";
-(: default namespace :)
-declare variable $xhtml:default_ns := "http://ahn-basex.fr/";
-(: default xslt stylesheet :)
-declare variable $xhtml:xslt := "/static/xsl/tei2html5.xsl";
+
 
 
 
@@ -50,18 +45,18 @@ Les paramètres donnés étaient :
 
 
 
-
+(: Default html root tag html :)
 declare function xhtml:html($params){ 
     <html lang="fre">
-      { synopsx:function-lookup("head",map:get($params,"project"),"html")($params)
-       ,synopsx:function-lookup("body",map:get($params,"project"),"html")($params)
+      { synopsx:function-lookup("head",map:get($params,"project"),"xhtml")($params)
+       ,synopsx:function-lookup("body",map:get($params,"project"),"xhtml")($params)
       }
    </html>
 };
 
 
 
-(: Default html head :)
+(: Default html head tag :)
 declare function xhtml:head($params){
   <head>
         <title>{map:get($params,"project")}</title>
@@ -75,19 +70,38 @@ declare function xhtml:head($params){
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
       
         <!-- CSS spécifiques au corpus -->
-        {synopsx:function-lookup("css",map:get($params,"project"),"html")($params)}
+        {synopsx:function-lookup("css",map:get($params,"project"),"xhtml")($params)}
   </head>
 };
 
+ declare function xhtml:css($params){
+  
+        (: Add your own css in the /static directory of your webapp and call it here :)
+        (:<link href="/static/css/mycss.css" rel="stylesheet" />:)
+        ()
+  
+  };
 
-(: Default html body :)
+(: Default html body tag :)
 declare function xhtml:body($params){
+       <body>
+             {synopsx:function-lookup("header",map:get($params,"project"),"xhtml")($params),
+             synopsx:function-lookup("container",map:get($params,"project"),"xhtml")($params),
+             synopsx:function-lookup("footer",map:get($params,"project"),"xhtml")($params),
+           synopsx:function-lookup("scripts_js",map:get($params,"project"),"xhtml")($params)}
+        </body>
+};
+
+
+
+(: Default xhtml header :)
+declare function xhtml:header($params){
    let $project := map:get($params,"project")
    return switch ($project)
    
    case "synopsx" return
-        <body>
-       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+   <header>
+ <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
                     <div class="navbar container">{$project}</div>
                 </div>
  
@@ -99,8 +113,35 @@ declare function xhtml:body($params){
         <p><a class="btn btn-primary btn-lg" role="button">Learn more >>></a></p>
       </div>
     </div>
+    </header>
+    default return 
+     <header>
+ <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+                    <div class="navbar container">{$project}</div>
+                </div>
+ 
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Welcome to {map:get($params,"project")} !</h1>
+        <p>Congratulations, this is your webapp homepage  !</p>
+        <p><a class="btn btn-primary btn-lg" role="button">Learn more >>></a></p>
+      </div>
+    </div>
+    </header>
+};   
 
-    <div class="container">
+
+
+
+
+
+(: Default html container tag :)
+declare function xhtml:container($params){
+   let $project := map:get($params,"project")
+   return switch ($project)
+   case "synopsx" return
+      <div id="container" class="container">
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">
@@ -109,7 +150,6 @@ declare function xhtml:body($params){
           <p>Let your xml structures drive the design of your websites and webservices.</p>
           <p><a class="btn btn-default" href="#" role="button">View details >>></a></p>
         </div>
-
         <div class="col-md-4">
           <h2>How does it work ?</h2>
           <p>SynopsX is based on the native XML database <a href="http://basex.org" title="BaseX native XML database"><img src="http://basex.org/fileadmin/styles/07_layouts_grids/css/images/BaseX-Logo.png"/></a></p>
@@ -123,45 +163,27 @@ declare function xhtml:body($params){
           <p><a class="btn btn-default" href="#" role="button">View details >>></a></p>
         </div>
       </div>
-
-      <hr/>
-
-      <footer>
-        <p>© Atelier des Humanités Numériques, ENS de Lyon, 2014</p>
-      </footer>
-    </div> <!-- /container -->
-        </body>
-        
+     <!-- /container --></div>
+    
     default return 
-    <body>
-       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-                    <div class="navbar container">{$project}</div>
-                </div>
- 
-        <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-      <div class="container">
-        <h1>Welcome to {map:get($params,"project")} !</h1>
-        <p>Start customising your webapp now !</p>
-        <p><a class="btn btn-primary btn-lg" role="button">Learn more >>></a></p>
-      </div>
-    </div>
-
-    <div class="container">
+     <div class="container">
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">
+        <h1>1</h1>
           <h2>Manage your XML database</h2>
           <p>Add XML files, user... Set your database options. <a href="http://docs.basex.org/wiki/Commands" title="BaseX commands doc">Need help ?</a></p>
-          <p><a class="btn btn-default" href="/rest/{$project}" role="button">Proceed >>></a></p>
+          <p><a class="btn btn-default" href="/{$project}/admin/db" role="button">Proceed >>></a></p>
         </div>
 
         <div class="col-md-4">
+        <h1>2</h1>
           <h2>Customize your webapp templates with RESTXQ</h2>
           <p>Create new restxq templates and declare them in your config file. <a href="http://docs.basex.org/wiki/RESTXQ" title="BaseX RESTXQ doc">Need help ?</a></p>
-          <p><a class="btn btn-default" href="/rest/config/{$project}.xml" role="button">Proceed >>></a></p>
+          <p><a class="btn btn-default" href="/{$project}/admin/config" role="button">Proceed >>></a></p>
         </div>
         <div class="col-md-4">
+        <h1>3</h1>
           <h2>Can we help ? Get third parties templates</h2>
           <p>AHN libs</p>
           <p>Partenaire libs</p>
@@ -169,14 +191,19 @@ declare function xhtml:body($params){
           
         </div>
       </div>
+    <!-- /container --> </div>
+};
 
-      <hr/>
 
-      <footer>
-        <p>© Atelier des Humanités Numériques, ENS de Lyon, 2014</p>
-      </footer>
-    </div> <!-- /container -->
-        </body>
+
+
+
+(: Default xhtml footer :)
+declare function xhtml:footer($params){
+  <footer>
+        <hr/>
+        <div class="container">© Atelier des Humanités Numériques, ENS de Lyon, 2014</div>
+  </footer>
 };
 
 
@@ -186,11 +213,7 @@ declare function xhtml:body($params){
     <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>)
   };
   
-  declare function xhtml:css($params){
-  
-        (: Add your own css in the /static directory of your webapp and call it here :)
-        (:<link href="/static/css/mycss.css" rel="stylesheet" />:)
-        ()
-  
-  };
-
+ 
+    
+    
+   
