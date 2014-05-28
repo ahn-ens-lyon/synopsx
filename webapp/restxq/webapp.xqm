@@ -18,8 +18,9 @@ If not, see <http://www.gnu.org/licenses/>
 :)
 
 module namespace webapp = 'http://ahn.ens-lyon.fr/webapp';
-import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
 
+import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
+import module namespace  xhtml = 'http://ahn.ens-lyon.fr/xhtml';
 (: These five functions analyse the given path and retrieve the data :)
 declare %restxq:path("")
         %output:method("xhtml")
@@ -90,12 +91,25 @@ function webapp:index($project, $dataType, $value, $option) {
 
 
 
-(: Main function, decides what to do wether config data and database alreadey exist or not for this project :)
+(: Main function, decides what to do wether config data and database already exist or not for this project :)
 declare function webapp:main($params){
-    if(db:exists("config")) then
-            if (db:open('config')//*[@xml:id=map:get($params,'project')]) then synopsx:function-lookup("html",map:get($params,"project"),"xhtml")($params) 
-            else <a href="/{map:get($params,'project')}/config">Please configure your project</a>
-    else <a href="/synopsx/initialize">Please initialize Synopsx</a>
+    let $project := map:get($params,"project")
+    return
+   
+    if(db:exists('config')) then synopsx:function-lookup("html",$project,"xhtml")($params) 
+    
+    else <html>
+            {xhtml:head($params)}
+            <body>
+            {xhtml:header($params)}
+            <div id="container" class="container">
+            <a href="/synopsx/admin/initialize">Please initialize Synopsx</a>{xhtml:footer($params)}
+            </div>
+            </body>
+            </html> 
+    
+    
+ 
 };
 
 
