@@ -20,7 +20,7 @@ If not, see <http://www.gnu.org/licenses/>
 module namespace webapp = 'http://ahn.ens-lyon.fr/webapp';
 
 import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
-import module namespace  xhtml = 'http://ahn.ens-lyon.fr/xhtml';
+
 (: These five functions analyse the given path and retrieve the data :)
 declare %restxq:path("")
         %output:method("xhtml")
@@ -93,22 +93,8 @@ function webapp:index($project, $dataType, $value, $option) {
 
 (: Main function, decides what to do wether config data and database already exist or not for this project :)
 declare function webapp:main($params){
-    let $project := map:get($params,"project")
-    return
-   
-    if(db:exists('config')) then synopsx:function-lookup("html",$project,"xhtml")($params) 
     
-    else <html>
-            {xhtml:head($params)}
-            <body>
-            {xhtml:header($params)}
-            <div id="container" class="container">
-            <a href="/synopsx/admin/initialize">Please initialize Synopsx</a>{xhtml:footer($params)}
-            </div>
-            </body>
-            </html> 
-    
-    
+   synopsx:get-function("html",$params,"xhtml")($params)
  
 };
 

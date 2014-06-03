@@ -19,25 +19,15 @@ If not, see <http://www.gnu.org/licenses/>
     
 module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
 
-declare namespace  xhtml = 'http://ahn.ens-lyon.fr/xhtml';
-declare namespace db = 'http://basex.org/modules/db';
-declare namespace inspect = 'http://basex.org/modules/inspect';
-declare namespace xslt="http://basex.org/modules/xslt";
-declare namespace xf="http://www.w3.org/2002/xforms";
-
-
-(:import module namespace xhtml = 'http://ahn.ens-lyon.fr/xhtml' at 'xhtml.xqm';
-import module namespace oai = 'http://ahn.ens-lyon.fr/oai' at 'oai.xqm';:)
 
 (: This function checks whether there is a customization of the generic-templating function. 
 By default, synopsX function is called. :)
-declare function synopsx:function-lookup($function_name, $project_name, $output_type){
+declare function synopsx:get-function($function_name, $params , $output_type){
  
-  
+  let $project_name := map:get($params,"project")
   let $function := 
        
-  
-  
+        if(db:exists('config')) then 
         (: Checks if the specified output type has been assigned to a specific xqm module namespace for this project.
         This information stands in the project_name.xml file in the "config" db :)
         let $ns := string(db:open('config')//*[@xml:id=$project_name]//output[@name=$output_type]/@value)
@@ -61,37 +51,43 @@ declare function synopsx:function-lookup($function_name, $project_name, $output_
             if (not(empty($specific))) then $specific
             else if (not(empty($parent))) then $parent
             else if  (not(empty($generic))) then  $generic
-            else function-lookup(xs:QName("xhtml:notFound"),1)
+            else function-lookup(xs:QName("synopsx:notFound"),1)
         return $f
         
-     
-       
-     
-   
-     
-     return $function
+         
+         else function-lookup(xs:QName("synopsx:no-config"),1)
+            
+        return $function    
 };
+
+
+declare function synopsx:no-config($params){
+  <html>
+            {synopsx:head($params)}
+            <body>
+            {synopsx:header($params)}
+            <div id="container" class="container">
+            <a href="/synopsx/admin/initialize">Please initialize Synopsx</a>
+             {synopsx:footer($params)}
+            </div>
+           
+            </body>
+            </html> 
+};
+
+
+
+
+
 
 
 
 declare %restxq:path("synopsx/admin/initialize")
 updating function synopsx:initialize() { 
-            (if(db:exists('config')) then () else db:create('config'),
-            db:output(<restxq:redirect>/synopsx/admin/config</restxq:redirect>)) 
+            (db:create('config', <configuration xml:id="synopsx"><output name="xhtml" value="synopsx"/><output name="oai" value="oai"/></configuration>),
+            db:output(<restxq:redirect>/synopsx</restxq:redirect>)) 
 };
 
-
-declare %restxq:path("synopsx/admin/config")
-        %output:method("xml")
-          %output:omit-xml-declaration("yes")
-updating function synopsx:db-config() { 
-let $config := <configuration xml:id="synopsx">
-                    <output name="xhtml" value="xhtml"/>
-                    <output name="oai" value="oai"/>
-               </configuration>
- return (db:add("config", $config, "synopsx.xml"),
-         db:output(<restxq:redirect>/synopsx</restxq:redirect>))
-};
 
 
 
@@ -114,4 +110,199 @@ let $config := <configuration xml:id="{$project_name}">
                </configuration>
                return db:add('config', $config, $project_name ||".xml"))
 };
+
+
+
+
+declare function synopsx:notFound($params) {
+<html>
+  {synopsx:head($params)}
+<body>
+ {synopsx:header($params)}
+<p>Nous n avons pas trouvé ce que vous cherchez...
+Les paramètres donnés étaient :
+<br/>{map:get($params,"project")}
+<br/>{map:get($params,"dataType")}
+<br/>{map:get($params,"value")}
+<br/>{map:get($params,"option")}</p>
+<p>Voulez-vous préciser la configuration de {map:get($params,"project")} ?
+<br/> <a href="/{map:get($params,"project")}/config">configuer {map:get($params,"project")}</a></p>
+ {synopsx:footer($params)}
+</body>
+</html>
+};
+
+
+
+
+(: Default html root tag html :)
+declare function synopsx:html($params){ 
+    <html lang="fre">
+      {synopsx:head($params),
+       synopsx:body($params)}
+   </html>
+};
+
+
+
+(: Default html head tag :)
+declare function synopsx:head($params){
+  <head>
+        <title>{map:get($params,"project")}</title>
+        
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Synopsx AHN. Utilise BaseX et RESTXQ" />
+        <meta name="author" content="Atelier des Humanités Numériques, ENS de Lyon, France" />
+        
+        <!-- Bootstrap core CSS -->
+        <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
+      
+        <!-- CSS spécifiques au corpus -->
+        synopsx:css($params)
+  </head>
+};
+
+ declare function synopsx:css($params){
+  
+        (: Add your own css in the /static directory of your webapp and call it here :)
+        (:<link href="/static/css/mycss.css" rel="stylesheet" />:)
+        ()
+  
+  };
+
+(: Default html body tag :)
+declare function synopsx:body($params){
+       <body>
+             {synopsx:header($params),
+              synopsx:container($params),
+              synopsx:footer($params),
+              synopsx:scripts_js($params)
+           }
+        </body>
+};
+
+
+
+(: Default xhtml header :)
+declare function synopsx:header($params){
+   let $project := map:get($params,"project")
+   return switch ($project)
+   
+   case "synopsx" return
+   <header>
+ <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+                    <div class="navbar container">{$project}</div>
+                </div>
+ 
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Welcome to {map:get($params,"project")} !</h1>
+        <p>Synopsx helps Digital Humanists to manage, process and publish their xml data. Start customising it now !</p>
+        <p><a class="btn btn-primary btn-lg" role="button">Learn more >>></a></p>
+      </div>
+    </div>
+    </header>
+    default return 
+     <header>
+ <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+                    <div class="navbar container">{$project}</div>
+                </div>
+ 
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Welcome to {map:get($params,"project")} !</h1>
+        <p>Congratulations, this is your webapp homepage  !</p>
+        <p><a class="btn btn-primary btn-lg" role="button">Learn more >>></a></p>
+      </div>
+    </div>
+    </header>
+};   
+
+
+
+
+
+
+(: Default html container tag :)
+declare function synopsx:container($params){
+   let $project := map:get($params,"project")
+   return switch ($project)
+   case "synopsx" return
+      <div id="container" class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Do your data live in the XML world ?</h2>
+          <p>Stay inside the XML world at each step of your project and stop mixing technologies. </p>
+          <p>Let your xml structures drive the design of your websites and webservices.</p>
+          <p><a class="btn btn-default" href="#" role="button">View details >>></a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>How does it work ?</h2>
+          <p>SynopsX is based on the native XML database <a href="http://basex.org" title="BaseX native XML database"><img src="http://basex.org/fileadmin/styles/07_layouts_grids/css/images/BaseX-Logo.png"/></a></p>
+          <p><a class="btn btn-default" href="#" role="button">View details >>></a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Who makes it ?</h2>
+          <p>AHN</p>
+          <p>Partenaire</p>
+          <p>Partenaire</p>
+          <p><a class="btn btn-default" href="#" role="button">View details >>></a></p>
+        </div>
+      </div>
+     <!-- /container --></div>
+    
+    default return 
+     <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+        <h1>1</h1>
+          <h2>Manage your XML database</h2>
+          <p>Add XML files, user... Set your database options. <a href="http://docs.basex.org/wiki/Commands" title="BaseX commands doc">Need help ?</a></p>
+          <p><a class="btn btn-default" href="/{$project}/admin/db" role="button">Proceed >>></a></p>
+        </div>
+
+        <div class="col-md-4">
+        <h1>2</h1>
+          <h2>Customize your webapp templates with RESTXQ</h2>
+          <p>Create new restxq templates and declare them in your config file. <a href="http://docs.basex.org/wiki/RESTXQ" title="BaseX RESTXQ doc">Need help ?</a></p>
+          <p><a class="btn btn-default" href="/{$project}/admin/config" role="button">Proceed >>></a></p>
+        </div>
+        <div class="col-md-4">
+        <h1>3</h1>
+          <h2>Can we help ? Get third parties templates</h2>
+          <p>AHN libs</p>
+          <p>Partenaire libs</p>
+          <p>Partenaire libs</p>
+          
+        </div>
+      </div>
+    <!-- /container --> </div>
+};
+
+
+
+
+
+(: Default xhtml footer :)
+declare function synopsx:footer($params){
+  <footer>
+        <hr/>
+        <div class="container">© Atelier des Humanités Numériques, ENS de Lyon, 2014</div>
+  </footer>
+};
+
+
+  declare function synopsx:scripts_js($params){
+  
+  (<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>,
+    <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>)
+  };
+  
+ 
+ 
 
