@@ -1,5 +1,4 @@
-README is not up to date !
-
+This will be possible through the webapp interface soon !
 
 Synopsx
 =======
@@ -10,12 +9,13 @@ Full XML corpus publishing system developped at ENS Lyon (http://ahn.ens-lyon.fr
 Installation
 ------------
 ```bash
-    cd <path_to_basex>/webapp
-    rm -fr *
+    cd <path_to_basex>/
+    rm -fr webapp
+    rm -fr repo
     git clone https://github.com/ahn-ens-lyon/synopsx.git .
 ```
 
-Don't forget to change your admin password an
+Don't forget to change your admin password !
 
 
 Configuration
@@ -37,8 +37,8 @@ You can also use the command line syntax : http://docs.basex.org/wiki/REST#Comma
 
 ```xml
     <configuration name="synopsx">
-        <output name="html" value="synopsx_html"/>
-        <output name="oai" value="synopsx_oai"/>
+        <output name="xhtml" value="synopsx"/>
+        <output name="oai" value="oai"/>
     </configuration>
 ```
 
@@ -57,12 +57,12 @@ You can also use the command line syntax : http://docs.basex.org/wiki/REST#Comma
 ```xml
     <!-- config file for 'myproject' -->
     <configuration name="myproject">
-        <!-- The @value attribute gives the parent xqm module namespace -->
-        <parent value="synopsx"/>  
-        <!-- The @value attribute gives the output xqm module namespace -->
-        <output name="html" value="myproject"/>  
+        <!-- The @value attribute gives the parent xqm module name -->
+        <parent value="parent-module-name"/>  
+        <!-- The @value attribute gives the output xqm module name -->
+        <output name="xhtml" value="myproject-xhtml-module-name"/>  
         <!-- Uncomment this line to overwrite synopx oai default functions -->
-        <!--<output name="oai" value="myproject_oai_namespace"/>-->
+        <!--<output name="oai" value="myproject-xhtml-module-name"/>-->
     </configuration>
 ```
 
@@ -120,11 +120,11 @@ You can also interact with BaseX with the XQuery syntax for the installation pro
 
     db:add("config",
     <configuration name="myproject">
-        <!-- The @value attribute gives the parent xqm module namespace -->
-        <parent value="synopsx"/>  
-        <!-- The @value attribute gives the output xqm module namespace -->
-        <output name="html" value="myproject"/>  
+        <!-- The @value attribute gives the parent xqm module name -->
+        <parent value="parent-module-name"/>  
+        <!-- The @value attribute gives the output xqm module name -->
+        <output name="xhtml" value="myproject-xhtml-module-name"/>  
         <!-- Uncomment this line to overwrite synopx oai default functions -->
-        <!--<output name="oai" value="myproject_oai_namespace"/>-->
+        <!--<output name="oai" value="myproject-xhtml-module-name"/>-->
     </configuration>, "myproject.xml" )
 ```
