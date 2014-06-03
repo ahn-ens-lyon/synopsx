@@ -17,24 +17,17 @@ You should have received a copy of the GNU General Public License along with Syn
 If not, see <http://www.gnu.org/licenses/>
 :)
     
-<<<<<<< HEAD:webapp/restxq/synopsx.xqm
 module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
 
-import module namespace ahn_commons = 'http://ahn.ens-lyon.fr/ahn_commons' at 'ahn_commons.xqm';
-import module namespace desanti = 'http://ahn.ens-lyon.fr/desanti' at 'desanti.xqm';
-
-(:import module namespace xhtml = 'http://ahn.ens-lyon.fr/xhtml' at 'xhtml.xqm';
-import module namespace oai = 'http://ahn.ens-lyon.fr/oai' at 'oai.xqm';:)
 
 (: This function checks whether there is a customization of the generic-templating function. 
 By default, synopsX function is called. :)
-declare function synopsx:function-lookup($function_name, $project_name, $output_type){
+declare function synopsx:get-function($function_name, $params , $output_type){
  
-  
+  let $project_name := map:get($params,"project")
   let $function := 
        
-  
-  
+        if(db:exists('config')) then 
         (: Checks if the specified output type has been assigned to a specific xqm module namespace for this project.
         This information stands in the project_name.xml file in the "config" db :)
         let $ns := string(db:open('config')//*[@xml:id=$project_name]//output[@name=$output_type]/@value)
@@ -58,37 +51,43 @@ declare function synopsx:function-lookup($function_name, $project_name, $output_
             if (not(empty($specific))) then $specific
             else if (not(empty($parent))) then $parent
             else if  (not(empty($generic))) then  $generic
-            else function-lookup(xs:QName("xhtml:notFound"),1)
+            else function-lookup(xs:QName("synopsx:notFound"),1)
         return $f
         
-     
-       
-     
-   
-     
-     return $function
+         
+         else function-lookup(xs:QName("synopsx:no-config"),1)
+            
+        return $function    
 };
+
+
+declare function synopsx:no-config($params){
+  <html>
+            {synopsx:head($params)}
+            <body>
+            {synopsx:header($params)}
+            <div id="container" class="container">
+            <a href="/synopsx/admin/initialize">Please initialize Synopsx</a>
+             {synopsx:footer($params)}
+            </div>
+           
+            </body>
+            </html> 
+};
+
+
+
+
+
 
 
 
 declare %restxq:path("synopsx/admin/initialize")
 updating function synopsx:initialize() { 
-            (if(db:exists('config')) then () else db:create('config'),
-            db:output(<restxq:redirect>/synopsx/admin/config</restxq:redirect>)) 
+            (db:create('config', <configuration xml:id="synopsx"><output name="xhtml" value="synopsx"/><output name="oai" value="oai"/></configuration>),
+            db:output(<restxq:redirect>/synopsx</restxq:redirect>)) 
 };
 
-
-declare %restxq:path("synopsx/admin/config")
-        %output:method("xml")
-          %output:omit-xml-declaration("yes")
-updating function synopsx:db-config() { 
-let $config := <configuration xml:id="synopsx">
-                    <output name="xhtml" value="xhtml"/>
-                    <output name="oai" value="oai"/>
-               </configuration>
- return (db:add("config", $config, "synopsx.xml"),
-         db:output(<restxq:redirect>/synopsx</restxq:redirect>))
-};
 
 
 
@@ -111,29 +110,24 @@ let $config := <configuration xml:id="{$project_name}">
                </configuration>
                return db:add('config', $config, $project_name ||".xml"))
 };
-=======
-module namespace xhtml = 'http://ahn.ens-lyon.fr/xhtml';
->>>>>>> c89405c1311497895c480d0e8c13f70a821d6844:repo/fr/ens-lyon/ahn/xhtml.xqm
 
 
 
-
-<<<<<<< HEAD:webapp/restxq/synopsx.xqm
 
 declare function synopsx:notFound($params) {
 <html>
-<head><title>Base {map:get($params,"project")} not found</title></head>
+  {synopsx:head($params)}
 <body>
-<header>SynopsX</header>
-<br/>Nous n avons pas trouvé ce que vous cherchez...
+ {synopsx:header($params)}
+<p>Nous n avons pas trouvé ce que vous cherchez...
 Les paramètres donnés étaient :
 <br/>{map:get($params,"project")}
 <br/>{map:get($params,"dataType")}
 <br/>{map:get($params,"value")}
-<br/>{map:get($params,"option")}
+<br/>{map:get($params,"option")}</p>
 <p>Voulez-vous préciser la configuration de {map:get($params,"project")} ?
 <br/> <a href="/{map:get($params,"project")}/config">configuer {map:get($params,"project")}</a></p>
-<footer>Synopsx vous est proposé par : Atelier des Humanités Numériques - ENS de Lyon</footer>
+ {synopsx:footer($params)}
 </body>
 </html>
 };
@@ -144,9 +138,8 @@ Les paramètres donnés étaient :
 (: Default html root tag html :)
 declare function synopsx:html($params){ 
     <html lang="fre">
-      { synopsx:function-lookup("head",map:get($params,"project"),"xhtml")($params)
-       ,synopsx:function-lookup("body",map:get($params,"project"),"xhtml")($params)
-      }
+      {synopsx:head($params),
+       synopsx:body($params)}
    </html>
 };
 
@@ -166,7 +159,7 @@ declare function synopsx:head($params){
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
       
         <!-- CSS spécifiques au corpus -->
-        {synopsx:function-lookup("css",map:get($params,"project"),"xhtml")($params)}
+        synopsx:css($params)
   </head>
 };
 
@@ -181,10 +174,11 @@ declare function synopsx:head($params){
 (: Default html body tag :)
 declare function synopsx:body($params){
        <body>
-             {synopsx:function-lookup("header",map:get($params,"project"),"xhtml")($params),
-             synopsx:function-lookup("container",map:get($params,"project"),"xhtml")($params),
-             synopsx:function-lookup("footer",map:get($params,"project"),"xhtml")($params),
-           synopsx:function-lookup("scripts_js",map:get($params,"project"),"xhtml")($params)}
+             {synopsx:header($params),
+              synopsx:container($params),
+              synopsx:footer($params),
+              synopsx:scripts_js($params)
+           }
         </body>
 };
 
@@ -310,9 +304,5 @@ declare function synopsx:footer($params){
   };
   
  
-    
-=======
-   
->>>>>>> c89405c1311497895c480d0e8c13f70a821d6844:repo/fr/ens-lyon/ahn/xhtml.xqm
-    
-   
+ 
+

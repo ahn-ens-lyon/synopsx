@@ -1,7 +1,12 @@
 module namespace desanti = 'http://ahn.ens-lyon.fr/desanti';
 
+<<<<<<< HEAD
 import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx' at 'synopsx.xqm';
 import module namespace ahn_commons = 'http://ahn.ens-lyon.fr/ahn_commons' at 'ahn_commons.xqm';
+=======
+import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
+import module namespace ahn_commons_html = 'http://ahn.ens-lyon.fr/ahn_commons_html' at 'ahn_commons_html.xqm';
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
 
 
 
@@ -29,6 +34,7 @@ declare function desanti:head($params){
         <meta name="author" content="Atelier des Humanités Numériques, ENS de Lyon, France" />
         
         <!-- Bootstrap core CSS -->
+<<<<<<< HEAD
         <link href="http://archive.desanti.huma-num.fr/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
         <link href="http://archive.desanti.huma-num.fr/static/js/tablesorter/themes/blue/style.css" rel="stylesheet" />
         
@@ -40,6 +46,19 @@ declare function desanti:head($params){
         <!-- CSS spécifiques au corpus -->
         <link href="http://archive.desanti.huma-num.fr/static/css/ahn.css" rel="stylesheet" />
         <link href="http://archive.desanti.huma-num.fr/static/css/desanti.css" rel="stylesheet" media="screen"/>
+=======
+        <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="/static/js/tablesorter/themes/blue/style.css" rel="stylesheet" />
+        
+ 
+        
+         <link rel="stylesheet" type="text/css" href="/static/js/jqzoom_ev-2.3/css/jquery.jqzoom.css"/>
+                
+
+        <!-- CSS spécifiques au corpus -->
+        <link href="/static/css/ahn.css" rel="stylesheet" />
+        <link href="/static/css/desanti.css" rel="stylesheet" media="screen"/>
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
         
         
      <style type='text/css'>{string('
@@ -55,10 +74,17 @@ declare function desanti:scripts_js($params){
   <div id="scripts_js">
      <script  type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
      <script src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>
+<<<<<<< HEAD
   <script type='text/javascript' src="http://archive.desanti.huma-num.fr/static/js/jqzoom_ev-2.3/js/jquery.jqzoom-core.js"></script>
   
     <script  type="text/javascript" src="http://archive.desanti.huma-num.fr/static/bootstrap/js/bootstrap.min.js"></script>
     <script  type="text/javascript" src="http://archive.desanti.huma-num.fr/static/js/tablesorter/jquery.tablesorter.min.js"></script>
+=======
+  <script type='text/javascript' src="/static/js/jqzoom_ev-2.3/js/jquery.jqzoom-core.js"></script>
+  
+    <script  type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script  type="text/javascript" src="/static/js/tablesorter/jquery.tablesorter.min.js"></script>
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
     
          
     { if(contains(map:get($params,"user-agent"), "Firefox")) 
@@ -92,7 +118,11 @@ declare function desanti:header($params){
                   </div>
              </div>
 
+<<<<<<< HEAD
    {synopsx:function-lookup("header-image",map:get($params,"project"),"xhtml")($params)} 
+=======
+   {synopsx:get-function("header-image",map:get($params,"project"),"xhtml")($params)} 
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
   </div>
 
 };
@@ -159,7 +189,11 @@ return
                            <h3>Pièce n° {$value} - {$item/*:did/*:unittitle//text()}</h3>
                            
                                
+<<<<<<< HEAD
                                {xslt:transform($item/*:scopecontent, concat($ahn_commons:url_base, $desanti:xslt))}
+=======
+                               {xslt:transform($item/*:scopecontent, concat($ahn_commons_html:url_base, $desanti:xslt))}
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                               
                          </div>
                          
@@ -215,7 +249,11 @@ return
                                     
                            
                     return <article>
+<<<<<<< HEAD
                                 {xslt:transform($item, concat($ahn_commons:url_base, $desanti:xslt))}
+=======
+                                {xslt:transform($item, concat($ahn_commons_html:url_base, $desanti:xslt))}
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                             </article>
                     }</section>
                     
@@ -240,7 +278,11 @@ return
                                 else <section>{let $item := db:open("desanti")//*[@xml:id=$value]
                                         return 
                                         (<h1>{$item//*:titleStmt/*:title/text()}</h1>,
+<<<<<<< HEAD
                                         <div>{xslt:transform($item//*:text, concat($ahn_commons:url_base, $desanti:xslt))}</div>)
+=======
+                                        <div>{xslt:transform($item//*:text, concat($ahn_commons_html:url_base, $desanti:xslt))}</div>)
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                                         }</section>
 
 
@@ -296,12 +338,20 @@ return
                     case "a-propos" return  
                     <section>{
                                 (<h1>À propos</h1>,
+<<<<<<< HEAD
                                 xslt:transform(db:open("desanti")//*[@xml:id='DST']/*:teiHeader//*:encodingDesc//*:editorialDecl, concat($ahn_commons:url_base, $desanti:xslt)))
+=======
+                                xslt:transform(db:open("desanti")//*[@xml:id='DST']/*:teiHeader//*:encodingDesc//*:editorialDecl, concat($ahn_commons_html:url_base, $desanti:xslt)))
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                      }</section>
                     case "mentions-legales" return  
                     <section>{
                             (<h1>Mentions légales</h1>,
+<<<<<<< HEAD
                             xslt:transform(db:open("desanti")//*[@xml:id='DST']/*:teiHeader//*:publicationStmt//*:availability, concat($ahn_commons:url_base, $desanti:xslt)))
+=======
+                            xslt:transform(db:open("desanti")//*[@xml:id='DST']/*:teiHeader//*:publicationStmt//*:availability, concat($ahn_commons_html:url_base, $desanti:xslt)))
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                     }</section>
                     case "credits" return  
                     <section>{
@@ -312,15 +362,24 @@ return
                                 let $resp := $respStmt/*:resp
                                 group by $resp
                                 return (<h2>{$resp}</h2>,
+<<<<<<< HEAD
                                             for $name in $respStmt/*:name return xslt:transform($name, concat($ahn_commons:url_base, $desanti:xslt))))
+=======
+                                            for $name in $respStmt/*:name return xslt:transform($name, concat($ahn_commons_html:url_base, $desanti:xslt))))
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                         
                    
                     }</section>
                     case "contacts" return  
                     <section>{
                         (<h1>Contacts</h1>,
+<<<<<<< HEAD
                         xslt:transform(db:open("desanti")//*[@xml:id='DST']/*:teiHeader//*:publicationStmt//*:authority, concat($ahn_commons:url_base, $desanti:xslt)),
                         xslt:transform(db:open("desanti")//*[@xml:id='DST']/*:teiHeader//*:publicationStmt//*:address, concat($ahn_commons:url_base, $desanti:xslt)))     
+=======
+                        xslt:transform(db:open("desanti")//*[@xml:id='DST']/*:teiHeader//*:publicationStmt//*:authority, concat($ahn_commons_html:url_base, $desanti:xslt)),
+                        xslt:transform(db:open("desanti")//*[@xml:id='DST']/*:teiHeader//*:publicationStmt//*:address, concat($ahn_commons_html:url_base, $desanti:xslt)))     
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                     }</section>
 
 
@@ -363,8 +422,13 @@ return
 :)
                         case "home" return 
                         <nav>
+<<<<<<< HEAD
                         <p>Sur ce site sont publiées progressivement les valorisations numériques de l archive Desanti : catalogue des notices, transcriptions et facsimilés de manuscrits, dossiers documentaires consacrés à diverses thématiques, dictionnaire pour éclairer les concepts forgés ou investis par Desanti...</p>
                         <p>La conservation de l archive physique est assurée par l IMEC : 
+=======
+                        <p>Sur ce site sont publiées progressivement les valorisations numériques de l'archive Desanti : catalogue des notices, transcriptions et facsimilés de manuscrits, dossiers documentaires consacrés à diverses thématiques, dictionnaire pour éclairer les concepts forgés ou investis par Desanti...</p>
+                        <p>La conservation de l'archive physique est assurée par l'IMEC : 
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                         <a title="Notice IMEC du fonds Desanti (cote DST)" href="http://www.imec-archives.com/fonds/desanti-jean-toussaint/">Fonds Jean-Toussaint Desanti (1914-2002)</a>
                         <a title="Institut Mémoires de l’édition contemporaine (IMEC)" href="http://www.imec-archives.com/"><img title="IMEC logo" src="http://www.imec-archives.com/wp-content/themes/imec/images/imec_logo_print.png" /></a>
                            </p>
@@ -427,7 +491,11 @@ return
                                 return <p>{$item//text()}</p>
                                 }
                                 <p>
+<<<<<<< HEAD
                                 <a title="Lire la notice de la pièce n°{$value}" href="/desanti/catalogue/{$value}"><img class="icone" alt="Lire la notice de la pièce n°{$value}" src="http://archive.desanti.huma-num.fr/static/img/ead.jpg"/></a>
+=======
+                                <a title="Lire la notice de la pièce n°{$value}" href="/desanti/catalogue/{$value}"><img class="icone" alt="Lire la notice de la pièce n°{$value}" src="/static/img/ead.jpg"/></a>
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                                 </p>
                                 </span>
                                 
@@ -501,7 +569,11 @@ return
                              <p>
                             {
                             for $item in db:open("desanti")//*:TEI[@xml:id = "DST-dictionnaire"]//*:div/*:p/*:list/*:item[@xml:id=$value]
+<<<<<<< HEAD
                             return xslt:transform($item, concat($ahn_commons:url_base, $desanti:xslt))
+=======
+                            return xslt:transform($item, concat($ahn_commons_html:url_base, $desanti:xslt))
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                             }
                             </p>
                             </div>
@@ -567,14 +639,23 @@ declare function desanti:display-notices($collection) {
                        <td>{string($item/*:did/*:unitdate/@normal)}</td>
                        <td>
                        {let $detail := 
+<<<<<<< HEAD
                        (: Notice détaillée : l item <c/> contient au moins un autre enfant en plus de <did/> :)
                        if($item/*[local-name()="scopecontent"]) then <a  title="Lire la notice détaillée" href="/desanti/catalogue/{$notice-id}">EAD</a>
+=======
+                       (: Notice détaillée : l'item <c/> contient au moins un autre enfant en plus de <did/> :)
+                       if($item/*[local-name()='scopecontent']) then <a  title="Lire la notice détaillée" href="/desanti/catalogue/{$notice-id}">EAD</a>
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                        else ''
                        return $detail
                        }</td>
                        <td>{for $tei in db:open("desanti")/*:TEI[contains(@xml:id, concat($notice-id, "-TEI"))]
                                return  
+<<<<<<< HEAD
                                if ($tei//*:availability[@status="free"]) then <a  title="Lire la transcription" href="/desanti/transcriptions/{$notice-id}">⚐ TEI</a>
+=======
+                               if ($tei//*:availability[@status='free']) then <a  title="Lire la transcription" href="/desanti/transcriptions/{$notice-id}">⚐ TEI</a>
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                                else <span title="Accès restreint">⚑ TEI</span>
                                }
                       </td>
@@ -597,7 +678,11 @@ declare function desanti:display-tags($collection, $dataType, $mode){
       group by $term
       order by $term collation "?lang=fr"
       let $occurrences := count(
+<<<<<<< HEAD
         ft:search("desanti", $term)/..[local-name() = $tag][
+=======
+        ft:search('desanti', $term)/..[local-name() = $tag][
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
           ancestor::*:ead/
           parent::document-node()
         ][text() = $term]
@@ -629,10 +714,17 @@ declare function desanti:footer($params){
 <footer id="footer">
               <ul class="footer-logo">
                 <li>
+<<<<<<< HEAD
                   <a title="Atelier des Humanités Numériques" href="http://ahn.ens-lyon.fr"><img src="http://archive.desanti.huma-num.fr/static/img/logo_AHN_sm_blanc.png" alt="Logo de l’AHN"/></a>
                 </li>
                 <li>
                   <a title="ENS de Lyon" href="http://www.ens-lyon.fr"><img src="http://archive.desanti.huma-num.fr/static/img/logo_ENS_sm_blanc.png" alt="Logo de l’ENS de Lyon"/></a>
+=======
+                  <a title="Atelier des Humanités Numériques" href="http://ahn.ens-lyon.fr"><img src="/static/img/logo_AHN_sm_blanc.png" alt="Logo de l’AHN"/></a>
+                </li>
+                <li>
+                  <a title="ENS de Lyon" href="http://www.ens-lyon.fr"><img src="/static/img/logo_ENS_sm_blanc.png" alt="Logo de l’ENS de Lyon"/></a>
+>>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
                 </li>
               </ul>
               <div id="footer-text">
