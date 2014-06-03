@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License along with Syn
 If not, see <http://www.gnu.org/licenses/>
 :)
     
-<<<<<<< HEAD:webapp/restxq/synopsx.xqm
+
 module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
 
 import module namespace ahn_commons = 'http://ahn.ens-lyon.fr/ahn_commons' at 'ahn_commons.xqm';
@@ -111,14 +111,7 @@ let $config := <configuration xml:id="{$project_name}">
                </configuration>
                return db:add('config', $config, $project_name ||".xml"))
 };
-=======
-module namespace xhtml = 'http://ahn.ens-lyon.fr/xhtml';
->>>>>>> c89405c1311497895c480d0e8c13f70a821d6844:repo/fr/ens-lyon/ahn/xhtml.xqm
 
-
-
-
-<<<<<<< HEAD:webapp/restxq/synopsx.xqm
 
 declare function synopsx:notFound($params) {
 <html>
@@ -310,9 +303,5 @@ declare function synopsx:footer($params){
   };
   
  
-    
-=======
-   
->>>>>>> c89405c1311497895c480d0e8c13f70a821d6844:repo/fr/ens-lyon/ahn/xhtml.xqm
-    
+ 
    

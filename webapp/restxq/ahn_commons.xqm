@@ -20,7 +20,7 @@ declare function ahn_commons:head($params){
         <meta name="author" content="Atelier des Humanités Numériques, ENS de Lyon, France" />
         
         <!-- Bootstrap core CSS -->
-        <link href="{concat($ahn_commons:url_base, '/static/dist/css/bootstrap.min.css')}" rel="stylesheet" />
+        <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
         <link href="{concat($ahn_commons:url_base, '/static/css/ahn.css')}" rel="stylesheet" />
 
         <!-- CSS spécifiques au corpus -->

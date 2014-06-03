@@ -19,12 +19,8 @@ If not, see <http://www.gnu.org/licenses/>
 
 module namespace webapp = 'http://ahn.ens-lyon.fr/webapp';
 
-<<<<<<< HEAD
 import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx' at 'synopsx.xqm';
 
-=======
-import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
->>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
 
 (: These five functions analyse the given path and retrieve the data :)
 declare %restxq:path("")
@@ -98,7 +94,7 @@ function webapp:index($project, $dataType, $value, $option) {
 
 (: Main function, decides what to do wether config data and database already exist or not for this project :)
 declare function webapp:main($params){
-<<<<<<< HEAD
+
     let $project := map:get($params,"project")
     return
    
@@ -114,10 +110,7 @@ declare function webapp:main($params){
             </body>
             </html> 
     
-=======
->>>>>>> c89405c1311497895c480d0e8c13f70a821d6844
-    
-   synopsx:get-function("html",$params,"xhtml")($params)
+
  
 };
 
