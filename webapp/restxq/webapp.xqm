@@ -19,8 +19,9 @@ If not, see <http://www.gnu.org/licenses/>
 
 module namespace webapp = 'http://ahn.ens-lyon.fr/webapp';
 
-import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
-import module namespace  xhtml = 'http://ahn.ens-lyon.fr/xhtml';
+import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx' at 'synopsx.xqm';
+
+
 (: These five functions analyse the given path and retrieve the data :)
 declare %restxq:path("")
         %output:method("xhtml")
@@ -99,11 +100,11 @@ declare function webapp:main($params){
     if(db:exists('config')) then synopsx:function-lookup("html",$project,"xhtml")($params) 
     
     else <html>
-            {xhtml:head($params)}
+            {synopsx:head($params)}
             <body>
-            {xhtml:header($params)}
+            {synopsx:header($params)}
             <div id="container" class="container">
-            <a href="/synopsx/admin/initialize">Please initialize Synopsx</a>{xhtml:footer($params)}
+            <a href="/synopsx/admin/initialize">Please initialize Synopsx</a>{synopsx:footer($params)}
             </div>
             </body>
             </html> 
