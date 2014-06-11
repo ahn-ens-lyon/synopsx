@@ -2,7 +2,7 @@
 This file is part of SynopsX.
     created by AHN team (http://ahn.ens-lyon.fr)
     release 0.1, 2014-01-28
-    
+
 SynopsX is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -10,80 +10,80 @@ the Free Software Foundation, either version 3 of the License, or
 
 SynopsX is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with SynopsX.  
+You should have received a copy of the GNU General Public License along with SynopsX.
 If not, see <http://www.gnu.org/licenses/>
 :)
-    
+
 
 module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
 
 import module namespace ahn_commons = 'http://ahn.ens-lyon.fr/ahn_commons' at 'ahn_commons.xqm';
-import module namespace desanti = 'http://ahn.ens-lyon.fr/desanti' at 'desanti.xqm';
+
 
 (:import module namespace xhtml = 'http://ahn.ens-lyon.fr/xhtml' at 'xhtml.xqm';
 import module namespace oai = 'http://ahn.ens-lyon.fr/oai' at 'oai.xqm';:)
 
-(: This function checks whether there is a customization of the generic-templating function. 
+(: This function checks whether there is a customization of the generic-templating function.
 By default, synopsX function is called. :)
 declare function synopsx:function-lookup($function_name, $project_name, $output_type){
- 
-  
-  let $function := 
-       
-  
-  
+
+
+  let $function :=
+
+
+
         (: Checks if the specified output type has been assigned to a specific xqm module namespace for this project.
         This information stands in the project_name.xml file in the "config" db :)
         let $ns := string(db:open('config')//*[@xml:id=$project_name]//output[@name=$output_type]/@value)
         let $specific := if($ns = '') then () else function-lookup(xs:QName($ns || ":" || $function_name),1)
-       
+
         (:   let $uri := $ns || '.xqm'
               for $f in inspect:functions($uri)
               where local-name-from-QName(function-name($f)) = $function_name
               return $f():)
-              
+
         (: Check if the module declares a parent module :)
         let $parent_module := string(db:open('config')//*[@xml:id=$project_name]//parent[1]/@value)
-        
+
         (: Checks if the declared parent module has a customization of the generic-templating function :)
          (:TODO : make the inheritage process recursive :)
         let $parent := if ($parent_module = '') then ()
                 else function-lookup(xs:QName(db:open('config')//*[@xml:id=$parent_module]//output[@name=$output_type]/@value || ":" || $function_name),1)
         let $generic := function-lookup(xs:QName(db:open('config')//*[@xml:id='synopsx']//output[@name=$output_type]/@value ||":" || $function_name),1)
-  
+
         let $f :=
             if (not(empty($specific))) then $specific
             else if (not(empty($parent))) then $parent
             else if  (not(empty($generic))) then  $generic
             else function-lookup(xs:QName("xhtml:notFound"),1)
         return $f
-        
-     
-       
-     
-   
-     
+
+
+
+
+
+
      return $function
 };
 
 
 
 declare %restxq:path("synopsx/admin/initialize")
-updating function synopsx:initialize() { 
+updating function synopsx:initialize() {
             (if(db:exists('config')) then () else db:create('config'),
-            db:output(<restxq:redirect>/synopsx/admin/config</restxq:redirect>)) 
+            db:output(<restxq:redirect>/synopsx/admin/config</restxq:redirect>))
 };
 
 
 declare %restxq:path("synopsx/admin/config")
         %output:method("xml")
           %output:omit-xml-declaration("yes")
-updating function synopsx:db-config() { 
+updating function synopsx:db-config() {
 let $config := <configuration xml:id="synopsx">
-                    <output name="xhtml" value="xhtml"/>
+                    <output name="xhtml" value="synopsx"/>
                     <output name="oai" value="oai"/>
                </configuration>
  return (db:add("config", $config, "synopsx.xml"),
@@ -99,13 +99,13 @@ let $config := <configuration xml:id="synopsx">
 declare %restxq:path("{$project_name}/admin/config")
         %output:method("xml")
           %output:omit-xml-declaration("yes")
-updating function synopsx:db-config($project_name) { 
+updating function synopsx:db-config($project_name) {
 (if (not(db:exists($project_name))) then db:create($project_name) else (),
 let $config := <configuration xml:id="{$project_name}">
                 <!--
                 <parent value="here the namespace of the xqm module your project inherits" />
                 <output name="xhtml" value="here the namespace of your xqm module dedicated to xquery functions for xhtml "/>
-                
+
                 <output name="rdf" value="here the namespace of your xqm module dedicated to xquery functions for rdf"/>
                 <output name="oai" value="here the namespace of your xqm module dedicated to xquery functions for oai"/>-->
                </configuration>
@@ -135,7 +135,7 @@ Les paramètres donnés étaient :
 
 
 (: Default html root tag html :)
-declare function synopsx:html($params){ 
+declare function synopsx:html($params){
     <html lang="fre">
       { synopsx:function-lookup("head",map:get($params,"project"),"xhtml")($params)
        ,synopsx:function-lookup("body",map:get($params,"project"),"xhtml")($params)
@@ -149,26 +149,26 @@ declare function synopsx:html($params){
 declare function synopsx:head($params){
   <head>
         <title>{map:get($params,"project")}</title>
-        
+
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content="Synopsx AHN. Utilise BaseX et RESTXQ" />
         <meta name="author" content="Atelier des Humanités Numériques, ENS de Lyon, France" />
-        
+
         <!-- Bootstrap core CSS -->
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
-      
+
         <!-- CSS spécifiques au corpus -->
         {synopsx:function-lookup("css",map:get($params,"project"),"xhtml")($params)}
   </head>
 };
 
  declare function synopsx:css($params){
-  
+
         (: Add your own css in the /static directory of your webapp and call it here :)
         (:<link href="/static/css/mycss.css" rel="stylesheet" />:)
         ()
-  
+
   };
 
 (: Default html body tag :)
@@ -187,13 +187,13 @@ declare function synopsx:body($params){
 declare function synopsx:header($params){
    let $project := map:get($params,"project")
    return switch ($project)
-   
+
    case "synopsx" return
    <header>
  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
                     <div class="navbar container">{$project}</div>
                 </div>
- 
+
         <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
@@ -203,12 +203,12 @@ declare function synopsx:header($params){
       </div>
     </div>
     </header>
-    default return 
+    default return
      <header>
  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
                     <div class="navbar container">{$project}</div>
                 </div>
- 
+
         <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
@@ -218,7 +218,7 @@ declare function synopsx:header($params){
       </div>
     </div>
     </header>
-};   
+};
 
 
 
@@ -253,8 +253,8 @@ declare function synopsx:container($params){
         </div>
       </div>
      <!-- /container --></div>
-    
-    default return 
+
+    default return
      <div class="container">
       <!-- Example row of columns -->
       <div class="row">
@@ -277,7 +277,7 @@ declare function synopsx:container($params){
           <p>AHN libs</p>
           <p>Partenaire libs</p>
           <p>Partenaire libs</p>
-          
+
         </div>
       </div>
     <!-- /container --> </div>
@@ -297,11 +297,7 @@ declare function synopsx:footer($params){
 
 
   declare function synopsx:scripts_js($params){
-  
+
   (<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>,
     <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>)
   };
-  
- 
- 
-   
