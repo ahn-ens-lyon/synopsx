@@ -3,7 +3,7 @@ module namespace ahn_commons = 'http://ahn.ens-lyon.fr/ahn_commons';
 import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx' at 'synopsx.xqm';
 
 
-(:declare variable $ahn_commons:url_base := 'http://archive.desanti.huma-num.fr';:)
+
 declare variable $ahn_commons:xslt := "/static/xsl/tei2html5.xsl";
 declare variable $ahn_commons:default_ns := "http://ahn-basex.fr/ahn_commons";
 
