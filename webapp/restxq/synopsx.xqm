@@ -100,7 +100,7 @@ declare %restxq:path("{$project_name}/admin/config")
         %output:method("xml")
           %output:omit-xml-declaration("yes")
 updating function synopsx:db-config($project_name) {
-if (not(db:exists("config", $project_name ||".xml"))) then
+(if (not(db:exists("config", $project_name ||".xml"))) then
   let $config := <configuration xml:id="{$project_name}">
                 <!--
                 <parent value="here the namespace of the xqm module your project inherits" />
@@ -110,7 +110,8 @@ if (not(db:exists("config", $project_name ||".xml"))) then
                 <output name="oai" value="here the namespace of your xqm module dedicated to xquery functions for oai"/>-->
                </configuration>
   return db:add('config', $config, $project_name ||".xml")
-else ()
+else (),
+db:output(<restxq:redirect>/{$project_name}</restxq:redirect>))
 };
 
 
