@@ -1,0 +1,4 @@
+<configuration xml:id="synopsx">
+  <output name="xhtml" value="xhtml"/>
+  <output name="oai" value="oai"/>
+</configuration>
