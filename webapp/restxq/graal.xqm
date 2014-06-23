@@ -20,17 +20,41 @@ If not, see <http://www.gnu.org/licenses/>
 module namespace graal = 'http://ahn.ens-lyon.fr/graal';
 declare namespace tei = "http://www.tei-c.org/ns/1.0";
 declare namespace me = "http://www.menota.org/ns/1.0";
-import module namespace synopsx_html = 'http://ahn.ens-lyon.fr/synopsx_html' at 'synopsx_html.xqm';
+import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx' at 'synopsx.xqm';
 
-declare function graal:html($params) {
-<html>
-   <head>
-      <title>
-      {db:open(map:get($params,"project"))//tei:fileDesc/tei:titleStmt/tei:title[1]/text()}
-      </title>
-   </head>
-<body>
-    {db:open(map:get($params,"project"))//tei:w//me:norm}
-</body>
-</html>
+
+declare function graal:paragraph($params){
+<div id='content' type='paragraph'>
+{let $paragraph := db:open(map:get($params,"project"))//tei:p[@n=map:get($params,"value")]
+return 
+$paragraph
+}
+</div>
+
 };
+
+
+declare function graal:content($params) {
+if (map:contains($params, 'dataType'))
+then 
+graal:paragraph($params)
+else
+
+<div id="content" type='all'>
+    {let $text := db:open(map:get($params,"project"))//tei:text
+for $p in $text//tei:p 
+return 
+<p>
+{$p}
+</p>
+
+}
+</div>
+};
+
+
+  declare function graal:css($params){
+  <div id="css">
+        <link href="http://txm.ish-lyon.cnrs.fr/txm/css/tei-graal.css" rel="stylesheet" />
+  </div>
+  };

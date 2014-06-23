@@ -22,6 +22,7 @@ module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
 
 import module namespace ahn_commons = 'http://ahn.ens-lyon.fr/ahn_commons' at 'ahn_commons.xqm';
 import module namespace myproject = 'http://ahn.ens-lyon.fr/myproject' at 'myproject.xqm';
+import module namespace graal = 'http://ahn.ens-lyon.fr/graal' at 'graal.xqm';
 
 (:import module namespace xhtml = 'http://ahn.ens-lyon.fr/xhtml' at 'xhtml.xqm';
 import module namespace oai = 'http://ahn.ens-lyon.fr/oai' at 'oai.xqm';:)

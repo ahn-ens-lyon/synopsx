@@ -21,7 +21,7 @@ declare function ahn_commons:head($params){
 
         <!-- Bootstrap core CSS -->
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="/static/css/ahn.css" rel="stylesheet" />
+        <link href="http://archive.desanti.huma-num.fr/static/css/ahn.css" rel="stylesheet" />
 
         <!-- CSS spécifiques au corpus -->
         {synopsx:function-lookup("css",map:get($params,"project"),"xhtml")($params)}
@@ -91,7 +91,7 @@ declare function ahn_commons:header($params){
                   <a href="/items/advanced-search">Advanced Search</a>
               </div> <!-- end search -->
               <div id="site-title">
-                  <a href="/"><img src="/static/img/logo_AHN.png" title="Kit AHN"/></a>
+                  <a href="/"><img src="http://archive.desanti.huma-num.fr/static/img/logo_AHN.png" title="Kit AHN"/></a>
                   <div id="logo-partenaire-principal">
                     <a href="http://www.ens-lyon.eu" title="Vers le site de l'ENS de Lyon" target="_blank">
                     <img src="http://morand.ens-lyon.fr/archive/theme_uploads/logo_Partenaire.png" width="121" height="41" alt="Logo du partenaire principal"/>
@@ -105,7 +105,7 @@ declare function ahn_commons:header($params){
 
 declare function ahn_commons:header-image($params){
 	<div id="header-image">
-            <img src="/static/img/bandeau_AHN.png" />
+            <img src="http://archive.desanti.huma-num.fr/static/img/bandeau_AHN.png" />
           </div>
 };
 
@@ -222,8 +222,8 @@ declare function ahn_commons:footer($params){
 
         <ul class="footer-logo">
 
-          <li><img src="/static/img/logo_AHN_sm_blanc.png" alt="Logo de l’AHN"/></li>
-          <li><img src="/static/img/logo_ENS_sm_blanc.png" alt="Logo de l’ENS de Lyon"/></li>
+          <li><img src="http://archive.desanti.huma-num.fr/static/img/logo_AHN_sm_blanc.png" alt="Logo de l’AHN"/></li>
+          <li><img src="http://archive.desanti.huma-num.fr/static/img/logo_ENS_sm_blanc.png" alt="Logo de l’ENS de Lyon"/></li>
 
         </ul>
 
@@ -237,6 +237,6 @@ declare function ahn_commons:footer($params){
 
   declare function ahn_commons:css($params){
   <div id="css">
-        <link href="/static/css/ahn.css" rel="stylesheet" />
+        <link href="http://archive.desanti.huma-num.fr/static/css/ahn.css" rel="stylesheet" />
   </div>
   };
