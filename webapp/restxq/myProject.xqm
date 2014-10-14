@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License along with Syn
 If not, see <http://www.gnu.org/licenses/>
 :)
 
-module namespace myproject = 'http://ahn.ens-lyon.fr/myproject';
+module namespace myProject = 'http://ahn.ens-lyon.fr/myProject';
 
 import module namespace webapp = 'http://ahn.ens-lyon.fr/webapp' at 'webapp.xqm';
 

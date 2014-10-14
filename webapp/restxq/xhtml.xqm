@@ -18,7 +18,7 @@ If not, see <http://www.gnu.org/licenses/>
 :)
     
 module namespace xhtml = 'http://ahn.ens-lyon.fr/xhtml';
-import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
+import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx' at 'synopsx.xqm';
 
 
 
