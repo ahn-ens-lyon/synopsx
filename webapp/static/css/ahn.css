@@ -1,16 +1,16 @@
 @charset "utf-8";
 /* CSS Document
-/* Styles définits pour le Kit AHN Full-XML, en surcharge d'une feuille de style Bootstrap
+/* Styles dÃ©finits pour le Kit AHN Full-XML, en surcharge d'une feuille de style Bootstrap
 /* Sommaire
-	- Styles génériques pour des ecrans de toutes les tailles
-	- Styles pour les écrans d'un max de 480px
+	- Styles gÃ©nÃ©riques pour des ecrans de toutes les tailles
+	- Styles pour les Ã©crans d'un max de 480px
 	- Styles pour ecrans d'au moins 768px de largeur et d'un maximum de 767px
 	- Styles pour ecrans d'au moins 960px ou 958px et de largeur et d'un maximum de 958px
 	- Styles pour ecrans d'au moins 1200px
 	- Styles pour ecrans d'au moins 1440px
 */
 
-/* Styles génériques pour des ecrans de toutes les tailles  */
+/* Styles gÃ©nÃ©riques pour des ecrans de toutes les tailles  */
 	html, body, div, span, applet, object, iframe, 
 	h1, h2, h3, h4, h5, h6, p, blockquote, pre, 
 	a, abbr, acronym, address, big, cite, code, 
@@ -50,7 +50,7 @@
 	  	
 	  	margin:0 auto;
 	}
-	/* Entêtes */
+	/* EntÃªtes */
 	#header {
 		margin-bottom:0; 
   		width:100%;
@@ -664,7 +664,7 @@
 /* ******** ******* ****** ******* ******* ****** ******* ******** ***** */
 
 
-/* Styles pour les écrans d'un max de 480px */
+/* Styles pour les Ã©crans d'un max de 480px */
   @media (max-device-width:480px) {
 	  body {background:#fff; font-size: 100%; padding:0; margin:0; width:auto;}
 	  
@@ -844,7 +844,7 @@
 		#primary-nav li.active {
 			background:#FFFFFF;
 			padding-top: 1em;
-			padding-bottom: 0.5em;	
+			padding-bottom: 1.5em;	
 			box-shadow: 5px 0px 12px #555; /* CSS3 */
 		}
 	      
