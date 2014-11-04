@@ -19,7 +19,7 @@ If not, see <http://www.gnu.org/licenses/>
 
 module namespace webapp = 'http://ahn.ens-lyon.fr/webapp';
 
-import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx' at 'synopsx.xqm';
+import module namespace synopsx.tei = 'synopsx.tei';
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ; (: déclaration pour test :)
 
@@ -94,21 +94,14 @@ function webapp:index($project, $dataType, $value, $option) {
 
 declare function webapp:main($params){
 
-    let $project := map:get($params,'project')
-    return
+    (:let $project := map:get($params,'project'):)
+    'hello'
+    
+};
 
-    if(db:exists('config')) then synopsx:function-lookup("html",$project,"xhtml")($params)
-
-    else <html>
-            <!--{synopsx:head($params)} -->
-            <body>
-            <!--{synopsx:header($params)}-->
-            <div id="container" class="container">
-            <a href="/synopsx/admin/initialize">Please initialize Synopsx</a>
-            <!--{synopsx:footer($params)}-->
-            </div>
-            </body>
-            </html>
+declare %restxq:path("/tei")
+function webapp:tei() {
+    synopsx.tei:listTitles()
 };
 
 
