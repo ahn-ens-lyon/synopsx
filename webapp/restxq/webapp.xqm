@@ -21,6 +21,8 @@ module namespace webapp = 'http://ahn.ens-lyon.fr/webapp';
 
 import module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx' at 'synopsx.xqm';
 
+declare namespace tei = 'http://www.tei-c.org/ns/1.0' ; (: déclaration pour test :)
+
 
 (: These five functions analyse the given path and retrieve the data :)
 declare %restxq:path("")
@@ -90,12 +92,9 @@ function webapp:index($project, $dataType, $value, $option) {
     return webapp:main($params)
 };
 
-
-
-(: Main function, decides what to do wether config data and database already exist or not for this project :)
 declare function webapp:main($params){
 
-    let $project := map:get($params,"project")
+    let $project := map:get($params,'project')
     return
 
     if(db:exists('config')) then synopsx:function-lookup("html",$project,"xhtml")($params)
@@ -110,7 +109,18 @@ declare function webapp:main($params){
             </div>
             </body>
             </html>
+};
 
 
+(:~
+ : resource function with content negociation (test)
+ :)
+ 
 
+declare %restxq:path("negociation")
+         %restxq:GET
+         %rest:produces("application/json")
+function webapp:negociation-get(){
+  db:open('gdp')//tei:head
+  
 };
