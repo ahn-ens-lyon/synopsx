@@ -19,9 +19,10 @@ If not, see <http://www.gnu.org/licenses/>
 
 module namespace webapp = 'http://ahn.ens-lyon.fr/webapp';
 
-import module namespace synopsx.tei = 'synopsx.tei';
+import module namespace synopsx.models.tei = 'synopsx.models.tei';
+import module namespace synopsx.views.html = 'synopsx.views.html';
 
-declare namespace tei = 'http://www.tei-c.org/ns/1.0' ; (: déclaration pour test :)
+declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: déclaration pour test :)
 
 
 (: These five functions analyse the given path and retrieve the data :)
@@ -99,9 +100,15 @@ declare function webapp:main($params){
     
 };
 
-declare %restxq:path("/tei")
+declare %restxq:path('/tei')
+
 function webapp:tei() {
-    synopsx.tei:listTitles()
+    let $titles := synopsx.models.tei:listTitles()
+    let $format := 'html' (: par défaut on produit du html:)
+    (:
+    : @TODO negociation de contenu
+    :)
+    return synopsx.views.html:render($titles)
 };
 
 
