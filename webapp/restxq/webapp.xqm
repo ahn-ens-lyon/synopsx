@@ -24,6 +24,7 @@ import module namespace synopsx.views.html = 'synopsx.views.html';
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: déclaration pour test :)
 
+declare variable $webapp:layout := '../repo/synopsx/templates/html.xml';
 
 (: These five functions analyse the given path and retrieve the data :)
 declare %restxq:path("")
@@ -103,12 +104,22 @@ declare function webapp:main($params){
 declare %restxq:path('/tei')
 
 function webapp:tei() {
-    let $titles := synopsx.models.tei:listTitles()
-    let $format := 'html' (: par défaut on produit du html:)
+    let $format as xs:string := 'html' (: par défaut on produit du html:)
+    let $content as map(*) := map {
+        'title' := synopsx.models.tei:title(),
+        'items' := synopsx.models.tei:listItems() 
+        
+      }
+    let $options as map(*) := map {
+          'mode' := 'short'  
+      }
+    let $layout as map(*) := map {
+          'layout' := $webapp:layout
+      }
     (:
     : @TODO negociation de contenu
     :)
-    return synopsx.views.html:render($titles)
+    return synopsx.views.html:render($content, $options, $layout)
 };
 
 
