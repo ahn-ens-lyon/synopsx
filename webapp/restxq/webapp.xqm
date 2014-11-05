@@ -24,7 +24,9 @@ import module namespace synopsx.views.html = 'synopsx.views.html';
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: déclaration pour test :)
 
-declare variable $webapp:layout := '../repo/synopsx/templates/html.xml';
+declare variable $webapp:layout := 
+  (: in future: file:base-dir() :)
+  file:parent(static-base-uri()) || '../../repo/synopsx/templates/html.xml';
 
 (: These five functions analyse the given path and retrieve the data :)
 declare %restxq:path("")
