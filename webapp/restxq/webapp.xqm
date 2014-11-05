@@ -19,8 +19,12 @@ If not, see <http://www.gnu.org/licenses/>
 
 module namespace webapp = 'http://ahn.ens-lyon.fr/webapp';
 
+import module namespace Session = "http://basex.org/modules/session";
+
 import module namespace synopsx.models.tei = 'synopsx.models.tei';
 import module namespace synopsx.views.html = 'synopsx.views.html';
+
+import module namespace G = "synopsx/globals";
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: déclaration pour test :)
 
@@ -40,7 +44,6 @@ function webapp:index() {
     }
    return webapp:main($params)
 };
-
 
 declare %restxq:path("{$project}")
         %output:method("xhtml")
@@ -86,6 +89,7 @@ declare %restxq:path("{$project}/{$dataType}/{$value}/{$option}")
         %output:omit-xml-declaration("no")
         %output:doctype-public("xhtml")
 function webapp:index($project, $dataType, $value, $option) {
+  
     let $params := map {
       "project" := $project,
       "dataType" := $dataType,
@@ -103,25 +107,131 @@ declare function webapp:main($params){
     
 };
 
-declare %restxq:path('/tei')
+declare
+  %rest:path('/create-user')
+  %output:method('html')
+function webapp:create-user() {
+  let $format as xs:string := 'html' (: par défaut on produit du html:)
+  let $content := map {
+    'title' := synopsx.models.tei:title(),
+    'items' := ()
+  }
+  let $options := map { }
+  let $layout := map {
+    'layout' := $webapp:layout
+  }
+  return synopsx.views.html:create-user($content, $options, $layout)
+};
 
-function webapp:tei() {
-    let $format as xs:string := 'html' (: par défaut on produit du html:)
-    let $content as map(*) := map {
-        'title' := synopsx.models.tei:title(),
-        'items' := synopsx.models.tei:listItems() 
-        
-      }
-    let $options as map(*) := map {
-          'mode' := 'short'  
-      }
-    let $layout as map(*) := map {
-          'layout' := $webapp:layout
-      }
-    (:
-    : @TODO negociation de contenu
-    :)
-    return synopsx.views.html:render($content, $options, $layout)
+declare
+  %rest:path('/list-users')
+  %rest:query-param('status', '{$status}')
+  %output:method('html')
+function webapp:list-user(
+  $status  as xs:string?
+) {
+  let $format as xs:string := 'html' (: par défaut on produit du html:)
+  let $content := map {
+    'status' := $status
+  }
+  let $options := map { }
+  let $layout := map {
+    'layout' := $webapp:layout
+  }
+  return synopsx.views.html:list-user($content, $options, $layout)
+};
+
+(:~
+ : Creates a new user and redirects to a list of users.
+ : @param $name user name
+ :)
+declare
+  %rest:path('/create-user/apply')
+  %rest:form-param('name', '{$name}')
+  %updating
+function webapp:create-user-apply(
+  $name  as xs:string
+) {
+  let $users := db:open('users')/users
+  let $exists := $users/user/@name = $name
+  return (
+    if($exists) then () else
+      let $user := <user name='{ $name }'/>
+      return insert node $user into db:open('users')/users,
+    db:output(
+      <rest:redirect>/list-users?status={
+        if($exists) then $G:USER-EXISTS else $G:OK
+      }</rest:redirect>)
+  )
+};
+
+(:~
+ : Deletes a user.
+ : @param $name user name
+ :)
+declare
+  %rest:path('/delete-user/apply')
+  %rest:query-param('name', '{$name}')
+  %updating
+function webapp:delete-user-apply(
+  $name  as xs:string
+) {
+  let $users := db:open('users')/users
+  let $user := $users/user[@name = $name]
+  return (
+    delete node $user,
+    db:output(
+      <rest:redirect>/list-users?status={
+        if($user) then $G:OK else $G:USER-UNKNOWN
+      }</rest:redirect>
+    )
+  )
+};
+
+declare
+  %rest:path('/tei')
+  %rest:query-param('status', '{$status}')
+  %output:method('html')
+function webapp:tei(
+  $status  as xs:string?
+) {
+  let $format as xs:string := 'html' (: par défaut on produit du html:)
+  let $content as map(*) := map {
+    'title' := synopsx.models.tei:title(),
+    'items' := synopsx.models.tei:listItems(),
+    'status':= $status
+  }
+  let $options as map(*) := map {
+        'mode' := 'short'  
+    }
+  let $layout as map(*) := map {
+        'layout' := $webapp:layout
+    }
+  (:
+  : @TODO negociation de contenu
+  :)
+  return synopsx.views.html:render($content, $options, $layout)
+};
+
+declare
+  %rest:path('/tei/select')
+  %rest:method('post')
+  %rest:form-param('items', '{$items}')
+  %rest:form-param('user' , '{$user}')
+function webapp:select(
+  $items  as xs:string*,
+  $user   as xs:string
+) {
+
+  let $xml :=
+    <selected>{
+      for $item in $items
+      return <item>{ $item }</item>
+    }</selected>
+  return Session:set("selected", $xml),
+  Session:set("user", $user),
+
+  <rest:redirect>/tei?status={ $G:OK }</rest:redirect>
 };
 
 

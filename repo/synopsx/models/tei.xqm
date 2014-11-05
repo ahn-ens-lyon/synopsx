@@ -17,6 +17,6 @@ declare function title() as element(){
   (db:open($synopsx.models.tei:db)//titleStmt/title)[1]
 }; 
  
-declare function listItems() as element()*{ 
+declare function listItems() as element()* { 
   db:open($synopsx.models.tei:db)//titleStmt/title
 };
