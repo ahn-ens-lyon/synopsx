@@ -23,6 +23,8 @@ module namespace synopsx = 'http://ahn.ens-lyon.fr/synopsx';
 import module namespace ahn_commons = 'http://ahn.ens-lyon.fr/ahn_commons' at 'ahn_commons.xqm';
 import module namespace myProject = 'http://ahn.ens-lyon.fr/myProject' at 'myProject.xqm';
 
+import module namespace ahn = 'http://ahn.ens-lyon.fr/ahn' at 'ahn.xqm';
+
 
 (: This function checks whether there is a customization of the generic-templating function.
 By default, synopsX function is called. :)
