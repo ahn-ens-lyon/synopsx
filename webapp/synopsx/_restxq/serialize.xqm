@@ -1,7 +1,7 @@
 (:~
  : Custom REST responses.
  :)
-module namespace webapp = 'http://ahn.ens-lyon.fr/webapp';
+module namespace serialize = 'http://ahn.ens-lyon.fr/serialize';
 
 import module namespace Request = "http://exquery.org/ns/request";
 
@@ -13,7 +13,7 @@ import module namespace Request = "http://exquery.org/ns/request";
 declare
   %rest:path("/mime")
   %rest:query-param("mime", "{$mime}", "application/xml")
-  function webapp:custom(
+  function serialize:custom(
     $mime  as xs:string
 ) {
   let $accept := trace(Request:header("Accept"), "Accept: ")
@@ -21,9 +21,9 @@ declare
   
 
   return if($mime = 'application/xml') then (
-    webapp:xml()
+    serialize:xml()
   ) else if($mime = 'application/json') then (
-    webapp:json()
+    serialize:json()
   ) else (
     error(xs:QName("UNKNOWN"), "Not supported, bad luck")
   )
@@ -35,15 +35,15 @@ declare
  :)
 declare
   %rest:path("/accept")
-  function webapp:custom(
+  function serialize:custom(
 ) {
   let $accept := Request:header("Accept")
   let $accepts := tokenize($accept, ',') !
                     replace(., ';.*', '')
   return if($accepts = 'application/xml') then (
-    webapp:xml()
+    serialize:xml()
   ) else if($accepts = 'application/json') then (
-    webapp:json()
+    serialize:json()
   ) else (
     error(xs:QName("UNKNOWN"), "Not supported, bad luck")
   )
@@ -56,7 +56,7 @@ declare
  :)
 declare
   %rest:error("UNKNOWN")
-  function webapp:error(
+  function serialize:error(
   ) {
   <xml>Not supported, sorry</xml>
 };
@@ -65,7 +65,7 @@ declare
  : This function returns a custom response, based on the specified mime type.
  : @return custom result
  :)
-declare %private function webapp:xml() {
+declare %private function serialize:xml() {
   <xml/>
 };
 
@@ -73,7 +73,7 @@ declare %private function webapp:xml() {
  : This function returns a custom response, based on the specified mime type.
  : @return custom result
  :)
-declare %private function webapp:json() {
+declare %private function serialize:json() {
   <rest:response>
     <output:serialization-parameters>
       <output:media-type value='application/json'/>
