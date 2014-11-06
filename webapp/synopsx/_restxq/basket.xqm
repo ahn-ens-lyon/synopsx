@@ -22,15 +22,26 @@ module namespace basket = 'http://ahn.ens-lyon.fr/basket';
 import module namespace webapp = 'http://ahn.ens-lyon.fr/webapp' at 'webapp.xqm';
 import module namespace Session = "http://basex.org/modules/session";
 
+<<<<<<< HEAD
 import module namespace synopsx.models.tei = 'synopsx.models.tei';
 import module namespace synopsx.views.htmlWrapping = 'synopsx.views.htmlWrapping';
 
 import module namespace G = "synopsx/globals";
+=======
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
+import module namespace synopsx.views.htmlWrapping = 'synopsx.views.htmlWrapping' at '../views/htmlWrapping.xqm';
+
+import module namespace G = "synopsx/globals" at '../globals.xqm';
+>>>>>>> 7d18bd36e197965a1ef6fd92bd293e64559b3066
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: déclaration pour test :)
 
 declare
+<<<<<<< HEAD
   %rest:path('/tei')
+=======
+  %rest:path('/basket')
+>>>>>>> 7d18bd36e197965a1ef6fd92bd293e64559b3066
   %rest:query-param('status', '{$status}')
   %output:method('html')
 function basket:tei(
@@ -55,7 +66,11 @@ function basket:tei(
 };
 
 declare
+<<<<<<< HEAD
   %rest:path('/tei/select')
+=======
+  %rest:path('/basket/select')
+>>>>>>> 7d18bd36e197965a1ef6fd92bd293e64559b3066
   %rest:method('post')
   %rest:form-param('items', '{$items}')
   %rest:form-param('user' , '{$user}')

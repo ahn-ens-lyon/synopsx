@@ -23,9 +23,15 @@ import module namespace webapp = 'http://ahn.ens-lyon.fr/webapp' at 'webapp.xqm'
 import module namespace Session = "http://basex.org/modules/session";
 
 
+<<<<<<< HEAD
 import module namespace synopsx.models.tei = 'synopsx.models.tei';
 import module namespace synopsx.views.htmlUsers = 'synopsx.views.htmlUsers';
 import module namespace G = "synopsx/globals";
+=======
+import module namespace synopsx.models.tei = 'synopsx.models.tei'  at '../models/tei.xqm';
+import module namespace synopsx.views.htmlUsers = 'synopsx.views.htmlUsers'  at '../views/htmlUsers.xqm';
+import module namespace G = "synopsx/globals"  at '../globals.xqm';
+>>>>>>> 7d18bd36e197965a1ef6fd92bd293e64559b3066
 
 
 
