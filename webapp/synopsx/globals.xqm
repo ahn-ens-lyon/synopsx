@@ -1,5 +1,15 @@
 module namespace G = "synopsx/globals";
 
+(: Webapp directory:)
+declare variable $G:HOME := file:base-dir();
+ (: file:parent(static-base-uri()) || '../../repo/synopsx/templates/html.xml'; :)
+
+
+declare variable $G:_RESTXQ := $G:HOME || '/_restxq';
+declare variable $G:MODELS :=  $G:HOME || '/models';
+declare variable $G:TEMPLATES :=  $G:HOME || '/templates';
+declare variable $G:VIEWS :=  $G:HOME || '/views';
+
 (:~ Status: everything ok. :)
 declare variable $G:OK := '1';
 (:~ Status: something failed. :)
