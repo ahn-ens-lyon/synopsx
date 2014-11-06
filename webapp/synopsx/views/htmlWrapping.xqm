@@ -7,10 +7,10 @@ declare namespace html = 'http://www.w3.org/1999/xhtml';
 declare function render($content, $options, $layout){
 	let $tmpl := fn:doc($layout('layout'))
   (: a supprimer après passage à xslt2:)
-  let $contentWrap := <tei:div>{$content('items')}</tei:div>
   return $tmpl update (
-    replace value of node .//html:div[@id='content'] with xslt:transform($contentWrap,'http://localhost:8984/static/xsl/tei2html5.xsl',$options),
-    replace value of node .//html:title with $content('title')
+    (: replace value of node .//html:div[@id='content'] with xslt:transform($contentWrap,'http://localhost:8984/static/xsl/tei2html5.xsl',$options), :)
+    insert node ($content('items')) into .//html:div[@id='content'],
+    replace node .//html:title with $content('title')
   )
 };
 

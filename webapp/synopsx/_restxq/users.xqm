@@ -40,7 +40,7 @@ function users:create-user() {
   }
   let $options := map { }
   let $layout := map {
-    'layout' := $webapp:layout
+    'layout' := $G:HOME || 'templates/html.xml'
   }
   return synopsx.views.htmlUsers:create-user($content, $options, $layout)
 };
@@ -58,7 +58,7 @@ function users:list-user(
   }
   let $options := map { }
   let $layout := map {
-    'layout' := $webapp:layout
+    'layout' := $G:HOME || 'templates/html.xml'
   }
   return synopsx.views.htmlUsers:list-user($content, $options, $layout)
 };
