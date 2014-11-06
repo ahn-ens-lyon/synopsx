@@ -1,3 +1,4 @@
+module namespace webapp = 'http://ahn.ens-lyon.fr/webapp';
 (:
 This file is part of SynopsX.
     created by AHN team (http://ahn.ens-lyon.fr)
@@ -17,20 +18,20 @@ You should have received a copy of the GNU General Public License along with Syn
 If not, see <http://www.gnu.org/licenses/>
 :)
 
-module namespace webapp = 'http://ahn.ens-lyon.fr/webapp';
+import module namespace G = "synopsx/globals" at '../globals.xqm';
 
 import module namespace Session = "http://basex.org/modules/session";
 
-import module namespace synopsx.models.tei = 'synopsx.models.tei';
-import module namespace synopsx.views.htmlWrapping = 'synopsx.views.htmlWrapping';
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
+import module namespace synopsx.views.htmlWrapping = 'synopsx.views.htmlWrapping' at '../views/htmlWrapping.xqm';
 
-import module namespace G = "synopsx/globals";
+
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: déclaration pour test :)
 
 declare variable $webapp:layout := 
   (: in future: file:base-dir() :)
-  file:parent(static-base-uri()) || '../../repo/synopsx/templates/html.xml';
+  file:parent(static-base-uri()) || '../templates/html.xml';
 
 (: These five functions analyse the given path and retrieve the data :)
 declare %restxq:path("")
@@ -103,7 +104,7 @@ function webapp:index($project, $dataType, $value, $option) {
 declare function webapp:main($params){
 
     (:let $project := map:get($params,'project'):)
-    'hello'
+    $G:HOME
     
 };
 

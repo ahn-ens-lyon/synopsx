@@ -22,15 +22,15 @@ module namespace basket = 'http://ahn.ens-lyon.fr/basket';
 import module namespace webapp = 'http://ahn.ens-lyon.fr/webapp' at 'webapp.xqm';
 import module namespace Session = "http://basex.org/modules/session";
 
-import module namespace synopsx.models.tei = 'synopsx.models.tei';
-import module namespace synopsx.views.htmlWrapping = 'synopsx.views.htmlWrapping';
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
+import module namespace synopsx.views.htmlWrapping = 'synopsx.views.htmlWrapping' at '../views/htmlWrapping.xqm';
 
-import module namespace G = "synopsx/globals";
+import module namespace G = "synopsx/globals" at '../globals.xqm';
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: déclaration pour test :)
 
 declare
-  %rest:path('/tei')
+  %rest:path('/basket')
   %rest:query-param('status', '{$status}')
   %output:method('html')
 function basket:tei(
@@ -55,7 +55,7 @@ function basket:tei(
 };
 
 declare
-  %rest:path('/tei/select')
+  %rest:path('/basket/select')
   %rest:method('post')
   %rest:form-param('items', '{$items}')
   %rest:form-param('user' , '{$user}')

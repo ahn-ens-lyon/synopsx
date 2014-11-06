@@ -2,7 +2,7 @@ module namespace htmlUsers = 'synopsx.views.htmlUsers';
 
 import module namespace Session = "http://basex.org/modules/session";
 
-import module namespace G = "synopsx/globals";
+import module namespace G = "synopsx/globals" at '../globals.xqm';
 
 
 

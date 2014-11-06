@@ -14,9 +14,9 @@ declare variable $synopsx.models.tei:db := "hyperdonat";
  : TODO entièrement
  :)
 declare function title() as element(){ 
-  (db:open($synopsx.models.tei:db)//titleStmt/title)[1]
+  (db:open($synopsx.models.tei:db)//*:titleStmt/*:title)[1]
 }; 
  
 declare function listItems() as element()* { 
-  db:open($synopsx.models.tei:db)//titleStmt/title
+  db:open($synopsx.models.tei:db)//*:titleStmt/*:title
 };
