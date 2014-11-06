@@ -7,7 +7,7 @@ declare default function namespace 'synopsx.models.tei';
 
 declare default element namespace 'http://www.tei-c.org/ns/1.0'; 
 
-declare variable $synopsx.models.tei:db := "hyperdonat";
+declare variable $synopsx.models.tei:db := "gdpTei";
 
 (:~
  : tei function, decides what to do wether config data and database already exist or not for this project
