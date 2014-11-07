@@ -43,9 +43,9 @@ declare function to-html(
   map:for-each($contents, function($key, $content) {
     fn:doc($template) update (
       for $text in .//text()
-      where fn:starts-with($text, '[')
-        and fn:ends-with($text, ']')
-      let $key := fn:replace($text, '\[|\]', '')
+      where fn:starts-with($text, '{')
+        and fn:ends-with($text, '}')
+      let $key := fn:replace($text, '\{|\}', '')
       let $value := $content($key)
       return replace node $text with $value
     )
