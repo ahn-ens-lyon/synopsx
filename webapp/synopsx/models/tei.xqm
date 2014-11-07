@@ -8,7 +8,7 @@ declare default function namespace 'synopsx.models.tei';
 
 declare default element namespace 'http://www.tei-c.org/ns/1.0'; 
 
-declare variable $synopsx.models.tei:db := "gdpTei";
+declare variable $synopsx.models.tei:db := "hyperdonat";
 
 (:~
  : tei function, decides what to do wether config data and database already exist or not for this project
@@ -23,24 +23,32 @@ declare function synopsx.models.tei:listItems() as element()* {
 };
 
 (:~
- : this function creates a map with a map for each corpus items
+ : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function synopsx.models.tei:listCorpus() {
-  let $corpus := db:open($synopsx.models.tei:db)//TEI/teiHeader
-  let $content as map(*) := {'title' : 'Liste des corpus'}
-  for $item in $corpus
-    let $content := map:put($content, ($item//idno)[1] , corpusHeader($item))
-  return $content
+  let $corpus := db:open($synopsx.models.tei:db)
+  let $meta as map(*) := {'title' : 'Liste des corpus'}
+  let $content as map(*) :=  map:merge(
+    for $item in $corpus//TEI/teiHeader 
+      
+      return  map:entry(fn:generate-id($item), corpusHeader($item))
+    )
+  return  map{
+    'meta' : $meta,
+    'content' : $content
+  }
 };
 
 (:~
  : this function creates a map for a corpus item
  :)
-declare function corpusHeader($item) as map(*) {
-  for $teiHeader in $item
-  return map {
-    'title' : ($teiHeader//titleStmt/title)[1],
-    'date' : $teiHeader//titleStmt/date,
-    'principal' : $teiHeader//titleStmt/principal
+declare function corpusHeader($teiHeader) as map(*) {
+ map {
+    (: 'title' : ($teiHeader//*:titleStmt/*:title)[1],
+    'date' : ($teiHeader//*:titleStmt/*:date)[1],
+    'principal' : ($teiHeader//*:titleStmt/*:principal)[1] :)
+    'title' : 'myTitle',
+    'date' : 'myDate',
+    'principal' : 'myPrincipal'
   }
 };
