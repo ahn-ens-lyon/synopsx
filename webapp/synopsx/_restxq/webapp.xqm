@@ -111,7 +111,7 @@ declare
     let $layout := $G:TEMPLATES || 'html.xhtml'
     let $pattern := $G:TEMPLATES || 'chapter_tei.xhtml'
     return synopsx.views.htmlWrapping:wrapper(
-      synopsx.models.tei:listCorpus(), $options, $layout, $pattern
+      trace(synopsx.models.tei:listCorpus()), $options, $layout, $pattern
     )
 };
 

@@ -36,32 +36,21 @@ declare function wrapper($data, $options, $layout, $pattern){
 (:~
  : this one is supposed to do the magic inside the wrapper
  :)
-declare  %updating function to-html($content, $pattern){
-  map:for-each($content,
-     function($id, $map)
-       
-       {
-         prof:dump($map, 'map : '),
-         let $tmpl := fn:doc($pattern)
-         
-         return map:for-each($map,
-         
-           function($key, $value)
-           {
-             
-             prof:dump($key, 'key : '),
-             prof:dump($tmpl//*/@id, 'value : '), (: pb d'espace de nom:)
-             replace node $tmpl//*[@id=$key]/text() with fn:string($value)
-           }
-         )
-       }
-  )
-
+declare function to-html(
+  $contents  as map(*),
+  $template  as xs:string
+) as document-node()* {
+  map:for-each($contents, function($key, $content) {
+    fn:doc($template) update (
+      for $text in .//text()
+      where fn:starts-with($text, '[')
+        and fn:ends-with($text, ']')
+      let $key := fn:replace($text, '\[|\]', '')
+      let $value := $content($key)
+      return replace node $text with $value
+    )
+  })
 };
-
-
-(: replace value of node .//html:div[@id='content'] with xslt:transform($contentWrap,'http://localhost:8984/static/xsl/tei2html5.xsl',$options), :)
-
 
 (:~
  : this one is supposed to do the magic inside the wrapper
