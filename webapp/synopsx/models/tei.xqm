@@ -1,31 +1,30 @@
-(:~
- : tei function module for SynopsX
- :)
- 
 module namespace synopsx.models.tei = 'synopsx.models.tei';
+(:~
+ : models.tei module for SynopsX
+ :)
+import module namespace G = "synopsx/globals" at '../globals.xqm';
 import module namespace synopsx.views.htmlWrapping = 'synopsx.views.htmlWrapping'  at '../views/htmlWrapping.xqm';
+
 declare default function namespace 'synopsx.models.tei';
-
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; 
-
 declare variable $synopsx.models.tei:db := "gdpTei";
 
 (:~
  : tei function, decides what to do wether config data and database already exist or not for this project
  : TODO entièrement
  :)
-declare function synopsx.models.tei:title() as element(){ 
+declare function title() as element(){ 
   (db:open($synopsx.models.tei:db)//titleStmt/title)[1]
 }; 
  
-declare function synopsx.models.tei:listItems() as element()* { 
+declare function listItems() as element()* { 
   db:open($synopsx.models.tei:db)//titleStmt/title
 };
 
 (:~
  : this function creates a map of two maps : one for metadata, one for content data
  :)
-declare function synopsx.models.tei:listCorpus() {
+declare function listCorpus() {
   let $corpus := db:open($synopsx.models.tei:db)
   let $meta as map(*) := {
     'title' : 'Liste des corpus'
