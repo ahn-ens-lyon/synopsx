@@ -20,20 +20,43 @@ If not, see <http://www.gnu.org/licenses/>
 
 import module namespace G = "synopsx/globals" at '../globals.xqm';
 
-import module namespace Session = "http://basex.org/modules/session";
-
+(: Put here all import modules declarations as needed:)
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
-import module namespace synopsx.views.htmlWrapping = 'synopsx.views.htmlWrapping' at '../views/htmlWrapping.xqm';
 
+(: Put her all import declarations for mapping according to models :)
+import module namespace synopsx.mapping.htmlWrapping = 'synopsx.mapping.htmlWrapping' at '../mapping/htmlWrapping.xqm';
 
-
+(: Specify namespaces used by the models:)
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: déclaration pour test :)
 
-(: declare variable $webapp:layout :=  :)
-  (: in future: file:base-dir() :)
-  (: file:parent(static-base-uri()) || 'templates/html.xhtml'; :)
+(: Available function to list one or several tei corpora :)
+declare 
+%restxq:path('/corpus')
+%output:method("xhtml") (: TODO content negociation :)
+  function webapp:corpusList(){
+    let $options := '' (: to specify an xslt and other kin of option :)
+    let $layout := $G:TEMPLATES || 'html.xhtml' (: corresponds to the template file for a global layout:)
+    let $pattern := $G:TEMPLATES || 'chapter_tei.xhtml' (: corresponds to the template file for a fragment layout (to be repeated or not) :)
+    return synopsx.mapping.htmlWrapping:wrapper
+      (
+        synopsx.models.tei:listCorpus(), $options, $layout, $pattern
+      ) (: Calling the wrapper to bind fragment layout and models to display in the global layout:)
+};
 
-(: These five functions analyse the given path and retrieve the data :)
+(: Where everything will be decided later on :)
+declare function webapp:main($params){
+
+    (:let $project := map:get($params,'project'):)
+    $G:HOME
+};
+
+
+(:~
+ : To be use to implement the webapp entry points
+ : Used in the last version of synopsx  
+ :) 
+ 
+(: These five functions analyze the given path and retrieve the data :)
 declare %restxq:path("")
         %output:method("xhtml")
         %output:omit-xml-declaration("no")
@@ -99,25 +122,4 @@ function webapp:index($project, $dataType, $value, $option) {
       }
 
     return webapp:main($params)
-};
-
-
-
-declare 
-%restxq:path('/corpus')
-%output:method("xhtml") (: TODO content negociation :)
-  function webapp:corpusList(){
-    let $options := ''
-    let $layout := $G:TEMPLATES || 'html.xhtml'
-    let $pattern := $G:TEMPLATES || 'chapter_tei.xhtml'
-    return synopsx.views.htmlWrapping:wrapper(
-      trace(synopsx.models.tei:listCorpus()), $options, $layout, $pattern
-    )
-};
-
-
-declare function webapp:main($params){
-
-    (:let $project := map:get($params,'project'):)
-    $G:HOME
 };

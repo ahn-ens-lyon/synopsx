@@ -8,7 +8,7 @@ declare variable $G:WEBAPP := file:current-dir() || 'webapp/';
 declare variable $G:_RESTXQ := $G:WEBAPP || 'synopsx/_restxq/';
 declare variable $G:MODELS :=  $G:WEBAPP || 'synopsx/models/';
 declare variable $G:TEMPLATES :=  $G:WEBAPP || 'synopsx/templates/';
-declare variable $G:VIEWS :=  $G:WEBAPP || 'synopsx/views/';
+declare variable $G:MAPPING :=  $G:WEBAPP || 'synopsx/mapping/';
 
 (:~ Status: everything ok. :)
 declare variable $G:OK := '1';
@@ -19,7 +19,7 @@ declare variable $G:USER-UNKNOWN := '4';
 (:~ Status: user exists. :)
 declare variable $G:USER-EXISTS := '5';
 
-(:~ Status and error messages. :)
+(:~ Status and error messages. To be internationalized:)
 declare variable $G:STATUS := map {
   $G:OK          : 'OK',
   $G:FAILED      : 'Something failed.',

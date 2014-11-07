@@ -23,7 +23,7 @@ import module namespace webapp = 'http://ahn.ens-lyon.fr/webapp' at 'webapp.xqm'
 import module namespace Session = "http://basex.org/modules/session";
 
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
-import module namespace synopsx.views.htmlWrapping = 'synopsx.views.htmlWrapping' at '../views/htmlWrapping.xqm';
+import module namespace synopsx.mapping.htmlWrapping = 'synopsx.mapping.htmlWrapping' at '../mapping/htmlWrapping.xqm';
 
 import module namespace G = "synopsx/globals" at '../globals.xqm';
 
@@ -51,7 +51,7 @@ function basket:tei(
   (:
   : @TODO negociation de contenu
   :)
-  return synopsx.views.htmlWrapping:render($content, $options, $layout)
+  return synopsx.mapping.htmlWrapping:render($content, $options, $layout)
 };
 
 declare
