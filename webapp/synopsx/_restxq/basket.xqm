@@ -46,7 +46,7 @@ function basket:tei(
         'mode' := 'short'  
     }
   let $layout as map(*) := map {
-        'layout' := $G:HOME || 'templates/html.xml'
+        'layout' := $G:TEMPLATES || 'html.xhtml'
     }
   (:
   : @TODO negociation de contenu

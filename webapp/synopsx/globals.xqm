@@ -2,13 +2,13 @@ module namespace G = "synopsx/globals";
 
 (: Webapp directory:)
 declare variable $G:HOME := file:base-dir();
- (: file:parent(static-base-uri()) || '../../repo/synopsx/templates/html.xml'; :)
+ (: file:parent(static-base-uri()) || '../../repo/synopsx/templates/html.xhtml'; :)
 declare variable $G:WEBAPP := file:current-dir() || 'webapp/';
 
-declare variable $G:_RESTXQ := $G:HOME || '_restxq';
-declare variable $G:MODELS :=  $G:HOME || 'models';
-declare variable $G:TEMPLATES :=  $G:HOME || 'templates';
-declare variable $G:VIEWS :=  $G:HOME || 'views';
+declare variable $G:_RESTXQ := $G:WEBAPP || 'synopsx/_restxq/';
+declare variable $G:MODELS :=  $G:WEBAPP || 'synopsx/models/';
+declare variable $G:TEMPLATES :=  $G:WEBAPP || 'synopsx/templates/';
+declare variable $G:VIEWS :=  $G:WEBAPP || 'synopsx/views/';
 
 (:~ Status: everything ok. :)
 declare variable $G:OK := '1';

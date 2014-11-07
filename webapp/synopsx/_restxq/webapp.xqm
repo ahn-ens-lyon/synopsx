@@ -31,7 +31,7 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: déclaration pour test
 
 (: declare variable $webapp:layout :=  :)
   (: in future: file:base-dir() :)
-  (: file:parent(static-base-uri()) || 'templates/html.xml'; :)
+  (: file:parent(static-base-uri()) || 'templates/html.xhtml'; :)
 
 (: These five functions analyse the given path and retrieve the data :)
 declare %restxq:path("")
@@ -101,9 +101,22 @@ function webapp:index($project, $dataType, $value, $option) {
     return webapp:main($params)
 };
 
+
+
+declare 
+%restxq:path('/corpus')
+%output:method("xhtml") (: TODO content negociation :)
+  function webapp:corpusList(){
+    let $options := ''
+    let $layout := $G:TEMPLATES || 'html.xhtml'
+    return synopsx.views.htmlWrapping:wrapper(
+      synopsx.models.tei:listCorpus(), $options, $layout
+    )
+};
+
+
 declare function webapp:main($params){
 
     (:let $project := map:get($params,'project'):)
     $G:HOME
 };
-
