@@ -1,38 +1,45 @@
-(:
-This file is part of SynopsX.
-    created by AHN team (http://ahn.ens-lyon.fr)
-    release 0.1, 2014-01-28
+xquery version "3.0" ;
+module namespace synopsx.users = 'synopsx.users';
+(:~
+ : This module is a demo RESTXQ for Content negociation
+ : @version 0.2 (Constantia edition)
+ : @date 2014-11-10 
+ : @author synopsx team
+ :
+ : This file is part of SynopsX.
+ : created by AHN team (http://ahn.ens-lyon.fr)
+ :
+ : SynopsX is free software: you can redistribute it and/or modify
+ : it under the terms of the GNU General Public License as published by
+ : the Free Software Foundation, either version 3 of the License, or
+ : (at your option) any later version.
+ :
+ : SynopsX is distributed in the hope that it will be useful,
+ : but WITHOUT ANY WARRANTY; without even the implied warranty of
+ : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ : See the GNU General Public License for more details.
+ : You should have received a copy of the GNU General Public License along 
+ : with SynopsX. If not, see <http://www.gnu.org/licenses/>
+ :
+ : @todo to implement
+ :)
 
-SynopsX is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-SynopsX is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with SynopsX.
-If not, see <http://www.gnu.org/licenses/>
-:)
-
-module namespace users = 'http://ahn.ens-lyon.fr/users';
-
-import module namespace webapp = 'http://ahn.ens-lyon.fr/webapp' at 'webapp.xqm';
+import module namespace G = "synopsx.globals"  at '../globals.xqm';
 import module namespace Session = "http://basex.org/modules/session";
 
+import module namespace synopsx.webapp = 'synopsx.webapp' at 'webapp.xqm';
 
 import module namespace synopsx.models.tei = 'synopsx.models.tei'  at '../models/tei.xqm';
 import module namespace synopsx.mapping.htmlUsers = 'synopsx.mapping.htmlUsers'  at '../mapping/htmlUsers.xqm';
-import module namespace G = "synopsx/globals"  at '../globals.xqm';
 
 
-
+(:~
+ : 
+ :)
 declare
   %rest:path('/create-user')
   %output:method('html')
-function users:create-user() {
+function synopsx.users:create-user() {
   let $format as xs:string := 'html' (: par défaut on produit du html:)
   let $content := map {
     'title' := synopsx.models.tei:title(),
@@ -45,11 +52,15 @@ function users:create-user() {
   return synopsx.mapping.htmlUsers:create-user($content, $options, $layout)
 };
 
+
+(:~
+ : 
+ :)
 declare
   %rest:path('/list-users')
   %rest:query-param('status', '{$status}')
   %output:method('html')
-function users:list-user(
+function synopsx.users:list-user(
   $status  as xs:string?
 ) {
   let $format as xs:string := 'html' (: par défaut on produit du html:)
@@ -71,7 +82,7 @@ declare
   %rest:path('/create-user/apply')
   %rest:form-param('name', '{$name}')
   %updating
-function users:create-user-apply(
+function synopsx.users:create-user-apply(
   $name  as xs:string
 ) {
   let $users := db:open('users')/users
@@ -95,7 +106,7 @@ declare
   %rest:path('/delete-user/apply')
   %rest:query-param('name', '{$name}')
   %updating
-function users:delete-user-apply(
+function synopsx.users:delete-user-apply(
   $name  as xs:string
 ) {
   let $users := db:open('users')/users

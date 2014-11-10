@@ -1,27 +1,48 @@
+xquery version "3.0" ;
 module namespace synopsx.mapping.htmlWrapping = 'synopsx.mapping.htmlWrapping';
 (:~
- : Wrapper for HTML layout
- : @author: synopsx team 
+ : This module is an HTML mapping for templating
+ : @version 0.2 (Constantia edition)
+ : @date 2014-11-10 
+ : @author synopsx team
+ :
+ : This file is part of SynopsX.
+ : created by AHN team (http://ahn.ens-lyon.fr)
+ :
+ : SynopsX is free software: you can redistribute it and/or modify
+ : it under the terms of the GNU General Public License as published by
+ : the Free Software Foundation, either version 3 of the License, or
+ : (at your option) any later version.
+ :
+ : SynopsX is distributed in the hope that it will be useful,
+ : but WITHOUT ANY WARRANTY; without even the implied warranty of
+ : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ : See the GNU General Public License for more details.
+ : You should have received a copy of the GNU General Public License along 
+ : with SynopsX. If not, see <http://www.gnu.org/licenses/>
+ :
  :)
-import module namespace G = "synopsx/globals" at '../globals.xqm';
+
+import module namespace G = "synopsx.globals" at '../globals.xqm';
+
 
 (: use to avoid to prefix functions name:)
 declare default function namespace 'synopsx.mapping.htmlWrapping'; 
 
 (: Specify namespaces used by the models:)
-declare namespace tei = 'http://www.tei-c.org/ns/1.0'; 
 declare namespace html = 'http://www.w3.org/1999/xhtml'; 
 
+
 (:~
- : this function should be a wrapper
+ : This function should be a wrapper
  : @data brought by the model (cf map of meta and content)
- : @options (not used yet)
+ : @options are the rendering options (not used yet)
  : @layout is the global layout
  : @pattern is the fragment layout 
  : 
- : To debug use prof:dump($data,'data : '), cf the basexhttp console which have launched the basexhttp server
+ : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
  :)
-declare function wrapper($data, $options, $layout, $pattern){
+declare function wrapper($data as map(*), $options, $layout as xs:string, $pattern as xs:string){
   let $meta := map:get($data, 'meta')
   let $content := map:get($data,'content')
   let $tmpl := fn:doc($layout) (: open the global layout doc:)
@@ -31,9 +52,10 @@ declare function wrapper($data, $options, $layout, $pattern){
   )
 };
 
+
 (:~
- : this one is supposed to do the magic inside the wrapper
- : generate a document node with as many documents as there are contents
+ : This function is supposed to do the magic inside the wrapper :
+ : generates a document node with as many documents as there are contents
  :)
 declare function to-html($contents  as map(*), $template  as xs:string) as document-node()* {
   map:for-each($contents, function($key, $content) {
@@ -47,6 +69,7 @@ declare function to-html($contents  as map(*), $template  as xs:string) as docum
     )
   })
 };
+
 
 (: deprecated function, check dependencies : use by c_tmpl.xhtml :)
 declare  %updating function to-delete($items){

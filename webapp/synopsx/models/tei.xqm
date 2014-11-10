@@ -1,3 +1,4 @@
+xquery version "3.0" ;
 module namespace synopsx.models.tei = 'synopsx.models.tei';
 (:~
  : This module is for TEI models
@@ -20,29 +21,31 @@ module namespace synopsx.models.tei = 'synopsx.models.tei';
  : You should have received a copy of the GNU General Public License along 
  : with SynopsX. If not, see <http://www.gnu.org/licenses/>
  :
-:)
+ :)
 
-import module namespace G = "synopsx/globals" at '../globals.xqm'; (: import globals variables :)
+import module namespace G = "synopsx.globals" at '../globals.xqm'; (: import globals variables :)
 
 declare default function namespace 'synopsx.models.tei'; (: This is the default namespace:)
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
  
-(: dbname TODO choose an implementation :)
-declare variable $synopsx.models.tei:db := "gdpTei";
+declare variable $synopsx.models.tei:db := "gdpTei"; (: dbname TODO choose an implementation :)
 
- 
-(: return the corpus title:)
+(:~
+ : This function return the corpus title
+ :)
 declare function title() as element(){ 
   (db:open($synopsx.models.tei:db)//tei:titleStmt/tei:title)[1]
 }; 
  
-(: return a titles list :)
+(:~
+ : This function return a titles list
+ :)
 declare function listItems() as element()* { 
   db:open($synopsx.models.tei:db)//tei:titleStmt/tei:title
 };
 
 (:~
- : this function creates a map of two maps : one for metadata, one for content data
+ : This function creates a map of two maps : one for metadata, one for content data
  :)
 declare function listCorpus() {
   let $corpus := db:open($synopsx.models.tei:db) (: openning the database:)
@@ -60,19 +63,21 @@ declare function listCorpus() {
 };
 
 (:~
- : this function creates a map with teiHeader for a corpus item
+ : This function creates a map for a corpus item with teiHeader 
  :
- : @param $teiheader 
+ : @param $item a corpus item
+ : @return a map with content for each item
+ : @rmq subdivised with let to construct complex queries (EC2014-11-10)
  :)
-declare function corpusHeader($teiHeader) as map(*) {
+declare function corpusHeader($item as element()) {
   let $title as element()* := (
-    $teiHeader//tei:titleStmt/tei:title
+    $item//tei:titleStmt/tei:title
     )[1]
   let $date as element()* := (
-    $teiHeader//tei:titleStmt/tei:date
+    $item//tei:titleStmt/tei:date
     )[1]
   let $principal  as element()* := (
-    $teiHeader//tei:titleStmt/tei:principal
+    $item//tei:titleStmt/tei:principal
     )[1]
   return map {
     'title'      : $title ,

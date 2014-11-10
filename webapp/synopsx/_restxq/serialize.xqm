@@ -1,7 +1,28 @@
-(:~
- : Custom REST responses.
- :)
+xquery version "3.0" ;
 module namespace serialize = 'http://ahn.ens-lyon.fr/serialize';
+(:~
+ : This module is a demo file for Custom  REST responses (serialization)
+ : @version 0.2 (Constantia edition)
+ : @date 2014-11-10 
+ : @author synopsx team
+ :
+ : This file is part of SynopsX.
+ : created by AHN team (http://ahn.ens-lyon.fr)
+ :
+ : SynopsX is free software: you can redistribute it and/or modify
+ : it under the terms of the GNU General Public License as published by
+ : the Free Software Foundation, either version 3 of the License, or
+ : (at your option) any later version.
+ :
+ : SynopsX is distributed in the hope that it will be useful,
+ : but WITHOUT ANY WARRANTY; without even the implied warranty of
+ : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ : See the GNU General Public License for more details.
+ : You should have received a copy of the GNU General Public License along 
+ : with SynopsX. If not, see <http://www.gnu.org/licenses/>
+ :
+ : @todo to implement
+ :)
 
 import module namespace Request = "http://exquery.org/ns/request";
 
