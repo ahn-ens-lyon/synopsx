@@ -1,4 +1,4 @@
-module namespace htmlBasket = 'synopsx.views.htmlBasket';
+module namespace htmlBasket = 'synopsx.mapping.htmlBasket';
 
 import module namespace Session = "http://basex.org/modules/session";
 

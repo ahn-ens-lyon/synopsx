@@ -1,4 +1,4 @@
-module namespace htmlUsers = 'synopsx.views.htmlUsers';
+module namespace htmlUsers = 'synopsx.mapping.htmlUsers';
 
 import module namespace Session = "http://basex.org/modules/session";
 
