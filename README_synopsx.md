@@ -1,5 +1,5 @@
 Prérequis : 
-BaseX v8 obligatoire
+BaseX v8 obligatoire (release en février 2015)
 XSLT v2 (cf saxonHE9) 
 
 Arborescence de la webapp SynopsX :
