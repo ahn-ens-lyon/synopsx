@@ -28,10 +28,10 @@ declare variable $G:HOME := file:base-dir();
 (: file:parent(static-base-uri()) || '../../repo/synopsx/templates/html.xhtml'; :)
 declare variable $G:WEBAPP := file:current-dir() || 'webapp/';
 
-declare variable $G:_RESTXQ := $G:WEBAPP || 'synopsx/_restxq/';
-declare variable $G:MODELS :=  $G:WEBAPP || 'synopsx/models/';
-declare variable $G:TEMPLATES :=  $G:WEBAPP || 'synopsx/templates/';
-declare variable $G:MAPPING :=  $G:WEBAPP || 'synopsx/mapping/';
+declare variable $G:_RESTXQ := $G:HOME || '_restxq/';
+declare variable $G:MODELS :=  $G:HOME || 'models/';
+declare variable $G:TEMPLATES :=  $G:HOME || 'templates/';
+declare variable $G:MAPPING :=  $G:HOME || 'mapping/';
 
 (:~ Status: everything ok. :)
 declare variable $G:OK := '1';
