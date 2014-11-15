@@ -28,7 +28,7 @@ import module namespace G = "synopsx.globals" at '../globals.xqm'; (: import glo
 declare default function namespace 'synopsx.models.tei'; (: This is the default namespace:)
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
  
-declare variable $synopsx.models.tei:db := "gdpTei"; (: dbname TODO choose an implementation :)
+declare variable $synopsx.models.tei:db := "gdp"; (: dbname TODO choose an implementation :)
 
 (:~
  : This function return the corpus title
