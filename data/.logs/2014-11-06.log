@@ -1,8 +1,0 @@
-10:30:48.767	SERVER	admin	OK	Server was started (port: 1984)
-10:30:48.782	SERVER	admin	OK	HTTP Server was started (port: 8984)
-10:30:53.512	0:0:0:0:0:0:0:1:51688	admin	REQUEST	[GET] http://localhost:8984/tei?status=1
-10:30:53.807	0:0:0:0:0:0:0:1:51688	admin	400	Stopped at /home/mingarao/Documents/git/synopsx-ahn/repo/synopsx/models/tei.xqm, 17/12: [bxerr:BXDB0002] Database 'hyperdonat' was not found.	296.75 ms
-10:32:35.209	0:0:0:0:0:0:0:1:51691	admin	REQUEST	[GET] http://localhost:8984/rest
-10:32:35.234	0:0:0:0:0:0:0:1:51691	admin	200		24.97 ms
-10:40:08.301	SERVER	admin	OK	HTTP Server was stopped (port: 8984)
-10:40:08.302	SERVER	admin	OK	Server was stopped (port: 1984)
