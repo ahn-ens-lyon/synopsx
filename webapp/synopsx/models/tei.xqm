@@ -47,7 +47,7 @@ declare function listItems() as element()* {
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
  :)
-declare function listCorpus() {
+declare function listCorpusOrig() {
   let $corpus := db:open($synopsx.models.tei:db) (: openning the database:)
   let $meta as map(*) := {
     'title' : 'Liste des corpus' (: title page:)
@@ -83,5 +83,25 @@ declare function corpusHeader($item as element()) {
     'title'      : $title ,
     'date'       : $date ,
     'principal'  : $principal
+  }
+};
+
+
+(:~
+ : This function creates a map of two maps : one for metadata, one for content data
+ :)
+declare function listCorpus() {
+  let $corpus := db:open($synopsx.models.tei:db) (: openning the database:)
+  let $meta as map(*) := {
+    'title' : 'Liste des corpus',
+    'quantity' : fn:count($corpus/*/tei:teiCorpus)
+    }
+  let $content as map(*) := map:merge(
+    for $item in $corpus//tei:TEI/tei:teiHeader (: every teiHeader is add to the map with arbitrary key and the result of  corpusHeader() function apply to this teiHeader:)
+    return  map:entry(fn:generate-id($item), corpusHeader($item))
+    )
+  return  map{
+    'meta'       : $meta,
+    'content'    : $content
   }
 };

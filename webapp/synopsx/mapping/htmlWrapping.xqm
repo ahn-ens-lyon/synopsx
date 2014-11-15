@@ -34,32 +34,47 @@ declare namespace html = 'http://www.w3.org/1999/xhtml';
 
 
 (:~
- : This function should be a wrapper
- : @data brought by the model (cf map of meta and content)
- : @options are the rendering options (not used yet)
- : @layout is the global layout
- : @pattern is the fragment layout 
+ : This function wrap the content in an html layout
+ :
+ : @data a map built by the model with meta values
+ : @options options for rendering (not in use yet)
+ : @layout path to the global wrapper html file
+ : @pattern path to the html fragment layout 
  : 
  : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
+ : @change add flexibility to retrieve meta values and changes in variables names EC2014-11-15
+ : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
  :)
 declare function wrapper($data as map(*), $options, $layout as xs:string, $pattern as xs:string){
   let $meta := map:get($data, 'meta')
-  let $content := map:get($data,'content')
-  let $tmpl := fn:doc($layout) (: open the global layout doc:)
-  return $tmpl update (    
-    replace node .//*:title/text() with map:get($meta, 'title'), (: replacing html title with the $meta title :)
-    insert node to-html($content, $pattern) into .//html:main[@id='content'] (: see function below :)
+  let $contents := map:get($data,'content')
+  let $wrap := fn:doc($layout) (: open the global layout doc:)
+  return $wrap update (
+    for $text in .//text() 
+      where fn:starts-with($text, '{') and fn:ends-with($text, '}')
+      let $key := fn:replace($text, '\{|\}', '')
+      let $value := $meta($key) 
+    return 
+      if ($key = 'content') 
+        then replace node $text with pattern($meta, $contents, $options, $pattern)
+        else replace node $text with $value
   )
 };
 
 
 (:~
- : This function is supposed to do the magic inside the wrapper :
- : generates a document node with as many documents as there are contents
+ : This function iterates the pattern template with contents
+ :
+ : @meta meta values built by the model as a map
+ : @contents contents values built by the model as a map
+ : @options options for rendering (not in use yet)
+ : @pattern path to the html fragment layout 
+ :
+ : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
  :)
-declare function to-html($contents  as map(*), $template  as xs:string) as document-node()* {
+declare function pattern($meta as map(*), $contents  as map(*), $options, $pattern  as xs:string) as document-node()* {
   map:for-each($contents, function($key, $content) {
-    fn:doc($template) update (
+    fn:doc($pattern) update (
       for $text in .//text() (: look through all text nodes with the particular condition specified below :)
       where fn:starts-with($text, '{') 
         and fn:ends-with($text, '}')

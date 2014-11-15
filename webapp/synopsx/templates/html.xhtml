@@ -11,14 +11,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
    <head>
       <meta charset="utf-8"/>
-      <title>Titre du document</title>
+      <title>{title}</title>
       <link href="styles.css" rel="stylesheet"/>
       <script src="scripts.js"></script>
       <!-- ajouter js pour lt IE 9 -->
    </head>
    <header></header>
    <body>
-     <main id="content">
+     <main>
+       <div>
+         <header>
+           <h1>{title}</h1>
+           <h2><span>{quantity}</span> corpus disponibles</h2>
+         </header>
+         {content}
+       </div>
      </main>
    </body>
    <footer></footer>
