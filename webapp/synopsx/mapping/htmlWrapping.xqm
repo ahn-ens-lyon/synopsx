@@ -30,11 +30,12 @@ import module namespace G = "synopsx.globals" at '../globals.xqm';
 declare default function namespace 'synopsx.mapping.htmlWrapping'; 
 
 (: Specify namespaces used by the models:)
+declare namespace tei = 'http://www.tei-c.org/ns/1.0'; 
 declare namespace html = 'http://www.w3.org/1999/xhtml'; 
 
 
 (:~
- : This function should be a wrapper
+ : This function should be a wrapper (BN : first version with no recursive inputs, formerly used for simple usage)
  : @data brought by the model (cf map of meta and content)
  : @options are the rendering options (not used yet)
  : @layout is the global layout
@@ -52,20 +53,59 @@ declare function wrapper($data as map(*), $options, $layout as xs:string, $patte
   )
 };
 
+(:~
+ : This function should be called by a global wrapper and wraps a sequence of items according to the pattern
+ : @content brought by the model 
+ : @options are the rendering options (not used yet)
+ : @pattern is the fragment layout 
+ :)
+declare function innerWrapper($content, $options, $pattern){
+  let $tmpl := fn:doc('../templates/'||map:get($options, 'middle'))
+  return $tmpl update (
+    replace node /*/text() with  to-html($content, $pattern, $options)
+  )
+};
+
+(:~
+ : this function can eventually call an innerWrapper to perform intermediate wrappings 
+ : @data brought by the model (is a map of meta data and content data)
+ : @options are the rendering options (not used yet)
+ : @layout is the global layout
+ : @pattern is the fragment layout 
+ :)
+declare function globalWrapper($data, $options, $layout, $pattern){
+  let $meta := map:get($data, 'meta')
+  let $content := map:get($data,'content')
+  let $tmpl := fn:doc($layout) 
+  return $tmpl update (
+    replace node .//*:title/text() with map:get($meta, 'title'),
+      if(map:get($options, 'middle') = 'list.xhtml')
+      then insert node innerWrapper($content, $options, $pattern) into .//html:main[@id='content']
+      else 
+        if(map:get($options, 'middle') = 'table.xhtml')
+        then insert node innerWrapper($content, $options, $pattern) into .//html:main[@id='content']
+        else insert node to-html($content, $pattern, $options) into .//html:main[@id='content']
+  )
+};
 
 (:~
  : This function is supposed to do the magic inside the wrapper :
  : generates a document node with as many documents as there are contents
  :)
-declare function to-html($contents  as map(*), $template  as xs:string) as document-node()* {
+declare function to-html(
+  $contents  as map(*),
+  $template  as xs:string,
+  $options as map(*)
+) as document-node()* {
   map:for-each($contents, function($key, $content) {
     fn:doc($template) update (
-      for $text in .//text() (: look through all text nodes with the particular condition specified below :)
-      where fn:starts-with($text, '{') 
-        and fn:ends-with($text, '}')
-      let $key := fn:replace($text, '\{|\}', '') (: get the text between braces :)
-      let $value := $content($key) (: get the content corresponding to the key :)
-      return replace node $text with $value (: replace text between braces with the content :)
+      for $node in //*[@title]
+      let $key := $node/@title
+      let $value := $content($key)
+      return 
+        if(map:get($options,'link') = '')
+        then replace node $node/text() with $value
+        else replace node $node/text() with <a href="{map:get($options, 'link')}/{$value}">{$value}</a>
     )
   })
 };
