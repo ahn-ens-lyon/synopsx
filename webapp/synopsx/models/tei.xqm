@@ -74,7 +74,7 @@ declare function corpusHeader($item as element()) {
     $item//tei:titleStmt/tei:title
     )[1]
   let $date as element()* := (
-    $item//tei:titleStmt/tei:date
+    $item//tei:teiHeader/tei:date
     )[1]
   let $principal  as element()* := (
     $item//tei:titleStmt/tei:principal

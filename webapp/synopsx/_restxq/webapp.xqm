@@ -46,7 +46,7 @@ declare
   function corpusList(){
     let $options := map {} (: specify an xslt mode and other kind of option :)
     let $layout := $G:TEMPLATES || 'html.xhtml' (: global layout file template :)
-    let $pattern := $G:TEMPLATES || 'text_entry.xhtml' (: fragment layout template file (to be repeated or not) :)
+    let $pattern := $G:TEMPLATES || 'tei_mentioned_list.xhtml' (: fragment layout template file (to be repeated or not) :)
     return synopsx.mapping.htmlWrapping:globalWrapper
       (
         synopsx.models.tei:listCorpus(), $options, $layout, $pattern

@@ -103,9 +103,9 @@ declare function to-html(
       let $key := $node/@title
       let $value := $content($key)
       return 
-        if(map:get($options,'link') = '')
-        then replace node $node/text() with $value
-        else replace node $node/text() with <a href="{map:get($options, 'link')}/{$value}">{$value}</a>
+      (:   if(map:get($options,'link') = '') :)
+        (: then :) replace node $node/text() with $value
+(:         else replace node $node/text() with <a href="{map:get($options, 'link')}/{$value}">{$value}</a> :)
     )
   })
 };
