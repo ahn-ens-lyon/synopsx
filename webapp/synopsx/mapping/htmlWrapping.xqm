@@ -49,7 +49,7 @@ declare function wrapper($data as map(*), $options, $layout as xs:string, $patte
   let $tmpl := fn:doc($layout) (: open the global layout doc:)
   return $tmpl update (    
     replace node .//*:title/text() with map:get($meta, 'title'), (: replacing html title with the $meta title :)
-    insert node to-html($content, $pattern) into .//html:main[@id='content'] (: see function below :)
+    insert node to-html($content, $pattern, $options) into .//html:main[@id='content'] (: see function below :)
   )
 };
 

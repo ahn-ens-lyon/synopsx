@@ -28,27 +28,27 @@ import module namespace G = "synopsx.globals" at '../globals.xqm'; (: import glo
 declare default function namespace 'synopsx.models.tei'; (: This is the default namespace:)
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
  
-declare variable $synopsx.models.tei:db := "gdpTei"; (: dbname TODO choose an implementation :)
+
 
 (:~
  : This function return the corpus title
  :)
 declare function title() as element(){ 
-  (db:open($synopsx.models.tei:db)//tei:titleStmt/tei:title)[1]
+  (db:open($G:DBNAME)//tei:titleStmt/tei:title)[1]
 }; 
  
 (:~
  : This function return a titles list
  :)
 declare function listItems() as element()* { 
-  db:open($synopsx.models.tei:db)//tei:titleStmt/tei:title
+  db:open($G:DBNAME)//tei:titleStmt/tei:title
 };
 
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
  :)
 declare function listCorpus() {
-  let $corpus := db:open($synopsx.models.tei:db) (: openning the database:)
+  let $corpus := db:open($G:DBNAME) (: openning the database:)
   let $meta as map(*) := {
     'title' : 'Liste des corpus' (: title page:)
     }

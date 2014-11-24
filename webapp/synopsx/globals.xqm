@@ -35,7 +35,7 @@ declare variable $G:TEMPLATES :=  $G:SYNOPSX_DIR || '/synopsx/templates/';
 declare variable $G:VIEWS :=  $G:SYNOPSX_DIR || '/synopsx/views/';
 
 (: Section dedicated to databases, specificities of a project:)
-declare variable $DB:NAME := "hyperprince";
+declare variable $G:DBNAME := "hyperdonat";
 
 (:~ Status: everything ok. :)
 declare variable $G:OK := '1';
