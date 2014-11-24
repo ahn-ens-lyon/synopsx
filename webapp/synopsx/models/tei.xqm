@@ -53,7 +53,7 @@ declare function listCorpus() {
     'title' : 'Liste des corpus' (: title page:)
     }
   let $content as map(*) := map:merge(
-    for $item in $corpus//tei:TEI/tei:teiHeader (: every teiHeader is add to the map with arbitrary key and the result of  corpusHeader() function apply to this teiHeader:)
+    for $item in $corpus//tei:teiCorpus/tei:teiHeader (: every teiHeader is add to the map with arbitrary key and the result of  corpusHeader() function apply to this teiHeader:)
     return  map:entry(fn:generate-id($item), corpusHeader($item))
     )
   return  map{
@@ -61,6 +61,10 @@ declare function listCorpus() {
     'content'    : $content
   }
 };
+
+
+
+
 
 (:~
  : This function creates a map for a corpus item with teiHeader 
@@ -74,14 +78,76 @@ declare function corpusHeader($item as element()) {
     $item//tei:titleStmt/tei:title
     )[1]
   let $date as element()* := (
-    $item//tei:teiHeader/tei:date
+    $item//tei:teiHeader//tei:date
     )[1]
-  let $principal  as element()* := (
-    $item//tei:titleStmt/tei:principal
+  let $author  as element()* := (
+    $item//tei:titleStmt/tei:author
     )[1]
   return map {
-    'title'      : $title ,
-    'date'       : $date ,
-    'principal'  : $principal
+    'title'      : $title/text() ,
+    'date'       : $date/text() ,
+    'principal'  : $author/text()
+  }
+};
+
+
+
+
+
+
+
+(:~
+ : this function creates a map of two maps : one for metadata, one for content data
+ :)
+declare function synopsx.models.tei:listTexts() {
+  let $corpus := db:open($G:DBNAME)
+  let $meta as map(*) := {'title' : 'Liste des textes'}
+  let $content as map(*) :=  map:merge(
+    for $item in $corpus//tei:TEI/tei:teiHeader 
+      
+      return  map:entry(fn:generate-id($item), teiHeader($item))
+    )
+  return  map{
+    'meta' : $meta,
+    'content' : $content
+  }
+};
+
+(:~
+ : this function creates a map for a corpus item
+ :)
+declare function teiHeader($teiHeader) as map(*) {
+ map {
+    'title' : ($teiHeader//tei:titleStmt/*:title/text()),
+    'date' : ($teiHeader//tei:date/text()),
+    'author' : ($teiHeader//tei:author/text())
+  }
+};
+
+
+(:~
+ : this function creates a map of two maps : one for metadata, one for content data
+ :)
+declare function synopsx.models.tei:listMentioned() {
+  let $corpus := db:open($G:DBNAME)
+  let $meta as map(*) := {'title' : 'Liste des autonymes'}
+  let $content as map(*) :=  map:merge(
+    for $item in $corpus//tei:mentioned 
+      
+      return  map:entry(fn:generate-id($item), mentioned($item))
+    )
+  return  map{
+    'meta' : $meta,
+    'content' : $content
+  }
+};
+
+(:~
+ : this function creates a map for a corpus item
+ :)
+declare function mentioned($item) as map(*) {
+ map {
+    'lang' : fn:string($item/@*:lang),
+    'term' : $item/text()
   }
 };

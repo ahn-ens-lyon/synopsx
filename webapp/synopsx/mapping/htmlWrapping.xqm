@@ -34,24 +34,7 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0';
 declare namespace html = 'http://www.w3.org/1999/xhtml'; 
 
 
-(:~
- : This function should be a wrapper (BN : first version with no recursive inputs, formerly used for simple usage)
- : @data brought by the model (cf map of meta and content)
- : @options are the rendering options (not used yet)
- : @layout is the global layout
- : @pattern is the fragment layout 
- : 
- : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
- :)
-declare function wrapper($data as map(*), $options, $layout as xs:string, $pattern as xs:string){
-  let $meta := map:get($data, 'meta')
-  let $content := map:get($data,'content')
-  let $tmpl := fn:doc($layout) (: open the global layout doc:)
-  return $tmpl update (    
-    replace node .//*:title/text() with map:get($meta, 'title'), (: replacing html title with the $meta title :)
-    insert node to-html($content, $pattern, $options) into .//html:main[@id='content'] (: see function below :)
-  )
-};
+
 
 (:~
  : This function should be called by a global wrapper and wraps a sequence of items according to the pattern
@@ -80,11 +63,12 @@ declare function globalWrapper($data, $options, $layout, $pattern){
   return $tmpl update (
     replace node .//*:title/text() with map:get($meta, 'title'),
       if(map:get($options, 'middle') = 'list.xhtml')
-      then insert node innerWrapper($content, $options, $pattern) into .//html:main[@id='content']
+      then insert node innerWrapper($content, $options, $pattern) into .//html:div[@title='main']
       else 
         if(map:get($options, 'middle') = 'table.xhtml')
-        then insert node innerWrapper($content, $options, $pattern) into .//html:main[@id='content']
-        else insert node to-html($content, $pattern, $options) into .//html:main[@id='content']
+        then insert node innerWrapper($content, $options, $pattern) into .//html:div[@title='main']
+        else insert node to-html($content, $pattern, $options) into .//html:div[@title='main'],
+    replace node .//html:ul[@title='contextual-nav'] with map:get($meta, 'title')    
   )
 };
 
@@ -131,3 +115,29 @@ declare function render($content, $options, $layout){
       replace node .//html:title with $content('title')
   )
 };
+
+
+
+(:~
+ : deprecated function
+ : This function should be a wrapper (BN : first version with no recursive inputs, formerly used for simple usage)
+ : @data brought by the model (cf map of meta and content)
+ : @options are the rendering options (not used yet)
+ : @layout is the global layout
+ : @pattern is the fragment layout 
+ : 
+ : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
+ :)
+(: declare function wrapper($data as map(*), $options, $layout as xs:string, $pattern as xs:string){
+  let $meta := map:get($data, 'meta')
+  let $content := map:get($data,'content')
+  let $tmpl := fn:doc($layout) (: open the global layout doc:)
+  return $tmpl update (    
+    replace node .//*:title/text() with map:get($meta, 'title'), (: replacing html title with the $meta title :)
+    insert node to-html($content, $pattern, $options) into .//html:div[@title='main'] (: see function below :)
+  )
+}; :)
+
+
+
+
