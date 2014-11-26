@@ -55,9 +55,8 @@ declare function wrapper($data as map(*), $options, $layout as xs:string, $patte
       let $key := fn:replace($text, '\{|\}', '')
       let $value := $meta($key) 
     return 
-      if ($key = 'content') 
-        then replace node $text with pattern($meta, $contents, $options, $pattern)
-        else replace node $text with $value
+      if ($key = 'content') then replace node $text with pattern($meta, $contents, $options, $pattern)
+      else replace node $text with (xslt:transform($value, '../../static/xslt2/tei2html5.xsl'))
   )
 };
 
@@ -79,7 +78,7 @@ declare function pattern($meta as map(*), $contents  as map(*), $options, $patte
       where fn:starts-with($text, '{') 
         and fn:ends-with($text, '}')
       let $key := fn:replace($text, '\{|\}', '') (: get the text between braces :)
-      let $value := $content($key) (: get the content corresponding to the key :)
+      let $value := $content($key)  (: get the content corresponding to the key :)
       return replace node $text with $value (: replace text between braces with the content :)
     )
   })

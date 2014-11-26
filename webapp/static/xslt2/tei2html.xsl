@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xsl:stylesheet PUBLIC "Unofficial XSLT 1.0 DTD" "http://www.w3.org/1999/11/xslt10.dtd">
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/1999/xhtml" version="2.0" exclude-result-prefixes="xs" xpath-default-namespace="http://www.tei-c.org/ns/1.0">
-	<xsl:output method="xml" encoding="UTF-8" indent="yes" omit-xml-declaration="no"/>
+<xsl:stylesheet 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:tei="http://www.tei-c.org/ns/1.0" 
+    version="2.0">
+<xsl:output method="xml" encoding="UTF-8" indent="yes" omit-xml-declaration="yes"/>  
+<!-- <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/1999/xhtml" version="2.0" exclude-result-prefixes="xs" xpath-default-namespace="http://www.tei-c.org/ns/1.0">
+<xsl:output method="xml" encoding="UTF-8" indent="yes" omit-xml-declaration="yes"/> -->
 	<!--
 	     group
 text
@@ -180,16 +185,35 @@ note
 		</del>
 		<xsl:text>&#160;</xsl:text>
 	</xsl:template>
+	<!-- biblio -->
+	<xsl:template match="title"> 
+        <xsl:apply-templates />
+    </xsl:template>
+	<!-- mentions de responsabilités -->
+	<xsl:template match="principal"> 
+        <xsl:apply-templates />
+    </xsl:template>
+	<xsl:template match="persName"> 
+		<xsl:apply-templates select="forename" />
+		<xsl:apply-templates select="surname" />
+		<xsl:apply-templates />
+	</xsl:template>
+	<xsl:template match="forename"> 
+        <xsl:apply-templates />
+	</xsl:template>	
+	<xsl:template match="surname"> 
+        <xsl:apply-templates />
+    </xsl:template>	
 	<!-- traitement par défaut -->
 	<xsl:template match="@*">
         <xsl:copy/>
     </xsl:template>
-    <xsl:template match="*"> 
+    <!-- <xsl:template match="*"> 
         <xsl:element name="{local-name()}">
             <xsl:apply-templates select="@*"/>
-           <!-- <xsl:call-template name="addID"/>
-            <xsl:call-template name="rendition"/>-->
+           <!-/- <xsl:call-template name="addID"/>
+            <xsl:call-template name="rendition"/>-/->
             <xsl:apply-templates select="node()"/>
         </xsl:element>
-    </xsl:template>
+    </xsl:template> -->
 </xsl:stylesheet>

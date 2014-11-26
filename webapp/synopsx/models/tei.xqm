@@ -93,8 +93,8 @@ declare function corpusHeader($item as element()) {
 declare function listCorpus() {
   let $corpus := db:open($synopsx.models.tei:db) (: openning the database:)
   let $meta as map(*) := {
-    'title' : 'Liste des corpus',
-    'quantity' : fn:count($corpus/*/tei:teiCorpus)
+    'title' : <tei:title>Liste des corpus</tei:title>,
+    'quantity' : <tei:label>{fn:count($corpus/*/tei:teiCorpus)}</tei:label>
     }
   let $content as map(*) := map:merge(
     for $item in $corpus//tei:TEI/tei:teiHeader (: every teiHeader is add to the map with arbitrary key and the result of  corpusHeader() function apply to this teiHeader:)
