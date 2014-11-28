@@ -44,14 +44,15 @@ declare
   %restxq:path('/corpus')
   %output:method("xhtml") (: TODO content negociation :)
   function corpusList(){
-    let $options := '' (: specify an xslt mode and other kind of option :)
+    let $options := map {} (: specify an xslt mode and other kind of option :)
     let $layout := $G:TEMPLATES || 'html.xhtml' (: global layout file template :)
-    let $pattern := $G:TEMPLATES || 'chapter_tei.xhtml' (: fragment layout template file (to be repeated or not) :)
-    return synopsx.mapping.htmlWrapping:wrapper
+    let $pattern := $G:TEMPLATES || 'tei_mentioned_list.xhtml' (: fragment layout template file (to be repeated or not) :)
+    return synopsx.mapping.htmlWrapping:globalWrapper
       (
         synopsx.models.tei:listCorpus(), $options, $layout, $pattern
       )
 };
+
 
 (: Where everything will be decided later on :)
 declare function main($params){

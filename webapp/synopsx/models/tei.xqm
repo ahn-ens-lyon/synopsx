@@ -27,30 +27,31 @@ import module namespace G = "synopsx.globals" at '../globals.xqm'; (: import glo
 
 declare default function namespace 'synopsx.models.tei'; (: This is the default namespace:)
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
- 
-declare variable $synopsx.models.tei:db := "gdp"; (: dbname TODO choose an implementation :)
+
 
 (:~
  : This function return the corpus title
  :)
 declare function title() as element(){ 
-  (db:open($synopsx.models.tei:db)//tei:titleStmt/tei:title)[1]
+  (db:open($G:DBNAME)//tei:titleStmt/tei:title)[1]
 }; 
  
 (:~
  : This function return a titles list
  :)
 declare function listItems() as element()* { 
-  db:open($synopsx.models.tei:db)//tei:titleStmt/tei:title
+  db:open($G:DBNAME)//tei:titleStmt/tei:title
 };
+
 
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
  :)
-declare function listCorpusOrig() {
-  let $corpus := db:open($synopsx.models.tei:db) (: openning the database:)
+declare function listCorpus() {
+  let $corpus := db:open($G:DBNAME) (: openning the database:)
   let $meta as map(*) := {
-    'title' : 'Liste des corpus' (: title page:)
+    'title' : <tei:title>Liste des corpus</tei:title>,
+    'quantity' : <tei:label>{fn:count($corpus/*/tei:teiCorpus)}</tei:label>
     }
   let $content as map(*) := map:merge(
     for $item in $corpus//tei:TEI/tei:teiHeader (: every teiHeader is add to the map with arbitrary key and the result of  corpusHeader() function apply to this teiHeader:)
@@ -61,6 +62,7 @@ declare function listCorpusOrig() {
     'content'    : $content
   }
 };
+
 
 (:~
  : This function creates a map for a corpus item with teiHeader 
@@ -74,34 +76,72 @@ declare function corpusHeader($item as element()) {
     $item//tei:titleStmt/tei:title
     )[1]
   let $date as element()* := (
-    $item//tei:titleStmt/tei:date
+    $item//tei:teiHeader//tei:date
     )[1]
-  let $principal  as element()* := (
-    $item//tei:titleStmt/tei:principal
+  let $author  as element()* := (
+    $item//tei:titleStmt/tei:author
     )[1]
   return map {
-    'title'      : $title ,
-    'date'       : $date ,
-    'principal'  : $principal
+    'title'      : $title/text() ,
+    'date'       : $date/text() ,
+    'principal'  : $author/text()
   }
 };
 
 
 (:~
- : This function creates a map of two maps : one for metadata, one for content data
+ : this function creates a map of two maps : one for metadata, one for content data
  :)
-declare function listCorpus() {
-  let $corpus := db:open($synopsx.models.tei:db) (: openning the database:)
-  let $meta as map(*) := {
-    'title' : <tei:title>Liste des corpus</tei:title>,
-    'quantity' : <tei:label>{fn:count($corpus/*/tei:teiCorpus)}</tei:label>
-    }
-  let $content as map(*) := map:merge(
-    for $item in $corpus//tei:TEI/tei:teiHeader (: every teiHeader is add to the map with arbitrary key and the result of  corpusHeader() function apply to this teiHeader:)
-    return  map:entry(fn:generate-id($item), corpusHeader($item))
+declare function synopsx.models.tei:listTexts() {
+  let $corpus := db:open($G:DBNAME)
+  let $meta as map(*) := {'title' : 'Liste des textes'}
+  let $content as map(*) :=  map:merge(
+    for $item in $corpus//tei:teiCorpus/tei:teiHeader       
+      return  map:entry(fn:generate-id($item), teiHeader($item))
     )
   return  map{
-    'meta'       : $meta,
-    'content'    : $content
+    'meta' : $meta,
+    'content' : $content
+  }
+};
+
+
+(:~
+ : this function creates a map for a corpus item
+ :)
+declare function teiHeader($teiHeader) as map(*) {
+ map {
+    'title' : ($teiHeader//tei:titleStmt/*:title/text()),
+    'date' : ($teiHeader//tei:date/text()),
+    'author' : ($teiHeader//tei:author/text())
+  }
+};
+
+
+(:~
+ : this function creates a map of two maps : one for metadata, one for content data
+ :)
+declare function listMentioned() {
+  let $corpus := db:open($G:DBNAME)
+  let $meta as map(*) := {'title' : 'Liste des autonymes'}
+  let $content as map(*) :=  map:merge(
+    for $item in $corpus//tei:mentioned 
+      
+      return  map:entry(fn:generate-id($item), mentioned($item))
+    )
+  return  map{
+    'meta' : $meta,
+    'content' : $content
+  }
+};
+
+
+(:~
+ : this function creates a map for a corpus item
+ :)
+declare function mentioned($item) as map(*) {
+ map {
+    'lang' : fn:string($item/@*:lang),
+    'term' : $item/text()
   }
 };

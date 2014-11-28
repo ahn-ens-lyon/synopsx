@@ -25,13 +25,25 @@ module namespace G = "synopsx.globals";
 (: Webapp directory:)
 declare variable $G:HOME := file:base-dir();
 
-(: file:parent(static-base-uri()) || '../../repo/synopsx/templates/html.xhtml'; :)
-declare variable $G:WEBAPP := file:current-dir() || 'webapp/';
+declare variable $G:SYNOPSX_DIR := substring-before(file:base-dir(), 'webapp/synopsx') || 'webapp/';
 
+
+(: 
 declare variable $G:_RESTXQ := $G:HOME || '_restxq/';
 declare variable $G:MODELS :=  $G:HOME || 'models/';
 declare variable $G:TEMPLATES :=  $G:HOME || 'templates/';
-declare variable $G:MAPPING :=  $G:HOME || 'mapping/';
+declare variable $G:MAPPING :=  $G:HOME || 'mapping/'; 
+:)
+
+declare variable $G:WEBAPP := file:current-dir() || 'webapp/'; (: TO CHECK :)
+
+declare variable $G:_RESTXQ := $G:SYNOPSX_DIR || '/synopsx/_restxq/';
+declare variable $G:MODELS :=  $G:SYNOPSX_DIR || '/synopsx/models/';
+declare variable $G:TEMPLATES :=  $G:SYNOPSX_DIR || '/synopsx/templates/';
+declare variable $G:VIEWS :=  $G:SYNOPSX_DIR || '/synopsx/views/';
+
+(: Section dedicated to databases, specificities of a project:)
+declare variable $G:DBNAME := "gdp";
 
 (:~ Status: everything ok. :)
 declare variable $G:OK := '1';

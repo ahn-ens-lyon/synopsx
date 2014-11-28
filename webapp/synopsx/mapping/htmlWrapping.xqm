@@ -30,7 +30,10 @@ import module namespace G = "synopsx.globals" at '../globals.xqm';
 declare default function namespace 'synopsx.mapping.htmlWrapping'; 
 
 (: Specify namespaces used by the models:)
+declare namespace tei = 'http://www.tei-c.org/ns/1.0'; 
 declare namespace html = 'http://www.w3.org/1999/xhtml'; 
+
+
 
 
 (:~
@@ -44,8 +47,38 @@ declare namespace html = 'http://www.w3.org/1999/xhtml';
  : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
  : @change add flexibility to retrieve meta values and changes in variables names EC2014-11-15
  : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
+ :
+ : This function should be called by a global wrapper and wraps a sequence of items according to the pattern
+ : @content brought by the model 
+ : @options are the rendering options (not used yet)
+ : @pattern is the fragment layout 
  :)
-declare function wrapper($data as map(*), $options, $layout as xs:string, $pattern as xs:string){
+declare function innerWrapper($meta, $content, $options, $pattern){
+  let $tmpl := fn:doc('../templates/'||map:get($options, 'middle'))
+  return $tmpl update (
+    replace node /*/text() with  pattern($meta, $content, $pattern, $options)
+  )
+};
+
+(:~
+ : this function can eventually call an innerWrapper to perform intermediate wrappings 
+ : @data brought by the model (is a map of meta data and content data)
+ : @options are the rendering options (not used yet)
+ : @layout is the global layout
+ : @pattern is the fragment layout 
+ :
+ : This function wrap the content in an html layout
+ :
+ : @data a map built by the model with meta values
+ : @options options for rendering (not in use yet)
+ : @layout path to the global wrapper html file
+ : @pattern path to the html fragment layout 
+ : 
+ : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
+ : @change add flexibility to retrieve meta values and changes in variables names EC2014-11-15
+ : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
+ :)
+declare function globalWrapper($data, $options, $layout, $pattern){
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data,'content')
   let $wrap := fn:doc($layout) (: open the global layout doc:)
@@ -53,12 +86,28 @@ declare function wrapper($data as map(*), $options, $layout as xs:string, $patte
     for $text in .//text() 
       where fn:starts-with($text, '{') and fn:ends-with($text, '}')
       let $key := fn:replace($text, '\{|\}', '')
-      let $value := $meta($key) 
+      let $value := map:get($meta,$key)
     return 
-      if ($key = 'content') then replace node $text with pattern($meta, $contents, $options, $pattern)
-      else replace node $text with (xslt:transform($value, '../../static/xslt2/tei2html5.xsl'))
+      if ($key = 'content') then 
+        replace node $text with pattern($meta, $contents, $options, $pattern)
+      else 
+        replace node $text with (xslt:transform($value, '../../static/xslt2/tei2html5.xsl'))
   )
 };
+
+(: 
+  let $content := map:get($data,'content')
+  let $tmpl := fn:doc($layout) 
+  return $tmpl update (
+    replace node .//*:title/text() with map:get($meta, 'title'),
+      if(map:get($options, 'middle') = 'list.xhtml')
+      then insert node innerWrapper($meta, $content, $options, $pattern) into .//html:div[@title='main']
+      else 
+        if(map:get($options, 'middle') = 'table.xhtml')
+        then insert node innerWrapper($meta, $content, $options, $pattern) into .//html:div[@title='main']
+        else insert node to-html($content, $pattern, $options) into .//html:div[@title='main'],
+    replace node .//html:ul[@title='contextual-nav'] with map:get($meta, 'title') 
+:)
 
 
 (:~
@@ -78,7 +127,7 @@ declare function pattern($meta as map(*), $contents  as map(*), $options, $patte
       where fn:starts-with($text, '{') 
         and fn:ends-with($text, '}')
       let $key := fn:replace($text, '\{|\}', '') (: get the text between braces :)
-      let $value := $content($key)  (: get the content corresponding to the key :)
+      let $value := map:get($content, $key)  (: get the content corresponding to the key :)
       return replace node $text with $value (: replace text between braces with the content :)
     )
   })
@@ -105,3 +154,25 @@ declare function render($content, $options, $layout){
       replace node .//html:title with $content('title')
   )
 };
+
+
+
+(:~
+ : deprecated function
+ : This function should be a wrapper (BN : first version with no recursive inputs, formerly used for simple usage)
+ : @data brought by the model (cf map of meta and content)
+ : @options are the rendering options (not used yet)
+ : @layout is the global layout
+ : @pattern is the fragment layout 
+ : 
+ : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
+ :)
+(: declare function wrapper($data as map(*), $options, $layout as xs:string, $pattern as xs:string){
+  let $meta := map:get($data, 'meta')
+  let $content := map:get($data,'content')
+  let $tmpl := fn:doc($layout) (: open the global layout doc:)
+  return $tmpl update (    
+    replace node .//*:title/text() with map:get($meta, 'title'), (: replacing html title with the $meta title :)
+    insert node pattern($content, $pattern, $options) into .//html:div[@title='main'] (: see function below :)
+  )
+}; :)

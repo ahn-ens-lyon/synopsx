@@ -32,22 +32,20 @@
  	 /* remarque omeka : remember to define focus styles! */	
  	:focus, :active {
 	  outline: 0;
-	  
   	}
 
 	body{
 		margin: auto;
 		font-size: 0.8em;
-		background-image: url(/static/img/Background_Pastilles.gif);
+		background-image: url(../img/Background_Pastilles.gif);
 		background-repeat: repeat-x;
 		background-position: 0em 19em;
 		line-height: 1;
 	  	color: black;
-	  	
+	  	background: white;
 	  	font:70% "Helvetica Neue",Helvetica, Arial, sans-serif;
 	  	color:#222;
 	  	width:100%;
-	  	
 	  	margin:0 auto;
 	}
 	/* Entêtes */
@@ -163,7 +161,7 @@
 		border-width: 3px; 
 	    border:1px; border-style:dotted;
 	    padding:0.5em 0.5em;
-		vertical-align:middle;
+		text-align:middle;
 		color: #333; /* AHN */
 		font-weight:bold;
   	}
@@ -379,7 +377,7 @@
 		font-size: 12px;
 	}
 
-	ul.ahn-nav, #primary-nav ul, #footer ul{
+	ul.ahn-nav, #horizontal-nav ul, #footer ul{
 		text-align: center;
 	}
 
@@ -450,16 +448,16 @@
 	      background-color: black;
 	}
 	
-	#secondary-nav {overflow:hidden; zoom:1; margin-bottom:18px;}
-	#secondary-nav li {display:block;float:left; width:126px; margin-right:18px;}
-	#secondary-nav a {text-decoration:none; width: 126px; display:block; float:left; padding:9px 0; text-align:center; color:#fff; background:#a49D4C;border:1px solid #79743E; border-width: 0 1px 1px 0;}
+	#contextual-nav {overflow:hidden; zoom:1; margin-bottom:18px;}
+	#contextual-nav li {display:block;float:left; width:126px; margin-right:18px;}
+	#contextual-nav a {text-decoration:none; width: 126px; display:block; float:left; padding:9px 0; text-align:center; color:#fff; background:#a49D4C;border:1px solid #79743E; border-width: 0 1px 1px 0;}
   	
-	#secondary p, #secondary li {
+	#contextual p, #contextual li {
 		margin-right: 1em;
 		margin-left: 1em;
 		
 	}
-	#items.show #primary {border:none;}
+	#items.show #main {border:none;}
 	#toolbar{
 		float:right;
 	}
@@ -641,11 +639,11 @@
 	.item-file {font-size:1.2em; line-height:1.5em; margin-bottom:1.5em;}
 	.no-results {margin:10px;}
 	#advanced_search_header {font-size:1.4em;}
-	#primary #basic_search_header {font-size:1.4em;}
+	#main #basic_search_header {font-size:1.4em;}
 
 	/* =Exhibits */
 	#featured-exhibit a {color:#fff;}
-	#exhibit #primary {border:none;}
+	#exhibit #main {border:none;}
 	.exhibit-section-nav,
 	.exhibit-page-nav {margin-left:0; margin-right:-18px;overflow:hidden;}
 	.exhibit-section-nav {
@@ -671,19 +669,20 @@
 	  /* == Wrap == */
 	  #wrap {width:auto;padding:0; border: 5px solid #333;}
 	  
-	  #primary-nav {float:none; text-align:left; width:100%; clear:both; padding-top:0; position:absolute; top:0; left:0;}
+	  #horizontal-nav {float:none; text-align:left; width:100%; clear:both; padding-top:0; position:absolute; top:0; left:0;}
 	  
 	  #content {padding:20px;}
 	  
-	  #primary {width: auto; float:none; margin:0;}
+	  #main {width: auto; float:none; margin:0;}
 	  
-	  #secondary {width:auto; float:none; margin:0;}
+	  #contextual-nav {width:auto; float:none; margin:0;}
   }
 /*                                                                       */		
 /* ******** ******* ****** ******* ******* ****** ******* ******** ***** */
 
 
-/* Styles pour ecrans d'au moins 768px de largeur et d'un maximum de 767px */	
+/* Styles pour ecrans d'au moins 768px de largeur */	
+
 	@media (min-width: 768px) {
 		.container {
 			max-width: 96.774194%;
@@ -797,7 +796,7 @@
 			margin-top: 1em;
 		}
 		#logo-partenaire-principal img{margin-left:0; }
-		#primary-nav {
+		#horizontal-nav {
 			text-align:center;
 			font-size:1.6em;
 			width:100%;
@@ -808,7 +807,7 @@
 		}	
 
 
-		#primary-nav ul {
+		#horizontal-nav ul {
 			width: 75%;
 			text-align:center;
 			margin-left: 0%;
@@ -818,12 +817,12 @@
 			display: inline;
 		}
 
-		#primary-nav li {
+		#horizontal-nav li {
 			display: inline;
 			width:auto;
 		}
 
-		#primary-nav a {
+		#horizontal-nav a {
 			width:3em;
 			text-transform: uppercase;
 			text-align:center; 
@@ -831,36 +830,38 @@
 			padding: 0 0.5em;
 		}
 
-		#primary-nav a:link, #primary-nav a:visited {
+		#horizontal-nav a:link, #horizontal-nav a:visited {
 			color:#000; 
 			/*background:transparent;*/
 		}
 
-		#primary-nav a:hover {
+		#horizontal-nav a:hover {
 			color:#FFFFFF;
 		}
 
 
-		#primary-nav li.active {
+		#horizontal-nav li.current {
 			background:#FFFFFF;
 			padding-top: 1em;
-			padding-bottom: 1.5em;	
-			box-shadow: 5px 0px 12px #555; /* CSS3 */
+			padding-bottom: 1.5em;
+			/*box-shadow: 5px 0.2px 12px #555;*/
 		}
 	      
-		#primary-nav li.active a{
+
+		#horizontal-nav li.current a {
 			color:#000;
-			background-color:#FFFFFF;
+			background-color:#FFF;
 			padding-bottom: 1.5em;
+			padding-top: 1em;
 			width:auto;
 			margin:0;
 		}
 		
-		#primary-nav li.active-trail {
+		#horizontal-nav li.active-trail {
 			background:#FFFFFF;
 			padding-top: 1em;
 			padding-bottom: 1em;	
-			box-shadow: 5px 0px 12px #555; /* CSS3 */
+			/* box-shadow: 5px 0px 12px #555;  CSS3 */
 		}
 		#logo-partenaire-principal img{margin-left:0; }
 		#header-image {width: 960px;}
@@ -900,18 +901,18 @@
 		    list-style-type: none;
 
 		}
-		#primary-nav ul.navigation li {
-		    font-size:0.7em;
+		#horizontal-nav ul.navigation li {
+		    font-size:0.75em;
 		}
 
-		#primary{
+		#main{
 			float: left;
 			width: 73%;
 			padding: 10px;
 			margin: 0;
 			background:#fff;
 		}
-		#secondary-nav li {
+		#contextual-nav li {
 		    font-size:1em;
 		    color: #000;
 		    background-color: none;
@@ -919,14 +920,14 @@
 
 		}
 
-		ul.navigation li a, #secondary-nav a {
+		ul.navigation li a, #contextual-nav a {
 		    color:#000;
 		    background-color: none;
 		    border:none;
 		    text-decoration: none;
 		}
 
-		#secondary .navigation{
+		#contextual .navigation{
 		    margin-right:1em;
 		    background-image: url(../../../archive/theme_uploads/bordure.png);
 		    background-repeat: repeat-x;
@@ -934,7 +935,7 @@
 		    padding-bottom:0em;
 		}
 
-		#secondary{
+		#contextual{
 		    float: left;
 		    width: 26%;
 		    margin: 0;
@@ -947,11 +948,11 @@
 		}
 
 		 /* Links */
-		#secondary a:link {color: #d2bd46; /* couleur AHN */}
-		#secondary  a:visited {color:#d2bd46;}
-		#secondary  a:hover {color:#BAA83E;}
-		#secondary  a:active {color:#BAA83E;}
-		#secondary-nav * {
+		#contextual a:link {color: #d2bd46; /* couleur AHN */}
+		#contextual  a:visited {color:#d2bd46;}
+		#contextual  a:hover {color:#BAA83E;}
+		#contextual  a:active {color:#BAA83E;}
+		#contextual-nav * {
 		    margin-bottom:0;
 		    background-color: none;
 		}
@@ -978,7 +979,7 @@
 		#logo-partenaire-principal {
 			display: none;
 		}
-		#primary{
+		#main{
 			float: left;
 			width: 90%;
 			padding-top:0%;
@@ -988,7 +989,7 @@
 			margin-left: -1%;
 			background:#fff;
 		}
-		#primary-nav {
+		#horizontal-nav {
 		text-align:left;
 		font-size:2em;
 		width:90%;
@@ -999,11 +1000,11 @@
 		font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 		}	
 
-		#primary-nav ul.navigation li{
+		#horizontal-nav ul.navigation li{
 			font-size:0.7em;
 		}
 
-		#primary-nav ul {
+		#horizontal-nav ul {
 			width: 60%;
 			text-align:left;
 			margin-left: 0.5%;
@@ -1012,11 +1013,11 @@
 			padding-bottom: 0px;
 		}
 
-		#primary-nav li {
+		#horizontal-nav li {
 			width:auto;
 		}
 
-		#primary-nav a {
+		#horizontal-nav a {
 			width:60%;
 			text-transform: uppercase;
 			text-align:left; 
@@ -1024,24 +1025,24 @@
 			padding: 0 0.5em;
 		}
 
-		#primary-nav a:link, #primary-nav a:visited {
+		#horizontal-nav a:link, #horizontal-nav a:visited {
 			color:#000; 
 			/*background:transparent;*/
 		}
 
-		#primary-nav a:hover {
+		#horizontal-nav a:hover {
 			color:#fff;
 		}
 
 
-		#primary-nav li.active {
+		#horizontal-nav li.active {
 			background:#FFFFFF;
 			padding-top: 1em;
 			padding-bottom: 0em;	
 			box-shadow: 5px 0px 12px #555; /* CSS3 */
 		}
 	      
-		#primary-nav li.active a{
+		#horizontal-nav li.active a{
 			color:#000;
 			background-color:#FFFFFF;
 			padding-bottom: 0em;
@@ -1049,7 +1050,7 @@
 			margin:0;
 		}
 		
-		#primary-nav li.active-trail {
+		#horizontal-nav li.active-trail {
 			background:#FFFFFF;
 			padding-top: 1em;
 			padding-bottom: 0em;	
@@ -1070,7 +1071,7 @@
 			padding-left: 1em;
 		 }
 
-		 #secondary-nav * {
+		 #contextual-nav * {
 		    margin-bottom:0;
 		    background-color: none;
 		}
@@ -1080,7 +1081,7 @@
 		    line-height: 1%;
 		}
 
-		ul.navigation li, #secondary-nav li {
+		ul.navigation li, #contextual-nav li {
 		    font-size:1em;
 		    color: #000;
 		    background-color: none;
@@ -1088,20 +1089,20 @@
 
 		}
 
-		ul.navigation li a, #secondary-nav a {
+		ul.navigation li a, #contextual-nav a {
 		    color:#000;
 		    background-color: none;
 		    border:none;
 		    text-decoration: none;
 		}
-		  #secondary .navigation{
+		  #contextual .navigation{
 		    margin-right:1em;
 		    background-image: url(../../../archive/theme_uploads/bordure.png);
 		    background-repeat: repeat-x;
 		    background-position: bottom;
 		    padding-bottom:0em;
 		}
-		#secondary{
+		#contextual{
 		    float: left;
 		    width: 107%;
 		    margin-left: -3%;
@@ -1114,10 +1115,10 @@
 		}
 
 		/* Links */
-		#secondary a:link {color: #d2bd46; /* couleur AHN */}
-		#secondary  a:visited {color:#d2bd46;}
-		#secondary  a:hover {color:#BAA83E;}
-		#secondary  a:active {color:#BAA83E;}
+		#contextual a:link {color: #d2bd46; /* couleur AHN */}
+		#contextual  a:visited {color:#d2bd46;}
+		#contextual  a:hover {color:#BAA83E;}
+		#contextual  a:active {color:#BAA83E;}
 
 		#logo-partenaire-principal {
 			display: none;
@@ -1145,9 +1146,9 @@
 
 	@media screen and (min-width:1440px)  {
 	    #content{width:1260px; }
-		#primary{width:960px;  }
-		#primary-nav ul {width: 1260px; margin-left:0.53447354%;}
-		#secondary{width:280px;}
+		#main{width:960px;  }
+		#horizontal-nav ul {width: 1260px; margin-left:0.53447354%;}
+		#contextual{width:26%;}
 	}
 /*                                                                       */	
 /* ***** ***** ***** ******* ****** ****** ******* ****** ****** ******* */
@@ -1195,7 +1196,7 @@
 	  }
   
 	  #search-container,
-	  #primary-nav,
+	  #horizontal-nav,
 	  #header-image,
 	  .navigation,
 	  .pagination,
