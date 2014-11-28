@@ -45,7 +45,7 @@ declare
   %output:method("xhtml") (: TODO content negociation :)
   function corpusList(){
     let $options := map {} (: specify an xslt mode and other kind of option :)
-    let $layout := $G:TEMPLATES || 'html.xhtml' (: global layout file template :)
+    let $layout := $G:TEMPLATES || 'simpleHtml.xhtml' (: global layout file template :)
     let $pattern := $G:TEMPLATES || 'tei_mentioned_list.xhtml' (: fragment layout template file (to be repeated or not) :)
     return synopsx.mapping.htmlWrapping:globalWrapper
       (
