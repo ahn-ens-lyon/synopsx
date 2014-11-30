@@ -1,5 +1,5 @@
 xquery version "3.0" ;
-module namespace synopsx.mapping.htmlWrapping = 'synopsx.mapping.htmlWrapping';
+module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping';
 (:~
  : This module is an HTML mapping for templating
  : @version 0.2 (Constantia edition)
@@ -27,7 +27,7 @@ import module namespace G = "synopsx.globals" at '../globals.xqm';
 
 
 (: use to avoid to prefix functions name:)
-declare default function namespace 'synopsx.mapping.htmlWrapping'; 
+declare default function namespace 'synopsx.mappings.htmlWrapping'; 
 
 (: Specify namespaces used by the models:)
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; 

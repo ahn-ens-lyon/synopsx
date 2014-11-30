@@ -1,7 +1,7 @@
 xquery version "3.0" ;
-module namespace synopsx.mapping.htmlUsers = 'synopsx.mapping.htmlUsers';
+module namespace synopsx.mappings.htmlBasket = 'synopsx.mappings.htmlBasket';
 (:~
- : This module is an HTML demo for Users
+ : This module is an HTML demo for a user's basket
  : @version 0.2 (Constantia edition)
  : @date 2014-11-10 
  : @author synopsx team
@@ -28,20 +28,39 @@ import module namespace Session = "http://basex.org/modules/session";
 import module namespace G = "synopsx.globals" at '../globals.xqm';
 
 (: Use a default namespace :)
-declare default function namespace 'synopsx.mapping.htmlUsers';
+declare default function namespace 'synopsx.mappings.htmlBasket';
 
 (:~
- : This function create a user
+ : This function is a form to register an user 
  :)
-declare function create-user($content, $options, $layout) {
+declare function form($content, $options, $layout) {
   let $tmpl := fn:doc($layout('layout'))
   
   return $tmpl update (
     replace node .//*:div[@id='content'] with (
-      <form action="/create-user/apply" method='post'>
-        <input type='text' name='name'/>
-        <input type='submit' value='Create'/>
-      </form>
+      let $items := $content('items')
+      let $status := $content('status')
+      return
+        <form action="/tei/select" method='post'>
+          { status($status) }
+          <input type='submit' value='ORDER'/>
+          <br/>
+          User: <input type='text' name='user' value='{ Session:get("user") }'/>
+          <br/>
+          {
+            let $selected := Session:get("selected")/item
+            for $item at $p in $items
+            return (
+              element input {
+                attribute type { 'checkbox' },
+                attribute name { 'items' },
+                attribute checked { 'checked' }[$p = $selected],
+                attribute value { $p },
+                $item/text()
+              },
+              <br/>
+            )
+        }</form>
     ),
     replace value of node .//*:title with $content('title')
   )
@@ -49,33 +68,9 @@ declare function create-user($content, $options, $layout) {
 
 
 (:~
- : This function list users
- :)
-declare function list-user($content, $options, $layout) {
-  let $tmpl := fn:doc($layout('layout'))
-  return $tmpl update (
-    replace node .//*:div[@id='content'] with (
-      status($content('status')),
-      <ul>
-      {
-        for $user in db:open('users')/users/user
-        let $name := $user/@name/fn:string()
-        (: let $name := $user/@name/string() :)
-        return 
-          <li>{ $name }  (<a href="delete-user/apply?name={ $name }">delete</a>)</li>
-      }
-      </ul>,
-      <form action='create-user'>
-        <input type='submit' value='Create User'/>
-      </form>
-    ),
-    replace value of node .//*:title with $content('title')
-  )
-};
-
-
-(:~
- : This function shows status
+ : This function check user status and return a message
+ : 
+ : @rmq To mutualise 
  :)
 declare function status(
   $status as xs:string

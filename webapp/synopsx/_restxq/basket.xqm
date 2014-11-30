@@ -30,7 +30,7 @@ import module namespace G = "synopsx.globals" at '../globals.xqm';
 
 import module namespace synopsx.webapp = 'synopsx.webapp' at 'webapp.xqm';
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
-import module namespace synopsx.mapping.htmlWrapping = 'synopsx.mapping.htmlWrapping' at '../mapping/htmlWrapping.xqm';
+import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm';
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: déclaration pour test :)
 
@@ -59,7 +59,7 @@ function synopsx.basket:tei(
   (:
   : @TODO negociation de contenu
   :)
-  return synopsx.mapping.htmlWrapping:render($content, $options, $layout)
+  return synopsx.mappings.htmlWrapping:render($content, $options, $layout)
 };
 
 

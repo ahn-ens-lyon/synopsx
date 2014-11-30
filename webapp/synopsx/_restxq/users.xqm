@@ -30,7 +30,7 @@ import module namespace Session = "http://basex.org/modules/session";
 import module namespace synopsx.webapp = 'synopsx.webapp' at 'webapp.xqm';
 
 import module namespace synopsx.models.tei = 'synopsx.models.tei'  at '../models/tei.xqm';
-import module namespace synopsx.mapping.htmlUsers = 'synopsx.mapping.htmlUsers'  at '../mapping/htmlUsers.xqm';
+import module namespace synopsx.mappings.htmlUsers = 'synopsx.mappings.htmlUsers'  at '../mappings/htmlUsers.xqm';
 
 
 (:~
@@ -49,7 +49,7 @@ function synopsx.users:create-user() {
   let $layout := map {
     'layout' := $G:HOME || 'templates/html.xhtml'
   }
-  return synopsx.mapping.htmlUsers:create-user($content, $options, $layout)
+  return synopsx.mappings.htmlUsers:create-user($content, $options, $layout)
 };
 
 
@@ -71,7 +71,7 @@ function synopsx.users:list-user(
   let $layout := map {
     'layout' := $G:HOME || 'templates/html.xhtml'
   }
-  return synopsx.mapping.htmlUsers:list-user($content, $options, $layout)
+  return synopsx.mappings.htmlUsers:list-user($content, $options, $layout)
 };
 
 (:~

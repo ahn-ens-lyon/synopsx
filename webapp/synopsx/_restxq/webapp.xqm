@@ -29,7 +29,7 @@ import module namespace G = "synopsx.globals" at '../globals.xqm';
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
 
 (: Put here all import declarations for mapping according to models :)
-import module namespace synopsx.mapping.htmlWrapping = 'synopsx.mapping.htmlWrapping' at '../mapping/htmlWrapping.xqm';
+import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm';
 
 (: Use a default namespace :)
 declare default function namespace 'synopsx.webapp';
@@ -47,7 +47,7 @@ declare
     let $options := map {} (: specify an xslt mode and other kind of option :)
     let $layout := $G:TEMPLATES || 'simpleHtml.xhtml' (: global layout file template :)
     let $pattern := $G:TEMPLATES || 'tei_mentioned_list.xhtml' (: fragment layout template file (to be repeated or not) :)
-    return synopsx.mapping.htmlWrapping:globalWrapper
+    return synopsx.mappings.htmlWrapping:globalWrapper
       (
         synopsx.models.tei:listCorpus(), $options, $layout, $pattern
       )
