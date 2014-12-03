@@ -1,5 +1,5 @@
-xquery version "3.0" ;
-module namespace G = "synopsx.globals";
+xquery version '3.0' ;
+module namespace G = 'synopsx.globals';
 (:~
  : This module gives the globals variables for SynopsX
  : @version 0.2 (Constantia edition)
@@ -44,8 +44,9 @@ declare variable $G:VIEWS :=  $G:SYNOPSX_DIR || '/synopsx/views/';
 declare variable $G:PROJECTS :=  $G:SYNOPSX_DIR || '/synopsx/projects/';
 
 (: Section dedicated to databases, specificities of a project:)
-declare variable $G:DBNAME := "gdp";
-
+declare variable $G:DBNAME := 'gdp';
+declare variable $G:BLOGDB := 'blog';
+declare variable $G:PROJECTEDITIONROOT := 'http://localhost:8984/gdp/';
 
 (:~ Status: everything ok. :)
 declare variable $G:OK := '1';
