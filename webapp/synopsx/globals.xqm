@@ -47,6 +47,7 @@ declare variable $G:PROJECTS :=  $G:SYNOPSX_DIR || '/synopsx/projects/';
 declare variable $G:DBNAME := 'gdp';
 declare variable $G:BLOGDB := 'blog';
 declare variable $G:PROJECTEDITIONROOT := 'http://localhost:8984/gdp/';
+declare variable $G:PROJECTBLOGROOT := 'http://localhost:8984/blog/';
 
 (:~ Status: everything ok. :)
 declare variable $G:OK := '1';
