@@ -1,5 +1,5 @@
-xquery version "3.0" ;
-module namespace G = "synopsx.globals";
+xquery version '3.0' ;
+module namespace G = 'synopsx.globals';
 (:~
  : This module gives the globals variables for SynopsX
  : @version 0.2 (Constantia edition)
@@ -27,15 +27,27 @@ declare variable $G:HOME := file:base-dir();
 
 declare variable $G:SYNOPSX_DIR := substring-before(file:base-dir(), 'webapp/synopsx') || 'webapp/';
 
+
+(: 
+declare variable $G:_RESTXQ := $G:HOME || '_restxq/';
+declare variable $G:MODELS :=  $G:HOME || 'models/';
+declare variable $G:TEMPLATES :=  $G:HOME || 'templates/';
+declare variable $G:MAPPINGS :=  $G:HOME || 'mappings/'; 
+:)
+
 declare variable $G:WEBAPP := file:current-dir() || 'webapp/'; (: TO CHECK :)
 
 declare variable $G:_RESTXQ := $G:SYNOPSX_DIR || '/synopsx/_restxq/';
 declare variable $G:MODELS :=  $G:SYNOPSX_DIR || '/synopsx/models/';
 declare variable $G:TEMPLATES :=  $G:SYNOPSX_DIR || '/synopsx/templates/';
 declare variable $G:VIEWS :=  $G:SYNOPSX_DIR || '/synopsx/views/';
+declare variable $G:PROJECTS :=  $G:SYNOPSX_DIR || '/synopsx/projects/';
 
 (: Section dedicated to databases, specificities of a project:)
-declare variable $G:DBNAME := "hyperdonat";
+declare variable $G:DBNAME := 'gdp';
+declare variable $G:BLOGDB := 'blog';
+declare variable $G:PROJECTEDITIONROOT := 'http://localhost:8984/gdp/';
+declare variable $G:PROJECTBLOGROOT := 'http://localhost:8984/blog/';
 
 (:~ Status: everything ok. :)
 declare variable $G:OK := '1';
