@@ -26,7 +26,7 @@ module namespace synopsx.webapp = 'synopsx.webapp';
 import module namespace G = "synopsx.globals" at '../globals.xqm';
 
 (: Put here all import modules declarations as needed :)
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei/tei.xqm';
 
 (: Put here all import declarations for mapping according to models :)
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm';
@@ -54,12 +54,24 @@ declare
 };
 
 
+
+
 (: Where everything will be decided later on :)
 declare function main($params){
     (:let $project := map:get($params,'project'):)
     $G:HOME
 };
 
+(: Where everything will be decided later on :)
+declare function main($params, $options, $layout){
+    (:let $project := map:get($params,'project'):)
+    copy $instanciated := fn:doc($layout) modify (
+      for $node in $instanciated//*[@data-function][fn:not(@data-model)]
+      return insert node attribute data-model {map:get($params, 'dataType')} into $node
+    )
+   (:  return $instanciated  :)
+     return  synopsx.mappings.htmlWrapping:globalWrapper($params, $options, $instanciated) 
+};
 
 (:~
  : To be use to implement the webapp entry points
@@ -120,7 +132,12 @@ function index($project, $dataType, $value) {
     "dataType" : $dataType,
     "value" : $value
   }
-  return main($params)
+  
+  let $options := map {} (: specify an xslt mode and other kind of option :)
+  let $layout  := $G:TEMPLATES || $project || '.xhtml'
+ (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
+  
+  return main($params, $options, $layout)
 };
 
 declare 

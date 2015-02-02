@@ -24,13 +24,17 @@ module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping'
  :)
 
 import module namespace G = "synopsx.globals" at '../globals.xqm';
-
-
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei/tei.xqm'; 
+import module namespace synopsx.models.globals = 'synopsx.models.globals' at '../models/globals/globals.xqm'; 
+import module namespace synopsx.models.ead = 'synopsx.models.ead' at '../models/ead/ead.xqm'; 
 (: use to avoid to prefix functions name:)
 declare default function namespace 'synopsx.mappings.htmlWrapping'; 
 
+
 (: Specify namespaces used by the models:)
-declare namespace html = 'http://www.w3.org/1999/xhtml'; 
+declare namespace html = 'http://www.w3.org/1999/xhtml';
+
+ 
 declare variable $synopsx.mappings.htmlWrapping:xslt := '../../static/xslt2/tei2html.xsl' ;
 
 (:~
@@ -144,7 +148,7 @@ declare function innerWrapper($meta, $content, $options, $pattern){
  : @change add flexibility to retrieve meta values and changes in variables names EC2014-11-15
  : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
  :)
-declare function globalWrapper($data, $options, $layout, $pattern){
+ declare function globalWrapper($data, $options, $layout, $pattern){
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data,'content')
   let $wrap := fn:doc($layout) (: open the global layout doc:)
@@ -159,6 +163,14 @@ declare function globalWrapper($data, $options, $layout, $pattern){
        (: else 
         replace node $text with (xslt:transform($value, '../../static/xslt2/tei2html5.xsl'))   :)
   )
+};
+
+declare function globalWrapper($params, $options, $layout){
+  copy $injected := $layout modify (
+    for $node in $injected//*[@data-function]
+     return insert node fn:function-lookup(xs:QName('synopsx.models.'||fn:string($node/@data-model)||':'||fn:trace(fn:string($node/@data-function))),1)($params) into $node
+  )  
+  return $injected
 };
 
 
