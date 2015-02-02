@@ -66,6 +66,8 @@ declare function main($params){
 declare function main($params, $options, $layout){
     (:let $project := map:get($params,'project'):)
     copy $instanciated := fn:doc($layout) modify (
+      (: adding the @data-model to the layout nodes when missing with the model specified in $params->dataType
+      :)
       for $node in $instanciated//*[@data-function][fn:not(@data-model)]
       return insert node attribute data-model {map:get($params, 'dataType')} into $node
     )

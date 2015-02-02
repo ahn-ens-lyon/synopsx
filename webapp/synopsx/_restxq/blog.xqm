@@ -27,7 +27,7 @@ module namespace synopsx.blog = 'synopsx.blog' ;
 import module namespace restxq = 'http://exquery.org/ns/restxq';
  
 import module namespace G = 'synopsx.globals' at '../globals.xqm' ;
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm' ;
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei/tei.xqm' ;
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ; 
 declare default function namespace 'synopsx.blog';
 

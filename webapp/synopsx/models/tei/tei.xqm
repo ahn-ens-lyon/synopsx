@@ -31,7 +31,7 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
  :)
-declare function listArticles() {
+declare function listArticles($params) {
   let $texts := db:open($G:BLOGDB)//tei:TEI
   let $lang := 'la'
   let $meta := map {
@@ -342,7 +342,7 @@ declare function getXmlTeiById($id as xs:string){
 declare function getTitle($content as element()*, $lang as xs:string){
   fn:string-join(
     fn:normalize-space(
-      for $title in $content//tei:titleStmt/tei:title(: [@type='main'] :)
+      for $title in $content//tei:titleStmt/tei:title[@type='main']
       return $title(: (:[fn:starts-with(@xml:lang, $lang)]:) :)
       ),
     ', ')

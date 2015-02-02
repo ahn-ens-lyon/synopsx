@@ -35,3 +35,7 @@ declare function  title($params) {
 declare function logo-partenaire-principal($params) {
   <img src="/static/img/logo_ENS_sm_blanc.png" alt="" />
 };
+
+declare function  horizontal-nav-entry($params) {
+  <ul><li>Test 1</li><li>Test 2</li></ul>
+};

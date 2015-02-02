@@ -87,7 +87,7 @@ declare function wrapper($data, $options, $layout, $pattern){
  : @toto modify to replace text nodes like "{quantity} éléments" (mixed content) EC2014-11-15
  : @toto treat in the same loop @* and text()
  :)
-declare function pattern($meta as map(*), $contents  as map(*), $options, $pattern  as xs:string) as document-node()* {
+(:declare function pattern($meta as map(*), $contents  as map(*), $options, $pattern  as xs:string) as document-node()* {
   map:for-each($contents, function($key, $content) {
     fn:doc($pattern) update (
       for $text in .//@*
@@ -104,7 +104,7 @@ declare function pattern($meta as map(*), $contents  as map(*), $options, $patte
           else replace node $text with $value
       )
   })
-};
+};:)
 
 (:~
  : This function wrap the content in an html layout
@@ -165,12 +165,46 @@ declare function innerWrapper($meta, $content, $options, $pattern){
   )
 };
 
+(:@date : 2/02/15:)
 declare function globalWrapper($params, $options, $layout){
   copy $injected := $layout modify (
-    for $node in $injected//*[@data-function]
-     return insert node fn:function-lookup(xs:QName('synopsx.models.'||fn:string($node/@data-model)||':'||fn:trace(fn:string($node/@data-function))),1)($params) into $node
+    (: Calling the function specified with :
+        - namespace:@data-model
+        - function-name:@data-function
+    :)
+    for $node in $injected//*[@data-function] 
+    let $result := fn:function-lookup(xs:QName('synopsx.models.'||fn:string($node/@data-model)||':'||fn:string($node/@data-function)),1)($params)
+    (: 
+      - If the function contains a node or a string the result is inserted
+      - If the function return a map, each item is wrapped according to the pattern specified in the @data-pattern, by calling the function pattern. 
+     :)
+    return typeswitch(fn:trace($result)) 
+      case map(*) return
+        let $meta := map:get($result, 'meta')
+        let $contents := map:get($result,'content') 
+        return map:for-each($contents, function($key, $content) {
+         insert node pattern($meta, $content, $options, $G:TEMPLATES||fn:string($node/@data-pattern)||'.xhtml') into $node
+    })
+      default
+       return insert node fn:function-lookup(xs:QName('synopsx.models.'||fn:string($node/@data-model)||':'||fn:string($node/@data-function)),1)($params) into $node 
+         
   )  
   return $injected
+};
+
+(:@date : 2/02/15:)
+declare function pattern($meta as map(*), $content  as map(*), $options, $pattern  as xs:string) as document-node()* {
+  copy $injected := fn:doc($pattern) modify (
+    map:for-each($content, function($key, $item) {
+        for $node in $injected//.[@data-key=$key]
+          return replace value of node $node with fn:string($item) ,
+        for $attribute in $injected//@*[fn:matches(.,'\{'||$key||'\}')]
+          let $key := fn:replace($attribute, '\{|\}', '')
+          return
+            replace value of node $attribute with fn:string($item)
+    })
+)
+return $injected
 };
 
 

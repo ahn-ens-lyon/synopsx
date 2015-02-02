@@ -1,0 +1,20 @@
+<config>
+  <default>
+    <maxchars>100000</maxchars>
+    <maxrows>500</maxrows>
+    <language>en</language>
+    <timeout>5</timeout>
+    <memory>100</memory>
+    <permission>write</permission>
+  </default>
+  <!-- salt: xs:base64Binary(xs:hexBinary(replace(random:uuid(), '-', '')))
+       password: '$5$' || salt || '$' || hash:sha256(salt || pw) -->
+  <user>
+    <name>basex</name>
+    <password>$5$UzpsKQovx0LNdxrLonQ3Ag==$4OCJgSe1miSMoO4oW/+Gv/qghKXtQiR1GZX9Mr8E3Ng=</password>
+  </user>
+  <user>
+    <name>admin</name>
+    <password>$5$Zuo98QGaRICw52pC02MPDA==$+WcF9Z7yrg/hDGZjF5arHZn94oc4bFXTZNEPLU0lOc8=</password>
+  </user>
+</config>
