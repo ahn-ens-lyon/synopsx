@@ -45,9 +45,9 @@ declare
   %output:method("xhtml") (: TODO content negociation :)
   function corpusList(){
     let $options := map {} (: specify an xslt mode and other kind of option :)
-    let $layout := $G:TEMPLATES || 'simpleHtml.xhtml' (: global layout file template :)
-    let $pattern := $G:TEMPLATES || 'tei_mentioned_list.xhtml' (: fragment layout template file (to be repeated or not) :)
-    return synopsx.mappings.htmlWrapping:globalWrapper
+    let $layout  := $G:TEMPLATES || 'blogHtml5.xhtml'
+  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml'
+    return synopsx.mappings.htmlWrapping:wrapper
       (
         synopsx.models.tei:listCorpus(), $options, $layout, $pattern
       )
@@ -76,8 +76,8 @@ declare
   %output:doctype-public("xhtml")
 function index() {
   let $params := map {
-    "project" := "synopsx",
-    "dataType" := "home"
+    "project" : "synopsx",
+    "dataType" : "home"
   }
   return main($params)
 };
@@ -89,8 +89,8 @@ declare
   %output:doctype-public("xhtml")
 function index($project) {
   let $params := map {
-    "project" := $project,
-    "dataType" := "home"
+    "project" : $project,
+    "dataType" : "home"
   }
   return main($params)
 };
@@ -103,8 +103,8 @@ declare
   %output:doctype-public("xhtml")
 function index($project, $dataType) {
   let $params := map {
-    "project" := $project,
-    "dataType" := $dataType
+    "project" : $project,
+    "dataType" : $dataType
   }
   return main($params)
 };
@@ -116,9 +116,9 @@ declare
   %output:doctype-public("xhtml")
 function index($project, $dataType, $value) {
   let $params := map {
-    "project" := $project,
-    "dataType" := $dataType,
-    "value" := $value
+    "project" : $project,
+    "dataType" : $dataType,
+    "value" : $value
   }
   return main($params)
 };
@@ -129,11 +129,11 @@ declare
   %output:omit-xml-declaration("no")
   %output:doctype-public("xhtml")
 function index($project, $dataType, $value, $option) {
-  let $params := map {
-    "project" := $project,
-    "dataType" := $dataType,
-    "value" := $value,
-    "option" := $option
+  let $params :=  map {
+    "project" : $project,
+    "dataType" : $dataType,
+    "value" : $value,
+    "option" : $option
   }
   return main($params)
 };

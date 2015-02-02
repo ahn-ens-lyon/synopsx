@@ -42,12 +42,12 @@ declare
 function synopsx.users:create-user() {
   let $format as xs:string := 'html' (: par défaut on produit du html:)
   let $content := map {
-    'title' := synopsx.models.tei:title(),
-    'items' := ()
+    'title' : synopsx.models.tei:title(),
+    'items' : ()
   }
   let $options := map { }
   let $layout := map {
-    'layout' := $G:HOME || 'templates/html.xhtml'
+    'layout' : $G:HOME || 'templates/html.xhtml'
   }
   return synopsx.mappings.htmlUsers:create-user($content, $options, $layout)
 };
@@ -65,11 +65,11 @@ function synopsx.users:list-user(
 ) {
   let $format as xs:string := 'html' (: par défaut on produit du html:)
   let $content := map {
-    'status' := $status
+    'status' : $status
   }
   let $options := map { }
   let $layout := map {
-    'layout' := $G:HOME || 'templates/html.xhtml'
+    'layout' : $G:HOME || 'templates/html.xhtml'
   }
   return synopsx.mappings.htmlUsers:list-user($content, $options, $layout)
 };

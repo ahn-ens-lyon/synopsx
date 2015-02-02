@@ -98,7 +98,7 @@ function articleXml($entryId as xs:string){
 
 (:~
  : resource function to search blog posts
- : 
+ :
  : `guidesdeparis.net/blog/posts/search?q=query` 
  : ou bien `guidesdeparis.net/blog/posts?q=query`
  : ?? `added_after`, `blog`, `blog_tag`, `pmid`, `tag`, `term`
@@ -107,18 +107,18 @@ function articleXml($entryId as xs:string){
 declare 
   %restxq:path('/blog/search')
 function search(){
- 'toto'
+ <html>A faire :)</html>
 };
 
 
 (:~
  : resource function for collection of tags
- : 
+ :
  :)
 declare
   %restxq:path('/blog/tags')
 function tags(){
-  'todo'
+  <html>A faire :)</html>
 };
 
 
@@ -129,7 +129,7 @@ function tags(){
 declare
   %restxq:path('/blog/tags/{$tagId}')
 function entriesByTagId($tagId as xs:string){
-  'todo'
+  <html>A faire :)</html>
 };
 
 
@@ -140,7 +140,7 @@ function entriesByTagId($tagId as xs:string){
 declare
   %restxq:path('/blog/categories')
 function categories(){
-  'todo'
+  <html>A faire :)</html>
 };
 
 
@@ -151,7 +151,7 @@ function categories(){
 declare
   %restxq:path('/blog/categories/{$categoryId}')
 function entriesByCategoryId($categoryId as xs:string){
-  'todo'
+  <html>A faire :)</html>
 };
 
 
@@ -162,7 +162,7 @@ function entriesByCategoryId($categoryId as xs:string){
 declare
   %restxq:path('/blog/authors')
 function entriesByCategoryId(){
-  'todo'
+  <html>A faire :)</html>
 };
 
 
@@ -173,5 +173,5 @@ function entriesByCategoryId(){
 declare
   %restxq:path('/blog/authors/{$authorId}')
 function categories($authorId as xs:string){
-  'todo'
+  <html>A faire :)</html>
 };

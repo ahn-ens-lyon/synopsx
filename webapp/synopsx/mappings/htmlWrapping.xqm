@@ -154,10 +154,10 @@ declare function globalWrapper($data, $options, $layout, $pattern){
       let $key := fn:replace($text, '\{|\}', '')
       let $value := map:get($meta,$key)
     return 
-      if ($key = 'content') then 
+    (:  if ($key = 'content') then    :)
         replace node $text with pattern($meta, $contents, $options, $pattern)
-      else 
-        replace node $text with (xslt:transform($value, '../../static/xslt2/tei2html5.xsl'))
+       (: else 
+        replace node $text with (xslt:transform($value, '../../static/xslt2/tei2html5.xsl'))   :)
   )
 };
 

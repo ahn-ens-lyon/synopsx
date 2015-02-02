@@ -46,15 +46,15 @@ function synopsx.basket:tei(
 ) {
   let $format as xs:string := 'html' (: par défaut on produit du html:)
   let $content as map(*) := map {
-    'title' := synopsx.models.tei:title(),
-    'items' := synopsx.models.tei:listItems(),
-    'status':= $status
+    'title' : synopsx.models.tei:title(),
+    'items' : synopsx.models.tei:listItems(),
+    'status': $status
   }
   let $options as map(*) := map {
-        'mode' := 'short'  
+        'mode' : 'short'  
     }
   let $layout as map(*) := map {
-        'layout' := $G:TEMPLATES || 'html.xhtml'
+        'layout' : $G:TEMPLATES || 'html.xhtml'
     }
   (:
   : @TODO negociation de contenu
