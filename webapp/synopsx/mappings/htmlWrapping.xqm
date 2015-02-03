@@ -43,7 +43,7 @@ declare variable $synopsx.mappings.htmlWrapping:xslt := '../../static/xslt2/tei2
  : @return replace node or value of node in the template with value from the map
  :  
  : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
- : @todo treat mixted content p.e.: "{quantity} éléments"
+ : @todo treat mixted content e.g. "{quantity} éléments"
  : @todo treat in the same loop @* and text()
  :)
 declare function wrapper($data, $options, $layout, $pattern){

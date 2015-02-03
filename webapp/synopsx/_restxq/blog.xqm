@@ -56,7 +56,7 @@ function home(){
     "value" : '$value',
     "option" : '$option'
   }
-  let $data    := synopsx.models.tei:listArticles($params)
+  let $data    := synopsx.models.tei:listTexts($params)
   let $options := map {'sorting' : 'descending'} (: todo :)
   let $layout  := $G:TEMPLATES || 'blogHtml5.xhtml'
   let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml'

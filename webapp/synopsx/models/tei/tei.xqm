@@ -30,8 +30,10 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
 
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
+ : @todo use params to select the contents to return
+ : e.g. return all the texts containing a given persName corpusId/persName/personID gdp/persName/sauval33
  :)
-declare function listArticles($params) {
+declare function listTexts($params) {
   let $texts := db:open($G:BLOGDB)//tei:TEI
   let $lang := 'la'
   let $meta := map {
@@ -202,6 +204,8 @@ declare function mentioned($item) as map(*) {
     'term' : $item/text()
   }
 };
+
+
 
 (:~
  : ~:~:~:~:~:~:~:~:~

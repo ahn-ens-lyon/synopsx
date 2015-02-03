@@ -59,7 +59,7 @@ function synopsx.basket:tei(
   (:
   : @TODO negociation de contenu
   :)
-  return synopsx.mappings.htmlWrapping:render($content, $options, $layout)
+  return '' (: @depreciated synopsx.mappings.htmlWrapping:render($content, $options, $layout) :)
 };
 
 
