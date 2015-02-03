@@ -50,7 +50,13 @@ function blog(){
 declare 
   %restxq:path('/blog/home')
 function home(){
-  let $data    := synopsx.models.tei:listArticles()
+  let $params :=  map {
+    "project" : '$project',
+    "dataType" : '$dataType',
+    "value" : '$value',
+    "option" : '$option'
+  }
+  let $data    := synopsx.models.tei:listArticles($params)
   let $options := map {'sorting' : 'descending'} (: todo :)
   let $layout  := $G:TEMPLATES || 'blogHtml5.xhtml'
   let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml'
