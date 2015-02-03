@@ -45,7 +45,7 @@ declare variable $G:VIEWS :=  $G:SYNOPSX_DIR || '/synopsx/views/';
 declare variable $G:PROJECTS :=  $G:SYNOPSX_DIR || '/synopsx/projects/';
 
 (: Section dedicated to databases, specificities of a project:)
-declare variable $G:DBNAME := fn:doc($G:configfile)/'projects/project';
+declare variable $G:DBNAME := fn:doc($G:configfile)/projects/project;
 declare variable $G:BLOGDB := 'blog';
 declare variable $G:PROJECTEDITIONROOT := 'http://localhost:8984/gdp/';
 declare variable $G:PROJECTBLOGROOT := 'http://localhost:8984/blog/';

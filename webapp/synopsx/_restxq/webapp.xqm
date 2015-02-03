@@ -55,34 +55,18 @@ declare
 
 
 
-
-(: Where everything will be decided later on :)
-declare function main($params){
-    (:let $project := map:get($params,'project'):)
-    $G:HOME
-};
-
-(: Where everything will be decided later on :)
-declare function main($params, $options, $layout){
-    (:let $project := map:get($params,'project'):)
-    copy $instanciated := fn:doc($layout) modify (
-      (: adding the @data-model to the layout nodes when missing with the model specified in $params->dataType
-      :)
-      for $node in $instanciated//*[@data-function][fn:not(@data-model)]
-      return insert node attribute data-model {map:get($params, 'dataType')} into $node
-    )
-   (:  return $instanciated  :)
-     return  synopsx.mappings.htmlWrapping:globalWrapper($params, $options, $instanciated) 
-};
-
 (:~
+ : @@@@@@@@@@@@@@@@@@@@
  : To be use to implement the webapp entry points
  : Used in the last version of synopsx  
- :
+ : @@@@@@@@@@@@@@@@@@@@
  : These five functions analyze the given path and retrieve the data
  :
  :)
 
+(:~
+ : This resource function 
+ :)
 declare 
   %restxq:path("")
   %output:method("xhtml")
@@ -96,6 +80,9 @@ function index() {
   return main($params)
 };
 
+(:~
+ : This resource function 
+ :)
 declare 
   %restxq:path("{$project}")
   %output:method("xhtml")
@@ -109,7 +96,9 @@ function index($project) {
   return main($params)
 };
 
-
+(:~
+ : This resource function 
+ :)
 declare 
   %restxq:path("{$project}/{$dataType}")
   %output:method("xhtml")
@@ -123,6 +112,9 @@ function index($project, $dataType) {
   return main($params)
 };
 
+(:~
+ : This resource function 
+ :)
 declare
   %restxq:path("{$project}/{$dataType}/{$value}")
   %output:method("xhtml")
@@ -134,14 +126,15 @@ function index($project, $dataType, $value) {
     "dataType" : $dataType,
     "value" : $value
   }
-  
   let $options := map {} (: specify an xslt mode and other kind of option :)
   let $layout  := $G:TEMPLATES || $project || '.xhtml'
- (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
-  
+  (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
   return main($params, $options, $layout)
 };
 
+(:~
+ : This resource function 
+ :)
 declare 
   %restxq:path("{$project}/{$dataType}/{$value}/{$option}")
   %output:method("xhtml")
@@ -155,4 +148,33 @@ function index($project, $dataType, $value, $option) {
     "option" : $option
   }
   return main($params)
+};
+
+(:~
+ : @@@@@@@@@@@@
+ : Function library
+ : @@@@@@@@@@@@
+ :)
+
+(:~
+ : This function (temporary) calls entry points
+ :)
+declare function main($params){
+    (:let $project := map:get($params,'project'):)
+    $G:HOME
+};
+
+(:~
+ : This function is Where everything will be decided later on
+ :) 
+declare function main($params, $options, $layout){
+    (:let $project := map:get($params,'project'):)
+    copy $instanciated := fn:doc($layout) modify (
+      (: adding the @data-model to the layout nodes when missing with the model specified in $params->dataType
+      :)
+      for $node in $instanciated//*[@data-function][fn:not(@data-model)]
+      return insert node attribute data-model {map:get($params, 'dataType')} into $node
+    )
+   (:  return $instanciated  :)
+     return  synopsx.mappings.htmlWrapping:globalWrapper($params, $options, $instanciated) 
 };

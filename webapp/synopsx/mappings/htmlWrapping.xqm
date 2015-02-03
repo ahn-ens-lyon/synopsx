@@ -2,9 +2,9 @@ xquery version "3.0" ;
 module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping';
 (:~
  : This module is an HTML mapping for templating
- : @version 0.2 (Constantia edition)
- : @date 2014-11-10 
- : @author synopsx team
+ : @since 2014-11-10 
+ : @version 0.3 (Constantia edition)
+ : @author synopsx's team
  :
  : This file is part of SynopsX.
  : created by AHN team (http://ahn.ens-lyon.fr)
@@ -27,34 +27,24 @@ import module namespace G = "synopsx.globals" at '../globals.xqm';
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei/tei.xqm'; 
 import module namespace synopsx.models.globals = 'synopsx.models.globals' at '../models/globals/globals.xqm'; 
 import module namespace synopsx.models.ead = 'synopsx.models.ead' at '../models/ead/ead.xqm'; 
-(: use to avoid to prefix functions name:)
-declare default function namespace 'synopsx.mappings.htmlWrapping'; 
 
+declare default function namespace 'synopsx.mappings.htmlWrapping';
 
-(: Specify namespaces used by the models:)
 declare namespace html = 'http://www.w3.org/1999/xhtml';
 
- 
 declare variable $synopsx.mappings.htmlWrapping:xslt := '../../static/xslt2/tei2html.xsl' ;
 
 (:~
- : this function can eventually call an innerWrapper to perform intermediate wrappings 
- : @data brought by the model (is a map of meta data and content data)
- : @options are the rendering options (not used yet)
- : @layout is the global layout
- : @pattern is the fragment layout 
- :
  : This function wrap the content in an html layout
- :
- : @data a map built by the model with meta values
- : @options options for rendering (not in use yet)
- : @layout path to the global wrapper html file
- : @pattern path to the html fragment layout 
- : 
+ : @param $data brought by the model (is a map of meta data and content data)
+ : @param $options are the rendering options (not used yet)
+ : @param $layout path to the global layout
+ : @param $pattern path to the fragment layout 
+ : @return replace node or value of node in the template with value from the map
+ :  
  : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
- : @change add flexibility to retrieve meta values and changes in variables names EC2014-11-15
- : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
- : @toto treat in the same loop @* and text()
+ : @todo treat mixted content p.e.: "{quantity} éléments"
+ : @todo treat in the same loop @* and text()
  :)
 declare function wrapper($data, $options, $layout, $pattern){
   let $meta := map:get($data, 'meta')
@@ -165,15 +155,20 @@ declare function innerWrapper($meta, $content, $options, $pattern){
   )
 };
 
-(:@date : 2/02/15:)
+(:~
+ : This function 
+ : @param $params transformation params
+ : @param $options options params
+ : @param $layout layout file
+ :)
 declare function globalWrapper($params, $options, $layout){
-  copy $injected := $layout modify (
+  copy $injected := $layout modify ( 
     (: Calling the function specified with :
         - namespace:@data-model
         - function-name:@data-function
     :)
     for $node in $injected//*[@data-function] 
-    let $result := fn:function-lookup(xs:QName('synopsx.models.'||fn:string($node/@data-model)||':'||fn:string($node/@data-function)),1)($params)
+    let $result := fn:function-lookup(xs:QName('synopsx.models.' || fn:string($node/@data-model) || ':' || fn:string($node/@data-function)), 1)($params)
     (: 
       - If the function contains a node or a string the result is inserted
       - If the function return a map, each item is wrapped according to the pattern specified in the @data-pattern, by calling the function pattern. 
@@ -183,12 +178,11 @@ declare function globalWrapper($params, $options, $layout){
         let $meta := map:get($result, 'meta')
         let $contents := map:get($result,'content') 
         return map:for-each($contents, function($key, $content) {
-         insert node pattern($meta, $content, $options, $G:TEMPLATES||fn:string($node/@data-pattern)||'.xhtml') into $node
+         insert node pattern($meta, $content, $options, $G:TEMPLATES || fn:string($node/@data-pattern) || '.xhtml') into $node
     })
       default
-       return insert node fn:function-lookup(xs:QName('synopsx.models.'||fn:string($node/@data-model)||':'||fn:string($node/@data-function)),1)($params) into $node 
-         
-  )  
+       return insert node fn:function-lookup(xs:QName('synopsx.models.' || fn:string($node/@data-model) || ':' || fn:string($node/@data-function)), 1)($params) into $node
+     )  
   return $injected
 };
 
@@ -206,47 +200,3 @@ declare function pattern($meta as map(*), $content  as map(*), $options, $patter
 )
 return $injected
 };
-
-
-(: deprecated function, check dependencies : use by c_tmpl.xhtml :)
-declare  %updating function to-delete($items){
-  for $item in $items
-  let $name := fn:local-name($item) (: brings back the local-name (ead:unitid --> unitid) :)
-  let $tmpl := fn:doc($name || "_tmpl.xhtml") 
-  return 
-    insert node $item into $tmpl
-};
-
-
-(: deprecated function, check dependencies with htmlBasket.xqm and htmlUsers.xqm :)
-declare function render($content, $options, $layout){
-  let $tmpl := fn:doc($layout('layout'))
-  return $tmpl update (
-    for $node in $content('items')
-    return
-      insert node (xslt:transform($node, $G:WEBAPP || 'static/xslt2/tei2html5.xsl',$options)) into .//html:div[@id='content'],
-      replace node .//html:title with $content('title')
-  )
-};
-
-
-
-(:~
- : deprecated function
- : This function should be a wrapper (BN : first version with no recursive inputs, formerly used for simple usage)
- : @data brought by the model (cf map of meta and content)
- : @options are the rendering options (not used yet)
- : @layout is the global layout
- : @pattern is the fragment layout 
- : 
- : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
- :)
-(: declare function wrapper($data as map(*), $options, $layout as xs:string, $pattern as xs:string){
-  let $meta := map:get($data, 'meta')
-  let $content := map:get($data,'content')
-  let $tmpl := fn:doc($layout) (: open the global layout doc:)
-  return $tmpl update (    
-    replace node .//*:title/text() with map:get($meta, 'title'), (: replacing html title with the $meta title :)
-    insert node pattern($content, $pattern, $options) into .//html:div[@title='main'] (: see function below :)
-  )
-}; :)
