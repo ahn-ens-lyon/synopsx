@@ -171,7 +171,8 @@ function textsByPerson($project, $value) {
   let $params := map {
     "project" : $project,
     "dataType" : 'persName',
-    "value" : $value
+    "value" : $value,
+    "model" : 'tei'
   }
   let $options := map {} (: specify an xslt mode and other kind of option :)
   let $template := 'multi.xhtml'
@@ -215,7 +216,7 @@ declare function main($params){
 declare function main($params as map(*), $options as map(*), $layout as xs:string){
   copy $template := fn:doc($layout) modify (
     for $node in $template//*[@data-function][fn:not(@data-model)]
-    return insert node attribute data-model {map:get($params, 'dataType')} into $node
+    return insert node attribute data-model {map:get($params, 'model')} into $node
     )
     return synopsx.mappings.htmlWrapping:globalWrapper($params, $options, $template)
 };
