@@ -29,7 +29,7 @@ import module namespace Session = "http://basex.org/modules/session";
 
 import module namespace synopsx.webapp = 'synopsx.webapp' at 'webapp.xqm';
 
-import module namespace synopsx.models.tei = 'synopsx.models.tei'  at '../models/tei/tei.xqm';
+import module namespace synopsx.models.tei = 'synopsx.models.tei'  at '../models/tei.xqm';
 import module namespace synopsx.mappings.htmlUsers = 'synopsx.mappings.htmlUsers'  at '../mappings/htmlUsers.xqm';
 
 
