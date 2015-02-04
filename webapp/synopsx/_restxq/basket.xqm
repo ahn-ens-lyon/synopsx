@@ -27,10 +27,11 @@ module namespace synopsx.basket = 'synopsx.basket';
 import module namespace Session = "http://basex.org/modules/session";
 
 import module namespace G = "synopsx.globals" at '../globals.xqm';
-
+import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm';
 import module namespace synopsx.webapp = 'synopsx.webapp' at 'webapp.xqm';
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei/tei.xqm';
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm';
+
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: déclaration pour test :)
 
@@ -44,13 +45,17 @@ declare
 function synopsx.basket:tei(
   $status  as xs:string?
 ) {
+  let $queryParams := map {
+    "project" : 'basket',
+    "dataType" : 'home'
+      }
   let $format as xs:string := 'html' (: par défaut on produit du html:)
   let $content as map(*) := map {
-    'title' : synopsx.models.tei:title(),
-    'items' : synopsx.models.tei:listItems(),
+    'title' : synopsx.models.tei:title($queryParams),
+    'items' : synopsx.models.tei:listItems($queryParams),
     'status': $status
   }
-  let $options as map(*) := map {
+  let $outputParams as map(*) := map {
         'mode' : 'short'  
     }
   let $layout as map(*) := map {
@@ -59,7 +64,7 @@ function synopsx.basket:tei(
   (:
   : @TODO negociation de contenu
   :)
-  return synopsx.mappings.htmlWrapping:render($content, $options, $layout)
+  return '' (: @depreciated synopsx.mappings.htmlWrapping:render($content, $outputParams, $layout) :)
 };
 
 

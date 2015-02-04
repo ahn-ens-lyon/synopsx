@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<config>
+  <projects>
+    <project xml:lang="fre"> 
+        <!-- @version TODO -->
+        <resourceName>projectName1</resourceName>
+        <dbName>databaseName1</dbName>
+        <dbAdmin>
+          <adminName>admin</adminName>
+          <adminPassword>admin</adminPassword>
+        </dbAdmin> 
+    </project>   
+    <project xml:lang="fre"> 
+        <!-- @version TODO -->
+        <resourceName>projectName2</resourceName>
+        <dbName>databaseName2</dbName>
+        <dbAdmin>
+          <adminName>admin</adminName>
+          <adminPassword>admin</adminPassword>
+        </dbAdmin> 
+    </project> 
+  </projects>
+</config>

@@ -34,14 +34,14 @@ declare function search:query (
    $word as xs:string
 ){
   let $ftindex := db:info($db)//ftindex = 'true'
-  let $options := map {
+  let $outputParams := map {
     'mode' : 'all words',
     'fuzzy' : true()
   }
   return if ($ftindex) then (
-            ft:search($db, $word, $options)
+            ft:search($db, $word, $outputParams)
   )else ( 
-            db:open($db)//*[ft:contains($db, $word, $options)]
+            db:open($db)//*[ft:contains($db, $word, $outputParams)]
     )
     
 }; 

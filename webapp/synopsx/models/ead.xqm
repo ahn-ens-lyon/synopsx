@@ -23,16 +23,16 @@ module namespace synopsx.models.ead = 'synopsx.models.ead';
  :
  :)
 
-import module namespace G = "synopsx.globals" at '../../globals.xqm'; (: import globals variables :)
+import module namespace G = "synopsx.globals" at '../globals.xqm'; (: import globals variables :)
 
 declare default function namespace 'synopsx.models.ead'; (: This is the default namespace:)
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
 
-declare function  horizontal-nav-entry($params) {
+declare function  horizontal-nav-entry($queryParams) {
   <ul><li>Test 1</li><li>Test 2</li></ul>
 };
 
 
-declare function  main($params) {
+declare function  main($queryParams) {
   <section>Le corps de la page</section>
 };

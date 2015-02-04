@@ -26,133 +26,163 @@ module namespace synopsx.webapp = 'synopsx.webapp';
 import module namespace G = "synopsx.globals" at '../globals.xqm';
 
 (: Put here all import modules declarations as needed :)
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei/tei.xqm';
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
 
 (: Put here all import declarations for mapping according to models :)
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm';
+
+import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm';
 
 (: Use a default namespace :)
 declare default function namespace 'synopsx.webapp';
 
 (:~
- : This resource function return the corpus item
+ : this resource function return the corpus item
  : 
  : @return an xhtml page binding layout templates and models
  : @rmq demo function for templating
  :)
-declare 
+(: declare 
   %restxq:path('/corpus')
   %output:method("xhtml") (: TODO content negociation :)
   function corpusList(){
-    let $options := map {} (: specify an xslt mode and other kind of option :)
-    let $layout  := $G:TEMPLATES || 'blogHtml5.xhtml'
-  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml'
-    return synopsx.mappings.htmlWrapping:wrapper
+    let $queryParams := map {
+    "project" : 'hyperdonat',
+    "dataType" : 'persName',
+    "model" : 'synopsx.models.tei',
+    "dbName" : synopsx.lib.commons:getProjectDB('hyperdonat')
+      }
+    let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
+    let $layout  := synopsx.lib.commons:getLayoutPath($queryParams, 'home.xhtml')
+    return synopsx.lib.commons:main
       (
-        synopsx.models.tei:listCorpus(), $options, $layout, $pattern
+        synopsx.models.tei:listCorpus($queryParams), $outputParams, $layout
       )
-};
+}; :)
 
 
-
-
-(: Where everything will be decided later on :)
-declare function main($params){
-    (:let $project := map:get($params,'project'):)
-    $G:HOME
-};
-
-(: Where everything will be decided later on :)
-declare function main($params, $options, $layout){
-    (:let $project := map:get($params,'project'):)
-    copy $instanciated := fn:doc($layout) modify (
-      (: adding the @data-model to the layout nodes when missing with the model specified in $params->dataType
-      :)
-      for $node in $instanciated//*[@data-function][fn:not(@data-model)]
-      return insert node attribute data-model {map:get($params, 'dataType')} into $node
-    )
-   (:  return $instanciated  :)
-     return  synopsx.mappings.htmlWrapping:globalWrapper($params, $options, $instanciated) 
-};
 
 (:~
+ : ~:~:~:~:~:~:~:~:~
  : To be use to implement the webapp entry points
  : Used in the last version of synopsx  
- :
+ : ~:~:~:~:~:~:~:~:~
  : These five functions analyze the given path and retrieve the data
  :
  :)
 
+(:~
+ : this resource function 
+ :)
 declare 
   %restxq:path("")
   %output:method("xhtml")
   %output:omit-xml-declaration("no")
   %output:doctype-public("xhtml")
 function index() {
-  let $params := map {
-    "project" : "synopsx",
-    "dataType" : "home"
+  let $queryParams := map {
+    'project' : 'synopsx',
+    'dataType' : 'home',
+    'model' : 'synopsx.models.tei'
   }
-  return main($params)
+  let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
+  let $layout  := synopsx.lib.commons:getLayoutPath($queryParams, 'home.xhtml')
+  return synopsx.lib.commons:main($queryParams, $outputParams, $layout)
 };
 
+(:~
+ : this resource function 
+ :)
 declare 
   %restxq:path("{$project}")
   %output:method("xhtml")
   %output:omit-xml-declaration("no")
   %output:doctype-public("xhtml")
 function index($project) {
-  let $params := map {
+  let $queryParams := map {
     "project" : $project,
-    "dataType" : "home"
-  }
-  return main($params)
+    "model" : 'synopsx.models.tei',
+    "dbName" : synopsx.lib.commons:getProjectDB($project)
+      }
+  let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
+  let $template := 'multi.xhtml'
+  let $layout  := synopsx.lib.commons:getLayoutPath($queryParams, $template)
+  (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
+  return synopsx.lib.commons:main($queryParams, $outputParams, $layout)
 };
 
-
+(:~
+ : this resource function 
+ :)
 declare 
   %restxq:path("{$project}/{$dataType}")
   %output:method("xhtml")
   %output:omit-xml-declaration("no")
   %output:doctype-public("xhtml")
 function index($project, $dataType) {
-  let $params := map {
+  let $queryParams := map {
     "project" : $project,
-    "dataType" : $dataType
-  }
-  return main($params)
+    "dataType" : $dataType,
+    "model" : 'synopsx.models.tei',
+    "dbName" : synopsx.lib.commons:getProjectDB($project)
+      }
+  let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
+  let $template := 'multi.xhtml'
+  let $layout  := synopsx.lib.commons:getLayoutPath($queryParams, $template)
+  (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
+  return synopsx.lib.commons:main($queryParams, $outputParams, $layout)
 };
 
+(:~
+ : this resource function gets texts containing a given persName
+ : @param $project project name
+ : @param $value resource id
+ : @return builds a $queryParams map with url path, and calls main function with $queryParams, $outputParams and a $layout constructed by the project
+ : @todo give options e.g. language from browser
+ :)
 declare
   %restxq:path("{$project}/{$dataType}/{$value}")
   %output:method("xhtml")
   %output:omit-xml-declaration("no")
   %output:doctype-public("xhtml")
-function index($project, $dataType, $value) {
-  let $params := map {
+function textsByPerson($project, $dataType, $value) {
+  let $queryParams := map {
     "project" : $project,
     "dataType" : $dataType,
-    "value" : $value
-  }
-  
-  let $options := map {} (: specify an xslt mode and other kind of option :)
-  let $layout  := $G:TEMPLATES || $project || '.xhtml'
- (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
-  
-  return main($params, $options, $layout)
+    "value" : $value,
+    "model" : 'synopsx.models.tei',
+    "dbName" : synopsx.lib.commons:getProjectDB($project)
+      }
+  let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
+  let $template := 'multi.xhtml'
+  let $layout  := synopsx.lib.commons:getLayoutPath($queryParams, $template)
+  (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
+  return synopsx.lib.commons:main($queryParams, $outputParams, $layout)
 };
 
+(:~
+ : this resource function 
+ :)
 declare 
   %restxq:path("{$project}/{$dataType}/{$value}/{$option}")
   %output:method("xhtml")
   %output:omit-xml-declaration("no")
   %output:doctype-public("xhtml")
 function index($project, $dataType, $value, $option) {
-  let $params :=  map {
+    let $queryParams := map {
     "project" : $project,
     "dataType" : $dataType,
     "value" : $value,
-    "option" : $option
-  }
-  return main($params)
+    "option" : $option,
+    "model" : 'synopsx.models.tei',
+    "dbName" : synopsx.lib.commons:getProjectDB($project)
+      }
+  let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
+  let $template := 'multi.xhtml'
+  let $layout  := synopsx.lib.commons:getLayoutPath($queryParams, $template)
+  (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
+  return synopsx.lib.commons:main($queryParams, $outputParams, $layout)
 };
+
+
+
