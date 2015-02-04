@@ -2,31 +2,22 @@
 <config>
   <projects>
     <project xml:lang="fre"> 
-      <!-- @version TODO -->
-      <projectName>AHN</projectName>
-      <projectDb>ahn</projectDb>
-      <projectAdmin>
-        <adminName>admin</adminName>
-        <adminPassword>admin</adminPassword>
-      </projectAdmin> 
-      <!-- subproject  -->
-      <project xml:lang="fre"> 
         <!-- @version TODO -->
-        <projectName>Hyperprince</projectName>
-        <projectDb>hyperprince</projectDb>
-        <projectAdmin>
+        <resourceName>projectName1</resourceName>
+        <dbName>databaseName1</dbName>
+        <dbAdmin>
           <adminName>admin</adminName>
           <adminPassword>admin</adminPassword>
-        </projectAdmin> 
-      </project>
-    </project>
-    <project xml:lang="fre">
-      <projectName>blog</projectName>
-      <projectDb>blog</projectDb>
-      <projectAdmin>
-        <adminName>admin</adminName>
-        <adminPassword>admin</adminPassword>
-      </projectAdmin>
-    </project>
+        </dbAdmin> 
+    </project>   
+    <project xml:lang="fre"> 
+        <!-- @version TODO -->
+        <resourceName>projectName2</resourceName>
+        <dbName>databaseName2</dbName>
+        <dbAdmin>
+          <adminName>admin</adminName>
+          <adminPassword>admin</adminPassword>
+        </dbAdmin> 
+    </project> 
   </projects>
 </config>

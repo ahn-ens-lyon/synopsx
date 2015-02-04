@@ -33,7 +33,7 @@ declare default function namespace 'synopsx.mappings.htmlBasket';
 (:~
  : This function is a form to register an user 
  :)
-declare function form($content, $options, $layout) {
+declare function form($content, $outputParams, $layout) {
   let $tmpl := fn:doc($layout('layout'))
   
   return $tmpl update (

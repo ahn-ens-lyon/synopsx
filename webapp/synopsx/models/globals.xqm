@@ -23,19 +23,19 @@ module namespace synopsx.models.globals = 'synopsx.models.globals';
  :
  :)
 
-import module namespace G = "synopsx.globals" at '../../globals.xqm'; (: import globals variables :)
+import module namespace G = "synopsx.globals" at '../globals.xqm'; (: import globals variables :)
 
 declare default function namespace 'synopsx.models.globals'; (: This is the default namespace:)
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
 
-declare function  title($params) {
+declare function  title($queryParams) {
   'Le titre de mon site'
 };
 
-declare function logo-partenaire-principal($params) {
+declare function logo-partenaire-principal($queryParams) {
   <img src="/static/img/logo_ENS_sm_blanc.png" alt="" />
 };
 
-declare function  horizontal-nav-entry($params) {
+declare function  horizontal-nav-entry($queryParams) {
   <ul><li>Test 1</li><li>Test 2</li></ul>
 };

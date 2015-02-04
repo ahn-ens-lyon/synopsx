@@ -33,7 +33,7 @@ declare default function namespace 'synopsx.mappings.htmlUsers';
 (:~
  : This function create a user
  :)
-declare function create-user($content, $options, $layout) {
+declare function create-user($content, $outputParams, $layout) {
   let $tmpl := fn:doc($layout('layout'))
   
   return $tmpl update (
@@ -51,7 +51,7 @@ declare function create-user($content, $options, $layout) {
 (:~
  : This function list users
  :)
-declare function list-user($content, $options, $layout) {
+declare function list-user($content, $outputParams, $layout) {
   let $tmpl := fn:doc($layout('layout'))
   return $tmpl update (
     replace node .//*:div[@id='content'] with (

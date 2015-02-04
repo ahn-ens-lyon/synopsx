@@ -44,9 +44,9 @@ declare function getProjectDB($project as xs:string) as xs:string {
 (:~
  : this function built the layout path based on the project hierarchy
  :)
- declare function getLayoutPath($params as map(*), $template as xs:string) as xs:string {
-   if (file:exists( $G:PROJECTS || map:get($params, 'project') || '/' || $template) )   
-   then $G:PROJECTS || map:get($params, 'project') || '/' || $template
+ declare function getLayoutPath($queryParams as map(*), $template as xs:string) as xs:string {
+   if (file:exists( $G:PROJECTS || map:get($queryParams, 'project') || '/' || $template) )   
+   then $G:PROJECTS || map:get($queryParams, 'project') || '/' || $template
    else if (file:exists($G:TEMPLATES || $template)) then $G:TEMPLATES || $template
    else $G:TEMPLATES || 'default.xhtml'
  };
@@ -54,24 +54,24 @@ declare function getProjectDB($project as xs:string) as xs:string {
 (:~
  : this function (temporary) calls entry points
  :)
-declare function main($params){
-    (:let $project := map:get($params,'project'):)
+declare function main($queryParams){
+    (:let $project := map:get($queryParams,'project'):)
     $G:HOME
 };
 
 (:~
  : this function is Where everything will be decided later on
- : @param $params params built from the url
- : @param $options options e.g. locals, etc.
+ : @param $queryParams params built from the url
+ : @param $outputParams options e.g. locals, etc.
  : @param $layout layout for the project
- : @return adding the @data-model to the layout nodes when missing with the model specified in $params->dataType
+ : @return adding the @data-model to the layout nodes when missing with the model specified in $queryParams->dataType
  copy the selected layout and modify to prepare data injection
  return the template instanciated 
  :) 
-declare function main($params as map(*), $options as map(*), $layout as xs:string){
-  copy $template := fn:doc($layout) modify (
+declare function main($queryParams as map(*), $outputParams as map(*), $layout as xs:string){
+   copy $template := fn:doc($layout) modify (
     for $node in $template//*[@data-function][fn:not(@data-model)]
-    return insert node attribute data-model {map:get($params, 'model')} into $node
+    return insert node attribute data-model {map:get($queryParams, 'model')} into $node
     )
-    return synopsx.mappings.htmlWrapping:globalWrapper($params, $options, $template)
+    return synopsx.mappings.htmlWrapping:globalWrapper($queryParams, $outputParams, $template)
 };

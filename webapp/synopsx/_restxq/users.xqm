@@ -40,16 +40,20 @@ declare
   %rest:path('/create-user')
   %output:method('html')
 function synopsx.users:create-user() {
+   let $queryParams := map {
+    "project" : 'basket',
+    "dataType" : 'home'
+      }
   let $format as xs:string := 'html' (: par défaut on produit du html:)
   let $content := map {
-    'title' : synopsx.models.tei:title(),
+    'title' : synopsx.models.tei:title($queryParams),
     'items' : ()
   }
-  let $options := map { }
+  let $outputParams := map { }
   let $layout := map {
     'layout' : $G:HOME || 'templates/html.xhtml'
   }
-  return synopsx.mappings.htmlUsers:create-user($content, $options, $layout)
+  return synopsx.mappings.htmlUsers:create-user($content, $outputParams, $layout)
 };
 
 
@@ -67,11 +71,11 @@ function synopsx.users:list-user(
   let $content := map {
     'status' : $status
   }
-  let $options := map { }
+  let $outputParams := map { }
   let $layout := map {
     'layout' : $G:HOME || 'templates/html.xhtml'
   }
-  return synopsx.mappings.htmlUsers:list-user($content, $options, $layout)
+  return synopsx.mappings.htmlUsers:list-user($content, $outputParams, $layout)
 };
 
 (:~

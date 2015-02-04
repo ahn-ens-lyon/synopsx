@@ -24,9 +24,9 @@ module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping'
  :)
 
 import module namespace G = "synopsx.globals" at '../globals.xqm';
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei/tei.xqm'; 
-import module namespace synopsx.models.globals = 'synopsx.models.globals' at '../models/globals/globals.xqm'; 
-import module namespace synopsx.models.ead = 'synopsx.models.ead' at '../models/ead/ead.xqm'; 
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm'; 
+import module namespace synopsx.models.globals = 'synopsx.models.globals' at '../models/globals.xqm'; 
+import module namespace synopsx.models.ead = 'synopsx.models.ead' at '../models/ead.xqm'; 
 
 declare default function namespace 'synopsx.mappings.htmlWrapping';
 
@@ -37,7 +37,7 @@ declare variable $synopsx.mappings.htmlWrapping:xslt := '../../static/xslt2/tei2
 (:~
  : This function wrap the content in an html layout
  : @param $data brought by the model (is a map of meta data and content data)
- : @param $options are the rendering options (not used yet)
+ : @param $outputParams are the rendering options (not used yet)
  : @param $layout path to the global layout
  : @param $pattern path to the fragment layout 
  : @return replace node or value of node in the template with value from the map
@@ -46,7 +46,7 @@ declare variable $synopsx.mappings.htmlWrapping:xslt := '../../static/xslt2/tei2
  : @todo treat mixted content e.g. "{quantity} éléments"
  : @todo treat in the same loop @* and text()
  :)
-declare function wrapper($data, $options, $layout, $pattern){
+declare function wrapper($data, $outputParams, $layout, $pattern){
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data,'content')
   let $wrap := fn:doc($layout)
@@ -61,7 +61,7 @@ declare function wrapper($data, $options, $layout, $pattern){
       let $key := fn:replace($text, '\{|\}', '')
       let $value := map:get($meta,$key)
       return if ($key = 'content') 
-        then replace node $text with pattern($meta, $contents, $options, $pattern)
+        then replace node $text with pattern($meta, $contents, $outputParams, $pattern)
         else replace node $text with $value 
     )
 };
@@ -77,7 +77,7 @@ declare function wrapper($data, $options, $layout, $pattern){
  : @toto modify to replace text nodes like "{quantity} éléments" (mixed content) EC2014-11-15
  : @toto treat in the same loop @* and text()
  :)
-(:declare function pattern($meta as map(*), $contents  as map(*), $options, $pattern  as xs:string) as document-node()* {
+(:declare function pattern($meta as map(*), $contents  as map(*), $outputParams, $pattern  as xs:string) as document-node()* {
   map:for-each($contents, function($key, $content) {
     fn:doc($pattern) update (
       for $text in .//@*
@@ -113,10 +113,10 @@ declare function wrapper($data, $options, $layout, $pattern){
  : @options are the rendering options (not used yet)
  : @pattern is the fragment layout 
  :)
-declare function innerWrapper($meta, $content, $options, $pattern){
-  let $tmpl := fn:doc('../templates/'||map:get($options, 'middle'))
+declare function innerWrapper($meta, $content, $outputParams, $pattern){
+  let $tmpl := fn:doc('../templates/'||map:get($outputParams, 'middle'))
   return $tmpl update (
-    replace node /*/text() with  pattern($meta, $content, $pattern, $options)
+    replace node /*/text() with  pattern($meta, $content, $pattern, $outputParams)
   )
 };
 
@@ -138,7 +138,7 @@ declare function innerWrapper($meta, $content, $options, $pattern){
  : @change add flexibility to retrieve meta values and changes in variables names EC2014-11-15
  : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
  :)
- declare function globalWrapper($data, $options, $layout, $pattern){
+ declare function globalWrapper($data, $outputParams, $layout, $pattern){
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data,'content')
   let $wrap := fn:doc($layout) (: open the global layout doc:)
@@ -149,7 +149,7 @@ declare function innerWrapper($meta, $content, $options, $pattern){
       let $value := map:get($meta,$key)
     return 
     (:  if ($key = 'content') then    :)
-        replace node $text with pattern($meta, $contents, $options, $pattern)
+        replace node $text with pattern($meta, $contents, $outputParams, $pattern)
        (: else 
         replace node $text with (xslt:transform($value, '../../static/xslt2/tei2html5.xsl'))   :)
   )
@@ -157,37 +157,38 @@ declare function innerWrapper($meta, $content, $options, $pattern){
 
 (:~
  : This function 
- : @param $params transformation params
- : @param $options options params
+ : @param $queryParams transformation params
+ : @param $outputParams options params
  : @param $layout layout file
  :)
-declare function globalWrapper($params, $options, $layout){
+declare function globalWrapper($queryParams as map(*), $outputParams as map(*), $layout as document-node()){
   copy $injected := $layout modify ( 
     (: Calling the function specified with :
         - namespace:@data-model
         - function-name:@data-function
     :)
     for $node in $injected//*[@data-function] 
-    let $result := fn:function-lookup(xs:QName('synopsx.models.' || fn:string($node/@data-model) || ':' || fn:string($node/@data-function)), 1)($params)
+    let $data-model := fn:trace(fn:string($node/@data-model), 'Data Model : ')
+    let $result := fn:function-lookup(xs:QName($data-model  || ':' || fn:string($node/@data-function)), 1)($queryParams)
     (: 
       - If the function contains a node or a string the result is inserted
       - If the function return a map, each item is wrapped according to the pattern specified in the @data-pattern, by calling the function pattern. 
      :)
-    return typeswitch(fn:trace($result)) 
+    return typeswitch($result)
       case map(*) return
         let $meta := map:get($result, 'meta')
         let $contents := map:get($result,'content') 
         return map:for-each($contents, function($key, $content) {
-         insert node pattern($meta, $content, $options, $G:TEMPLATES || fn:string($node/@data-pattern) || '.xhtml') into $node
+         insert node pattern($meta, $content, $outputParams, $G:TEMPLATES || fn:string($node/@data-pattern) || '.xhtml') into $node
     })
       default
-       return insert node fn:function-lookup(xs:QName('synopsx.models.' || fn:string($node/@data-model) || ':' || fn:string($node/@data-function)), 1)($params) into $node
+       return insert node fn:function-lookup(xs:QName(fn:string($node/@data-model)  || ':' || fn:string($node/@data-function)), 1)($queryParams) into $node
      )  
   return $injected
 };
 
 (:@date : 2/02/15:)
-declare function pattern($meta as map(*), $content  as map(*), $options, $pattern  as xs:string) as document-node()* {
+declare function pattern($meta as map(*), $content  as map(*), $outputParams, $pattern  as xs:string) as document-node()* {
   copy $injected := fn:doc($pattern) modify (
     map:for-each($content, function($key, $item) {
         for $node in $injected//.[@data-key=$key]
