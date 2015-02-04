@@ -29,6 +29,7 @@ import module namespace restxq = 'http://exquery.org/ns/restxq';
 import module namespace G = 'synopsx.globals' at '../globals.xqm' ;
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei/tei.xqm' ;
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ; 
+import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm';
 declare default function namespace 'synopsx.blog';
 
 
@@ -51,12 +52,10 @@ declare
   %restxq:path('/blog/home')
 function home(){
   let $params :=  map {
-    "project" : '$project',
-    "dataType" : '$dataType',
-    "value" : '$value',
-    "option" : '$option'
+    "project" : 'blog',
+    "dataType" : 'home'
   }
-  let $data    := synopsx.models.tei:listTexts($params)
+  let $data    := synopsx.models.tei:listCorpus($params)
   let $options := map {'sorting' : 'descending'} (: todo :)
   let $layout  := $G:TEMPLATES || 'blogHtml5.xhtml'
   let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml'
@@ -72,7 +71,13 @@ declare
   %restxq:path('/blog/{$entryId}')
   %rest:produces("application/html")
 function article($entryId as xs:string){
-  let $data    := synopsx.models.tei:article($entryId)
+  let $params := map {
+    'project' : 'ampere',
+    'dataType' : 'article',
+    'value' : $entryId,
+    'dbName' : synopsx.lib.commons:getProjectDB('ampere')
+  }
+  let $data    := synopsx.models.tei:article($params)
   let $options := map {}
   let $layout  := $G:TEMPLATES || 'blogHtml5.xhtml'
   let $pattern  := $G:TEMPLATES || 'blogArticleSerif.xhtml'
@@ -88,8 +93,14 @@ declare
   %rest:produces("application/xml")
   %rest:produces("application/tei+xml")  
 function articleXml($entryId as xs:string){
+  let $params := map {
+    'project' : 'blog',
+    'dataType' : 'article',
+    'value' : $entryId,
+    'dbName' : synopsx.lib.commons:getProjectDB('blog')
+  }
   let $lang := 'fr'
-  let $data := synopsx.models.tei:getXmlTeiById($entryId) 
+  let $data := synopsx.models.tei:getXmlTeiById($params) 
   return $data (: to serialize :)
 };
 

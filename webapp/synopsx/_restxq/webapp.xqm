@@ -31,6 +31,8 @@ import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/
 (: Put here all import declarations for mapping according to models :)
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm';
 
+import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm';
+
 (: Use a default namespace :)
 declare default function namespace 'synopsx.webapp';
 
@@ -44,12 +46,18 @@ declare
   %restxq:path('/corpus')
   %output:method("xhtml") (: TODO content negociation :)
   function corpusList(){
+    let $params := map {
+    "project" : 'ampere',
+    "dataType" : 'persName',
+    "model" : 'tei',
+    "dbName" : synopsx.lib.commons:getProjectDB('ampere')
+      }
     let $options := map {} (: specify an xslt mode and other kind of option :)
     let $layout  := $G:TEMPLATES || 'blogHtml5.xhtml'
   let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml'
     return synopsx.mappings.htmlWrapping:wrapper
       (
-        synopsx.models.tei:listCorpus(), $options, $layout, $pattern
+        synopsx.models.tei:listCorpus($params), $options, $layout, $pattern
       )
 };
 
@@ -74,10 +82,12 @@ declare
   %output:doctype-public("xhtml")
 function index() {
   let $params := map {
-    "project" : "synopsx",
-    "dataType" : "home"
+    'project' : 'synopsx',
+    'dataType' : 'home'
   }
-  return main($params)
+  let $options := map {} (: specify an xslt mode and other kind of option :)
+  let $layout  := synopsx.lib.commons:getLayoutPath($params, 'home.xhtml')
+  return synopsx.lib.commons:main($params, $options, $layout)
 };
 
 (:~
@@ -93,7 +103,9 @@ function index($project) {
     "project" : $project,
     "dataType" : "home"
   }
-  return main($params)
+  let $options := map {} (: specify an xslt mode and other kind of option :)
+  let $layout  := $G:TEMPLATES || $project || '.xhtml'
+  return synopsx.lib.commons:main($params, $options, $layout)
 };
 
 (:~
@@ -109,7 +121,9 @@ function index($project, $dataType) {
     "project" : $project,
     "dataType" : $dataType
   }
-  return main($params)
+  let $options := map {} (: specify an xslt mode and other kind of option :)
+  let $layout  := $G:TEMPLATES || $project || '.xhtml'
+  return synopsx.lib.commons:main($params, $options, $layout)
 };
 
 (:~
@@ -134,7 +148,7 @@ function index($project, $dataType, $value) {
   let $options := map {} (: specify an xslt mode and other kind of option :)
   let $layout  := $G:TEMPLATES || $project || '.xhtml'
   (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
-  return main($params, $options, $layout)
+  return synopsx.lib.commons:main($params, $options, $layout)
 };
 
 (:~
@@ -172,51 +186,13 @@ function textsByPerson($project, $value) {
     "project" : $project,
     "dataType" : 'persName',
     "value" : $value,
-    "model" : 'tei'
-  }
+    "model" : 'tei',
+    "dbName" : synopsx.lib.commons:getProjectDB($project)
+      }
   let $options := map {} (: specify an xslt mode and other kind of option :)
   let $template := 'multi.xhtml'
-  let $layout  := getLayoutPath($params, $template)
+  let $layout  := synopsx.lib.commons:getLayoutPath($params, $template)
   (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
-  return main($params, $options, $layout)
+  return synopsx.lib.commons:main($params, $options, $layout)
 };
 
-(:~
- : ~:~:~:~:~:~:~:~:~
- : Function library
- : ~:~:~:~:~:~:~:~:~
- :)
-
-(:~
- : this function built the layout path based on the project hierarchy
- :)
- declare function getLayoutPath($params, $template){
-   if (file:exists( $G:PROJECTS || map:get($params, 'project') || '/' || $template) )
-   then $G:PROJECTS || map:get($params, 'project') || '/' || $template
-   else $G:TEMPLATES || $template
- };
-
-(:~
- : this function (temporary) calls entry points
- :)
-declare function main($params){
-    (:let $project := map:get($params,'project'):)
-    $G:HOME
-};
-
-(:~
- : this function is Where everything will be decided later on
- : @param $params params built from the url
- : @param $options options e.g. locals, etc.
- : @param $layout layout for the project
- : @return adding the @data-model to the layout nodes when missing with the model specified in $params->dataType
- copy the selected layout and modify to prepare data injection
- return the template instanciated 
- :) 
-declare function main($params as map(*), $options as map(*), $layout as xs:string){
-  copy $template := fn:doc($layout) modify (
-    for $node in $template//*[@data-function][fn:not(@data-model)]
-    return insert node attribute data-model {map:get($params, 'model')} into $node
-    )
-    return synopsx.mappings.htmlWrapping:globalWrapper($params, $options, $template)
-};

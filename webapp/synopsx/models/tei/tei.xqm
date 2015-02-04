@@ -34,8 +34,8 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
  : e.g. return all the texts containing a given persName corpusId/persName/personID gdp/persName/sauval33
  :)
 declare function listTexts($params) {
-  let $texts := db:open($G:BLOGDB)//tei:TEI
-  let $lang := 'la'
+  let $texts := db:open(map:get($params, 'dbName'))//tei:TEI
+  let $lang := 'fr'
   let $meta := map {
     'title' : 'Liste d’articles', 
     'quantity' : getQuantity($texts, 'article'), (: @todo internationalize :)
@@ -58,8 +58,8 @@ declare function listTexts($params) {
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
  :)
-declare function article($entryId as xs:string) {
-  let $article := db:open($G:BLOGDB)/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
+declare function article($params) {
+  let $article := db:open(map:get($params, 'dbName'))/tei:TEI[//tei:sourceDesc[@xml:id = map:get($params, 'value')]]
   let $lang := 'la'
   let $meta := map{
     'title' : getTitles($article, $lang), 
@@ -101,8 +101,8 @@ declare function header($item as element()) {
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
  :)
-declare function listCorpus() {
-  let $texts := db:open($G:DBNAME)//tei:teiCorpus
+declare function listCorpus($params) {
+  let $texts := fn:trace(db:open(map:get($params, 'dbName'))//tei:teiCorpus, 'Prob')
   let $lang := 'la'
   let $meta := map{
     'title' : 'Liste de corpus', 
@@ -151,8 +151,8 @@ declare function corpusHeader($item as element()) {
 (:~
  : this function creates a map of two maps : one for metadata, one for content data
  :)
-declare function synopsx.models.tei:listTexts() {
-  let $corpus := db:open($G:DBNAME)
+declare function synopsx.models.tei:listTextsHeaders($params) {
+  let $corpus := db:open(map:get($params, 'dbName'))
   let $meta as map(*) := map{'title' : 'Liste des textes'}
   let $content as map(*) :=  map:merge(
     for $item in $corpus//tei:teiCorpus/tei:teiHeader       
@@ -180,8 +180,8 @@ declare function teiHeader($teiHeader) as map(*) {
 (:~
  : this function creates a map of two maps : one for metadata, one for content data
  :)
-declare function listMentioned() {
-  let $corpus := db:open($G:DBNAME)
+declare function listMentioned($params) {
+  let $corpus := db:open(map:get($params, 'dbName'))
   let $meta as map(*) := map{'title' : 'Liste des autonymes'}
   let $content as map(*) :=  map:merge(
     for $item in $corpus//tei:mentioned 
@@ -333,9 +333,9 @@ declare function getSubtitle($content as element()*, $lang as xs:string){
  : @param $id documents id to retrieve
  : @return a plain xml-tei document
  :)
-declare function getXmlTeiById($id as xs:string){
-  db:open($G:BLOGDB)//tei:TEI[//tei:sourceDesc[@xml-id=$id]]
-};
+declare function getXmlTeiById($params){
+  db:open(map:get($params, 'dbName'))//tei:TEI[//tei:sourceDesc[@xml-id = map:get($params, 'value')]]
+}; 
 
 (:~
  : this function get title
@@ -381,13 +381,13 @@ declare function getUrl($content as element()*, $lang as xs:string){
 (:~
  : This function return the corpus title
  :)
-declare function title() as element(){ 
-  (db:open($G:DBNAME)//tei:titleStmt/tei:title)[1]
+declare function title($params) as element(){ 
+  (db:open(map:get($params, 'dbName'))//tei:titleStmt/tei:title)[1]
 }; 
  
 (:~
  : This function return a titles list
  :)
-declare function listItems() as element()* { 
-  db:open($G:DBNAME)//tei:titleStmt/tei:title
+declare function listItems($params) as element()* { 
+  db:open(map:get($params, 'dbName'))//tei:titleStmt/tei:title
 };
