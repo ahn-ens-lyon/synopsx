@@ -83,7 +83,8 @@ function index() {
   let $queryParams := map {
     'project' : 'synopsx',
     'dataType' : 'home',
-    'model' : 'synopsx.models.tei'
+    'model' : 'synopsx.models.tei',
+    'dbName' : 'blog'
   }
   let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
   let $layout  := synopsx.lib.commons:getLayoutPath($queryParams, 'home.xhtml')
