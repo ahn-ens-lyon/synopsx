@@ -56,5 +56,5 @@ declare
   %output:omit-xml-declaration("no")
   %output:doctype-public("xhtml")
 function install() {
-  <p>TODO</p>
+  <p>TODO Synopsx install</p>
 };

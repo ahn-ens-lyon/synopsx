@@ -19,14 +19,23 @@
       <link href="/static/css/bootstrap.css" rel="stylesheet" />
       <link href="/static/css/ahn.css" rel="stylesheet"/>
       <link href="/static/css/main.css" rel="stylesheet"/>
-      <script src="/static/js/jquery.js"></script>
-      <script src="/static/bootstrap/js/bootstrap.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+     <!--  <script src="/static/js/jquery.js"></script> -->
+       <script src="/static/bootstrap/js/bootstrap.js"></script>
       <!-- ajouter js pour lt IE 9 -->
+       <script type="text/javascript">
+        $(document).ready(function(){
+          $('*[data-url]').each(function(){
+            $(this).load($(this).data('url'));
+            // alert($("*[data-url]").data('url'));
+            alert($(this).data('url'))
+        });}); 
+      </script>
    </head>
 
    <body>
      <div id="wrap">
-      <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <nav data-url="/synopsx/install" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
         <!--le .navbar du bootstrap remplace nos anciens styles #ahn-nav et .ahn-nav-->
         <div class="navbar container">
           <div class="collapse navbar-collapse">

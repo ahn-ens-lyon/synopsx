@@ -124,7 +124,7 @@ function index($project, $dataType) {
     "dbName" : synopsx.lib.commons:getProjectDB($project)
       }
   let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
-  let $template := 'default.xhtml'
+  let $template := 'home.xhtml'
   let $layout  := synopsx.lib.commons:getLayoutPath($queryParams, $template)
   (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
   return synopsx.lib.commons:main($queryParams, $outputParams, $layout)
@@ -151,7 +151,7 @@ function textsByPerson($project, $dataType, $value) {
     "dbName" : synopsx.lib.commons:getProjectDB($project)
       }
   let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
-  let $template := 'default.xhtml'
+  let $template := 'home.xhtml'
   let $layout  := synopsx.lib.commons:getLayoutPath($queryParams, $template)
   (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
   return synopsx.lib.commons:main($queryParams, $outputParams, $layout)
@@ -175,7 +175,7 @@ function index($project, $dataType, $value, $option) {
     "dbName" : synopsx.lib.commons:getProjectDB($project)
       }
   let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
-  let $template := 'default.xhtml'
+  let $template := 'home.xhtml'
   let $layout  := synopsx.lib.commons:getLayoutPath($queryParams, $template)
   (:  let $pattern  := $G:TEMPLATES || 'blogListSerif.xhtml' :)
   return synopsx.lib.commons:main($queryParams, $outputParams, $layout)
