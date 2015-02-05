@@ -103,7 +103,7 @@ declare function getHeader($item as element()) {
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
  :)
-declare function getListCorpus($queryParams) {
+declare function getCorpusList($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))/tei:teiCorpus
   let $lang := 'la'
   let $meta := map{

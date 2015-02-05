@@ -27,6 +27,8 @@ import module namespace G = "synopsx.globals" at '../globals.xqm';
 
 (: Put here all import declarations for mapping according to models :)
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm';
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
+
 
 (: Use a default namespace :)
 declare default function namespace 'synopsx.lib.commons';
@@ -45,18 +47,24 @@ declare function getProjectDB($project as xs:string) as xs:string {
  : this function built the layout path based on the project hierarchy
  :)
  declare function getLayoutPath($queryParams as map(*), $template as xs:string) as xs:string {
-   if (file:exists( $G:PROJECTS || map:get($queryParams, 'project') || '/' || $template) )   
-   then $G:PROJECTS || map:get($queryParams, 'project') || '/' || $template
-   else if (file:exists($G:TEMPLATES || $template)) then $G:TEMPLATES || $template
-   else $G:TEMPLATES || 'default.xhtml'
+   let $path := $G:PROJECTS || map:get($queryParams, 'project') || '/templates/' || $template
+   return 
+     if (file:exists($path)) 
+     then $path
+     else if (file:exists($G:TEMPLATES || $template)) then $G:TEMPLATES || $template
+     else $G:TEMPLATES || 'default.xhtml'
  };
 
 (:~
- : this function (temporary) calls entry points
+ : this function launches processings according to the resource functions (restxq)
+ : @todo return error messages
+ : @todo test heritage
  :)
-declare function main($queryParams){
-    (:let $project := map:get($queryParams,'project'):)
-    $G:HOME
+declare function main($queryParams as map(*), $outputParams as map(*)){
+  (: fn:function-lookup(xs:QName($data-model  || ':' || fn:string($node/@data-function)), 1)($queryParams :)
+  let $dataModel := map:get($queryParams, 'dataModel')
+  let $dataType := map:get($queryParams, 'dataType')
+  return fn:function-lookup(xs:QName($dataModel  || ':' || $dataType), 1)($queryParams)
 };
 
 (:~

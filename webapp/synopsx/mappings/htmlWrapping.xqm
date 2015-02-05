@@ -67,7 +67,7 @@ declare function globalWrapper($queryParams as map(*), $outputParams as map(*), 
 };
 
 (:@date : 2/02/15:)
-declare function pattern($meta as map(*), $content  as map(*), $outputParams, $pattern  as xs:string) as document-node()* {
+declare function pattern($meta as map(*), $content  as map(*), $outputParams, $pattern as xs:string) as document-node()* {
   copy $injected := fn:doc($pattern) modify (
     map:for-each($content, function($key, $item) {
         for $node in $injected//.[@data-key=$key]
