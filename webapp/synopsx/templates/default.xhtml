@@ -15,18 +15,23 @@
       <meta name="description" content="Le Roman des Morand. Grâce au Kit Corpus de l'AHN. Utilise BaseX et RESTXQ" />
       <meta name="author" content="Atelier des Humanités Numériques, ENS de Lyon, France" />
       <title data-model="synopsx.models.mixed" data-function="getTitle"/>
-     
+
       <link href="/static/css/bootstrap.css" rel="stylesheet" />
       <link href="/static/css/ahn.css" rel="stylesheet"/>
       <link href="/static/css/main.css" rel="stylesheet"/>
       <script src="/static/js/jquery.js"></script>
       <script src="/static/bootstrap/js/bootstrap.js"></script>
+      <script>
+        $(document).ready(function(){
+          $(*[data-url]).load($(this).data-url)
+        }); 
+      </script>
       <!-- ajouter js pour lt IE 9 -->
    </head>
 
    <body>
      <div id="wrap">
-      <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <nav data-url='/synopsx/install' class="navbar navbar-fixed-top navbar-inverse" role="navigation">
         <!--le .navbar du bootstrap remplace nos anciens styles #ahn-nav et .ahn-nav-->
         <div class="navbar container">
           <div class="collapse navbar-collapse">
