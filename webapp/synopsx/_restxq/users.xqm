@@ -27,7 +27,7 @@ module namespace synopsx.users = 'synopsx.users';
 import module namespace G = "synopsx.globals"  at '../globals.xqm';
 import module namespace Session = "http://basex.org/modules/session";
 
-import module namespace synopsx.webapp = 'synopsx.webapp' at 'webapp.xqm';
+import module namespace synopsx.synopsx = 'synopsx.synopsx' at 'synopsx.xqm';
 
 import module namespace synopsx.models.tei = 'synopsx.models.tei'  at '../models/tei.xqm';
 import module namespace synopsx.mappings.htmlUsers = 'synopsx.mappings.htmlUsers'  at '../mappings/htmlUsers.xqm';
@@ -46,7 +46,7 @@ function synopsx.users:create-user() {
       }
   let $format as xs:string := 'html' (: par défaut on produit du html:)
   let $content := map {
-    'title' : synopsx.models.tei:title($queryParams),
+    'title' : synopsx.models.tei:getTitle($queryParams),
     'items' : ()
   }
   let $outputParams := map { }

@@ -14,7 +14,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="description" content="Le Roman des Morand. Grâce au Kit Corpus de l'AHN. Utilise BaseX et RESTXQ" />
       <meta name="author" content="Atelier des Humanités Numériques, ENS de Lyon, France" />
-      <title data-model="synopsx.models.globals" data-function="title"/>
+      <title data-model="synopsx.models.mixed" data-function="getTitle"/>
      
       <link href="/static/css/bootstrap.css" rel="stylesheet" />
       <link href="/static/css/ahn.css" rel="stylesheet"/>
@@ -56,29 +56,21 @@
                         Toggle nav
                       </button>
               </p>
-              <div data-model="synopsx.models.globals" data-function="title" id="site-title">
-                <!-- <a href="/">
-                  <img src="/static/img/logo_Morand.png" width="317px" title="Kit AHN" />
-                </a> -->
-               
-                <div data-model="synopsx.models.globals" data-function="logo-partenaire-principal" id="logo-partenaire-principal">
-                 <!--  <a href="http://www.ens-lyon.eu" title="Vers le site de l'ENS de Lyon" target="_blank">
-                    <img src="/static/img/logo_Partenaire.png" width="121" height="41" alt="Logo du partenaire principal" />
-                  </a> -->
-                </div>
+              <div data-model="synopsx.models.mixed" data-function="getTitle" id="site-title">
               </div>
               <div id="header-image">
                <!--  <img src="/static/img/bandeau_Morand.jpg" /> -->
               </div>
-              <nav data-model="synopsx.models.globals" data-function="horizontal-nav-entry" data-pattern="p" id="horizontal-nav">
-                
+              <nav data-model="synopsx.models.mixed" data-function="getEntries" data-pattern="inc_p" id="horizontal-nav">
+              <div data-model="synopsx.models.mixed" data-function="getMainPartnerLogo" data-pattern="inc_img" id="logo-partenaire-principal"/>
+              
               </nav>
             </div>
           </div>
         </header>
         <div class="content">
           <div class="main row row-offcanvas row-offcanvas-right"><!-- attribut modifié id -> class -->
-  <h1>MULTI</h1>
+          <h1>DEFAULT</h1>
             <nav id="contextual">
               <!-- nav can bien replaced by aside -->
               <ul class="navigation">
@@ -93,7 +85,7 @@
             </nav>
             <section class="main row row-offcanvas row-offcanvas-right"><!-- attribut modifié id -> class -->
              <div class="col-8 col-sm-8 col-lg-8">
-            <div class="insert-point" title="main" data-function="listTexts" data-pattern="blogArticleSerif"/>
+            <div class="insert-point" title="main" data-model="synopsx.models.mixed" data-function="getHomeContent"/>
              </div>
              </section>
              </div>

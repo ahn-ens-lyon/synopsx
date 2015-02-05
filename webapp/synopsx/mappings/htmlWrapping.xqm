@@ -25,7 +25,7 @@ module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping'
 
 import module namespace G = "synopsx.globals" at '../globals.xqm';
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm'; 
-import module namespace synopsx.models.globals = 'synopsx.models.globals' at '../models/globals.xqm'; 
+import module namespace synopsx.models.mixed = 'synopsx.models.mixed' at '../models/mixed.xqm'; 
 import module namespace synopsx.models.ead = 'synopsx.models.ead' at '../models/ead.xqm'; 
 
 declare default function namespace 'synopsx.mappings.htmlWrapping';
@@ -121,41 +121,6 @@ declare function innerWrapper($meta, $content, $outputParams, $pattern){
 };
 
 (:~
- : this function can eventually call an innerWrapper to perform intermediate wrappings 
- : @data brought by the model (is a map of meta data and content data)
- : @options are the rendering options (not used yet)
- : @layout is the global layout
- : @pattern is the fragment layout 
- :
- : This function wrap the content in an html layout
- :
- : @data a map built by the model with meta values
- : @options options for rendering (not in use yet)
- : @layout path to the global wrapper html file
- : @pattern path to the html fragment layout 
- : 
- : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
- : @change add flexibility to retrieve meta values and changes in variables names EC2014-11-15
- : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
- :)
- declare function globalWrapper($data, $outputParams, $layout, $pattern){
-  let $meta := map:get($data, 'meta')
-  let $contents := map:get($data,'content')
-  let $wrap := fn:doc($layout) (: open the global layout doc:)
-  return $wrap update (
-    for $text in .//text() 
-      where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-      let $key := fn:replace($text, '\{|\}', '')
-      let $value := map:get($meta,$key)
-    return 
-    (:  if ($key = 'content') then    :)
-        replace node $text with pattern($meta, $contents, $outputParams, $pattern)
-       (: else 
-        replace node $text with (xslt:transform($value, '../../static/xslt2/tei2html5.xsl'))   :)
-  )
-};
-
-(:~
  : This function 
  : @param $queryParams transformation params
  : @param $outputParams options params
@@ -168,7 +133,7 @@ declare function globalWrapper($queryParams as map(*), $outputParams as map(*), 
         - function-name:@data-function
     :)
     for $node in $injected//*[@data-function] 
-    let $data-model := fn:trace(fn:string($node/@data-model), 'Data Model : ')
+    let $data-model := fn:string($node/@data-model)
     let $result := fn:function-lookup(xs:QName($data-model  || ':' || fn:string($node/@data-function)), 1)($queryParams)
     (: 
       - If the function contains a node or a string the result is inserted
