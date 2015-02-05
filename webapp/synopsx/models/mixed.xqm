@@ -1,5 +1,5 @@
 xquery version "3.0" ;
-module namespace synopsx.models.globals = 'synopsx.models.globals';
+module namespace synopsx.models.mixed = 'synopsx.models.mixed';
 (:~
  : This module is for TEI models
  : @version 0.2 (Constantia edition)
@@ -23,19 +23,38 @@ module namespace synopsx.models.globals = 'synopsx.models.globals';
  :
  :)
 
-import module namespace G = "synopsx.globals" at '../globals.xqm'; (: import globals variables :)
+import module namespace G = 'synopsx.globals' at '../globals.xqm'; (: import globals variables :)
 
-declare default function namespace 'synopsx.models.globals'; (: This is the default namespace:)
+declare default function namespace 'synopsx.models.mixed'; (: This is the default namespace:)
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
 
-declare function  title($queryParams) {
-  'Le titre de mon site'
+declare function  getHomeContent($queryParams) {
+  'My home content'
 };
 
-declare function logo-partenaire-principal($queryParams) {
-  <img src="/static/img/logo_ENS_sm_blanc.png" alt="" />
+declare function  getTitle($queryParams) {
+  'My project title'
 };
 
-declare function  horizontal-nav-entry($queryParams) {
-  <ul><li>Test 1</li><li>Test 2</li></ul>
+declare function getMainPartnerLogo($queryParams) as map(*) {
+  map{
+    'meta' : map{},
+    'content' : 
+      map{
+        'img' : map{
+          'src' : '/static/img/logo_ENS_sm_blanc.png',
+          'alt' : 'ENS de Lyon',
+          'class' : 'logo'
+        }
+      }
+  }  
+  
 };
+
+declare function getEntries($queryParams) {
+  (: Display EAD unitId to access TEI documents :)
+  'TODO'
+};
+
+
+

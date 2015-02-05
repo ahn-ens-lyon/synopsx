@@ -28,7 +28,7 @@ import module namespace Session = "http://basex.org/modules/session";
 
 import module namespace G = "synopsx.globals" at '../globals.xqm';
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm';
-import module namespace synopsx.webapp = 'synopsx.webapp' at 'webapp.xqm';
+import module namespace synopsx.synopsx = 'synopsx.synopsx' at 'synopsx.xqm';
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm';
 
@@ -51,8 +51,8 @@ function synopsx.basket:tei(
       }
   let $format as xs:string := 'html' (: par défaut on produit du html:)
   let $content as map(*) := map {
-    'title' : synopsx.models.tei:title($queryParams),
-    'items' : synopsx.models.tei:listItems($queryParams),
+    'title' : synopsx.models.tei:getTitle($queryParams),
+    'items' : synopsx.models.tei:getListItems($queryParams),
     'status': $status
   }
   let $outputParams as map(*) := map {

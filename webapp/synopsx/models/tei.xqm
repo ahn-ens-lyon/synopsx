@@ -33,7 +33,7 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
  : @todo use params to select the contents to return
  : e.g. return all the texts containing a given persName corpusId/persName/personID gdp/persName/sauval33
  :)
-declare function listTexts($queryParams) {
+declare function getListTexts($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:TEI
   let $lang := 'fr'
   let $meta := map {
@@ -47,7 +47,7 @@ declare function listTexts($queryParams) {
   let $content := map:merge(
     for $item in $texts/tei:teiHeader 
     order by ($item//tei:publicationStmt/tei:date/@when) descending (: sans effet :)
-    return  map:entry( fn:generate-id($item), header($item) )
+    return  map:entry( fn:generate-id($item), getHeader($item) )
     )
   return  map{
     'meta'    : $meta,
@@ -60,7 +60,7 @@ declare function listTexts($queryParams) {
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
  :)
-declare function article($queryParams) {
+declare function getArticle($queryParams) {
   let $article := db:open(map:get($queryParams, 'dbName'))/tei:TEI[//tei:sourceDesc[@xml:id = map:get($queryParams, 'value')]]
   let $lang := 'la'
   let $meta := map{
@@ -71,7 +71,7 @@ declare function article($queryParams) {
     'keywords' : getKeywords($article, $lang)
     }
   let $content as map(*) := map:merge(
-    map:entry( fn:generate-id($article), header($article) )
+    map:entry( fn:generate-id($article), getHeader($article) )
     )
   return  map{
     'meta'    : $meta,
@@ -86,7 +86,7 @@ declare function article($queryParams) {
  : @return a map with content for each item
  : @rmq subdivised with let to construct complex queries (EC2014-11-10)
  :)
-declare function header($item as element()) {
+declare function getHeader($item as element()) {
   let $lang := 'la'
   let $dateFormat := 'jjmmaaa'
   return map {
@@ -103,7 +103,7 @@ declare function header($item as element()) {
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
  :)
-declare function listCorpus($queryParams) {
+declare function getListCorpus($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))/tei:teiCorpus
   let $lang := 'la'
   let $meta := map{
@@ -116,7 +116,7 @@ declare function listCorpus($queryParams) {
     }
   let $content as map(*) := map:merge(
     for $item in $texts/tei:teiHeader
-    return  map:entry( fn:generate-id($item), header($item) )
+    return  map:entry( fn:generate-id($item), getHeader($item) )
     )
   return  map{
     'meta'    : $meta,
@@ -131,7 +131,7 @@ declare function listCorpus($queryParams) {
  : @return a map with content for each item
  : @rmq subdivised with let to construct complex queries (EC2014-11-10)
  :)
-declare function corpusHeader($item as element()) {
+declare function getCorpusHeader($item as element()) {
   let $title as element()* := (
     $item//tei:titleStmt/tei:title
     )[1]
@@ -152,12 +152,12 @@ declare function corpusHeader($item as element()) {
 (:~
  : this function creates a map of two maps : one for metadata, one for content data
  :)
-declare function listTextsHeaders($queryParams) {
+declare function getListTextsHeaders($queryParams) {
   let $corpus := db:open(map:get($queryParams, 'dbName'))
   let $meta as map(*) := map{'title' : 'Liste des textes'}
   let $content as map(*) :=  map:merge(
     for $item in $corpus//tei:teiCorpus/tei:teiHeader       
-      return  map:entry(fn:generate-id($item), teiHeader($item))
+      return  map:entry(fn:generate-id($item), getTeiHeader($item))
     )
   return  map{
     'meta' : $meta,
@@ -169,7 +169,7 @@ declare function listTextsHeaders($queryParams) {
 (:~
  : this function creates a map for a corpus item
  :)
-declare function teiHeader($teiHeader) as map(*) {
+declare function getTeiHeader($teiHeader) as map(*) {
  map {
     'title' : ($teiHeader//tei:titleStmt/*:title/text()),
     'date' : ($teiHeader//tei:date/text()),
@@ -181,13 +181,13 @@ declare function teiHeader($teiHeader) as map(*) {
 (:~
  : this function creates a map of two maps : one for metadata, one for content data
  :)
-declare function listMentioned($queryParams) {
+declare function getListMentioned($queryParams) {
   let $corpus := db:open(map:get($queryParams, 'dbName'))
   let $meta as map(*) := map{'title' : 'Liste des autonymes'}
   let $content as map(*) :=  map:merge(
     for $item in $corpus//tei:mentioned 
       
-      return  map:entry(fn:generate-id($item), mentioned($item))
+      return  map:entry(fn:generate-id($item), getMentioned($item))
     )
   return  map{
     'meta' : $meta,
@@ -199,7 +199,7 @@ declare function listMentioned($queryParams) {
 (:~
  : this function creates a map for a corpus item
  :)
-declare function mentioned($item) as map(*) {
+declare function getMentioned($item) as map(*) {
  map {
     'lang' : fn:string($item/@*:lang),
     'term' : $item/text()
@@ -382,13 +382,13 @@ declare function getUrl($content as element()*, $lang as xs:string){
 (:~
  : This function return the corpus title
  :)
-declare function title($queryParams) as element(){ 
+declare function getTitle($queryParams) as element(){ 
   (db:open(map:get($queryParams, 'dbName'))//tei:titleStmt/tei:title)[1]
 }; 
  
 (:~
  : This function return a titles list
  :)
-declare function listItems($queryParams) as element()* { 
+declare function getListItems($queryParams) as element()* { 
   db:open(map:get($queryParams, 'dbName'))//tei:titleStmt/tei:title
 };
