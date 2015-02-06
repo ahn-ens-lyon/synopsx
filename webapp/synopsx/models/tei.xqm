@@ -100,11 +100,12 @@ declare function getHeader($item as element()) {
   }
 };
 
+
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getCorpusList($queryParams) {
-  let $texts := db:open(map:get($queryParams, 'dbName'))/tei:teiCorpus
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus
   let $lang := 'la'
   let $meta := map{
     'title' : 'Liste de corpus', 
@@ -122,6 +123,46 @@ declare function getCorpusList($queryParams) {
     'meta'    : $meta,
     'content' : $content
     }
+};
+
+(:~
+ : This function creates a map of two maps : one for metadata, one for content data
+ :)
+declare function getBiblStructList($queryParams) {
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:biblList
+  let $lang := 'fr'
+  let $meta := map{
+    'title' : 'Liste des biblStruct'
+    }
+  let $content as map(*) := map:merge(
+    for $item in $texts/tei:biblStruct
+    return  map:entry( fn:generate-id($item), getBiblStruct($item) )
+    )
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : This function creates a map for a corpus item with teiHeader 
+ :
+ : @param $item a corpus item
+ : @return a map with content for each item
+ : @rmq subdivised with let to construct complex queries (EC2014-11-10)
+ :)
+declare function getBiblStruct($item as element()) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  return map {
+    'title' : getTitle($item, $lang),
+    'subtitle' : getSubtitle($item, $lang),
+    'date' : getDate($item, $dateFormat),
+    'author' : getAuthors($item),
+    'tei' : $item,
+    'url' : getUrl($item, $lang)
+    (: ', teiAbstract' : getAbstract($item, $lang) :)
+  }
 };
 
 (:~
