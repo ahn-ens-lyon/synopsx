@@ -104,10 +104,12 @@ return $injected
  : 
  : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
  : @change add flexibility to retrieve meta values and changes in variables names EC2014-11-15
- : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
- : @toto treat in the same loop @* and text()
+ : @todo modify to replace text nodes like "{quantity} éléments" EC2014-11-15
+ : @todo treat in the same loop @* and text()
+ : @todo send to pattern $meta and $contents in a single map
  :)
-declare function wrapper($data, $options, $layout, $pattern){
+declare function wrapper($queryParams as map(*), $data as map(*), $options as map(*), $layout as xs:string, $pattern as xs:string){
+  let $layout := synopsx.lib.commons:getLayoutPath($queryParams, $layout)
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data,'content')
   let $wrap := fn:doc($layout)
@@ -122,7 +124,7 @@ declare function wrapper($data, $options, $layout, $pattern){
       let $key := fn:replace($text, '\{|\}', '')
       let $value := map:get($meta,$key)
       return if ($key = 'content') 
-        then replace node $text with simplePattern($meta, $contents, $options, $pattern)
+        then replace node $text with simplePattern($queryParams, $meta, $contents, $options, $pattern)
         else replace node $text with $value 
     )
 };
@@ -138,8 +140,9 @@ declare function wrapper($data, $options, $layout, $pattern){
  : @toto modify to replace text nodes like "{quantity} éléments" (mixed content) EC2014-11-15
  : @toto treat in the same loop @* and text()
  :)
-declare function simplePattern($meta as map(*), $contents  as map(*), $options, $pattern  as xs:string) as document-node()* {
-  map:for-each($contents, function($key, $content) {
+declare function simplePattern($queryParams, $meta as map(*), $contents  as map(*), $options, $pattern  as xs:string) as document-node()* {
+  let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, $pattern)
+  return map:for-each($contents, function($key, $content) {
     fn:doc($pattern) update (
       for $text in .//@*
         where fn:starts-with($text, '{') and fn:ends-with($text, '}')

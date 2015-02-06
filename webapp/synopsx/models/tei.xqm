@@ -87,7 +87,7 @@ declare function getArticle($queryParams) {
  : @rmq subdivised with let to construct complex queries (EC2014-11-10)
  :)
 declare function getHeader($item as element()) {
-  let $lang := 'la'
+  let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   return map {
     'title' : getTitle($item, $lang),

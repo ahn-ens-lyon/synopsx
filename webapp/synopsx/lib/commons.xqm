@@ -55,6 +55,7 @@ declare function getProjectDB($project as xs:string) as xs:string {
      if (file:exists($path)) 
      then $path
      else if (file:exists($G:TEMPLATES || $template)) then $G:TEMPLATES || $template
+     else if (fn:empty($template)) then 'default.xhtml'
      else $G:TEMPLATES || 'default.xhtml'
  };
 
