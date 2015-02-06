@@ -2,15 +2,14 @@
 <config>
   <projects>
     <project xml:lang="fre" default="true"> 
-        <!-- @version TODO -->
-        <resourceName>synopsx</resourceName>
-        <dbName>blog</dbName>
+        <resourceName>example</resourceName>
+        <dbName>example</dbName>
         <dbAdmin>
           <adminName>admin</adminName>
           <adminPassword>admin</adminPassword>
         </dbAdmin> 
     </project>      
-    <!-- Project example -->
+    <!-- To add a project, copy and uncomment below -->
     <!--
     <project xml:lang="fre">
         <resourceName>your-project-name</resourceName>
@@ -20,6 +19,6 @@
           <adminPassword>admin</adminPassword>
         </dbAdmin> 
     </project>
-    --> 
+    -->
   </projects>
 </config>
