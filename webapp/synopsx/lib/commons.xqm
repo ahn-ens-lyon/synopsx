@@ -45,6 +45,9 @@ declare function getProjectDB($project as xs:string) as xs:string {
 
 (:~
  : this function built the layout path based on the project hierarchy
+ : @param $queryParams the query params
+ : @param $template the template name.extension
+ : @return a path 
  :)
  declare function getLayoutPath($queryParams as map(*), $template as xs:string) as xs:string {
    let $path := $G:PROJECTS || map:get($queryParams, 'project') || '/templates/' || $template
