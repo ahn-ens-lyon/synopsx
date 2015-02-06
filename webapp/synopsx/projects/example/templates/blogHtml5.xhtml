@@ -12,14 +12,15 @@
       <!-- ajouter js pour lt IE 9 -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
        <script type="text/javascript">
-        $(document).ready(function(){
-          $('*[data-url]').each(function(){
-            var url = $(this).data('url')+'?pattern='+$(this).prop('tagName').toLowerCase();
-            $(this).load(url);
-            alert(url);
-          });
-        }); 
-      </script>
+         // synopsx's composition
+         $(document).ready(function(){
+         $('*[data-url]').each(function(){
+           var url = $(this).data('url')+'?pattern='+$(this).prop('tagName').toLowerCase();
+           $(this).load(url);
+           alert(url);
+           });
+         }); 
+       </script>
    </head>
    <body>
      <header class="navigation" id="nav">

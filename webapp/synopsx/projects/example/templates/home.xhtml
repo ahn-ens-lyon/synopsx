@@ -14,7 +14,8 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="description" content="Le Roman des Morand. Grâce au Kit Corpus de l'AHN. Utilise BaseX et RESTXQ" />
       <meta name="author" content="Atelier des Humanités Numériques, ENS de Lyon, France" />
-      <title data-model="synopsx.models.mixed" data-function="getTitle"/>
+      <!-- <title data-model="synopsx.models.mixed" data-function="getTitle"/> -->
+      <title>{title}</title>
       <link href="/static/css/bootstrap.css" rel="stylesheet" />
       <link href="/static/css/ahn.css" rel="stylesheet"/>
       <link href="/static/css/main.css" rel="stylesheet"/>
@@ -22,13 +23,15 @@
      <!--  <script src="/static/js/jquery.js"></script> -->
       <script src="/static/bootstrap/js/bootstrap.js"></script>
       <!-- ajouter js pour lt IE 9 -->
-       <script type="text/javascript">
+      <script type="text/javascript">
+        // synopsx's composition
         $(document).ready(function(){
-          $('*[data-url]').each(function(){
-            $(this).load($(this).data('url'));
-            // alert($("*[data-url]").data('url'));
-            alert($(this).data('url'))
-        });}); 
+        $('*[data-url]').each(function(){
+          var url = $(this).data('url')+'?pattern='+$(this).prop('tagName').toLowerCase();
+          $(this).load(url);
+          alert(url);
+          });
+        }); 
       </script>
    </head>
 
@@ -78,7 +81,7 @@
         </header>
         <div class="content">
           <div class="main row row-offcanvas row-offcanvas-right"><!-- attribut modifié id -> class -->
-          <h1>DEFAULT</h1>
+          <h1>example/home</h1>
             <nav id="contextual">
               <!-- nav can bien replaced by aside -->
               <ul class="navigation">
