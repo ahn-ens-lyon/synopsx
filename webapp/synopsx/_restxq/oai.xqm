@@ -1,31 +1,35 @@
-(:
-This file is part of SynopsX.
-    created by AHN team (http://ahn.ens-lyon.fr)
-    release 0.1, 2014-01-28
-    
-SynopsX is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+xquery version "3.0" ;
+module namespace synopsx.oai = 'synopsx.oai';
+(:~
+ : This module is the RESTXQ for OAI-PMH for SynopsX
+ : @version 0.2 (Constantia edition)
+ : @date 2014-11-10 
+ : @author synopsx team
+ :
+ : This file is part of SynopsX.
+ : created by AHN team (http://ahn.ens-lyon.fr)
+ :
+ : SynopsX is free software: you can redistribute it and/or modify
+ : it under the terms of the GNU General Public License as published by
+ : the Free Software Foundation, either version 3 of the License, or
+ : (at your option) any later version.
+ :
+ : SynopsX is distributed in the hope that it will be useful,
+ : but WITHOUT ANY WARRANTY; without even the implied warranty of
+ : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ : See the GNU General Public License for more details.
+ : You should have received a copy of the GNU General Public License along 
+ : with SynopsX. If not, see <http://www.gnu.org/licenses/>
+ :
+ :)
 
-SynopsX is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with SynopsX.  
-If not, see <http://www.gnu.org/licenses/>
-:)
-
-
-module namespace oai = 'http://ahn.ens-lyon.fr/oai';
-
+declare default function namespace 'synopsx.oai';
 declare default element namespace "http://www.openarchives.org/OAI/2.0/";
 declare namespace xsi = "http://www.w3.org/2001/XMLSchema-instance";
 declare namespace xslt="http://basex.org/modules/xslt";
 import module namespace request = "http://exquery.org/ns/request";
 
-declare variable $oai:tei2dc := "http://ahn-basex.cbp.ens-lyon.fr:8984/static/xsl/tei2dc.xsl";
+declare variable $synopsx.oai:tei2dc := "http://ahn-basex.cbp.ens-lyon.fr:8984/static/xsl/tei2dc.xsl";
          
 
 
@@ -39,23 +43,23 @@ declare %restxq:path("{$project}/oai")
         %rest:query-param("set", "{$set}")
         %rest:query-param("resumptionToken", "{$resumptionToken}")
         %output:omit-xml-declaration("no")
-function oai:index($project, $verb, $identifier, $metadataPrefix, $from, $until, $set, $resumptionToken) {
+function index($project, $verb, $identifier, $metadataPrefix, $from, $until, $set, $resumptionToken) {
   <OAI-PMH>
       <responseDate>{fn:current-dateTime()}</responseDate>
       <request>{request:uri()}?{request:query()}</request>
       {switch ($verb) 
         case 'GetRecord'
-          return oai:GetRecord($project, $identifier, $metadataPrefix)
+          return synopsx.oai:GetRecord($project, $identifier, $metadataPrefix)
         case 'Identify'
-          return oai:Identify($project)
+          return synopsx.oai:Identify($project)
         case 'ListIdentifiers'
-          return oai:ListIdentifiers($project, $from, $until, $metadataPrefix, $set, $resumptionToken)
+          return synopsx.oai:ListIdentifiers($project, $from, $until, $metadataPrefix, $set, $resumptionToken)
         case 'ListMetadataFormats'
-          return oai:ListMetadataFormats($project, $identifier)
+          return synopsx.oai:ListMetadataFormats($project, $identifier)
         case 'ListRecords'
-          return oai:ListRecords($project, $from, $until, $metadataPrefix, $set, $resumptionToken)
+          return synopsx.oai:ListRecords($project, $from, $until, $metadataPrefix, $set, $resumptionToken)
         case 'ListSets'
-          return oai:ListSets($project, $resumptionToken)
+          return synopsx.oai:ListSets($project, $resumptionToken)
         case ''
           return <error code="badVerb">No verb specified</error>
         default
@@ -64,12 +68,12 @@ function oai:index($project, $verb, $identifier, $metadataPrefix, $from, $until,
     </OAI-PMH>
 };
 
-declare function oai:GetRecord($project, $identifier, $metadataPrefix){
+declare function synopsx.oai:GetRecord($project, $identifier, $metadataPrefix){
     <GetRecord>
     </GetRecord>
 };
 
-declare function oai:Identify($project){
+declare function synopsx.oai:Identify($project){
     <Identify>
       <repositoryName>{$project}</repositoryName>
       <baseURL>{request:uri()}</baseURL>
@@ -81,12 +85,12 @@ declare function oai:Identify($project){
     </Identify>
 };
 
-declare function oai:ListIdentifiers($project, $from, $until, $metadataPrefix, $set, $resumptionToken){
+declare function synopsx.oai:ListIdentifiers($project, $from, $until, $metadataPrefix, $set, $resumptionToken){
     <ListIdentifiers>
     </ListIdentifiers>
 };
 
-declare function oai:ListMetadataFormats($project, $identifier){
+declare function synopsx.oai:ListMetadataFormats($project, $identifier){
     <ListMetadataFormats>
       <metadataFormat>
       <metadataPrefix>oai_dc</metadataPrefix>
@@ -96,27 +100,27 @@ declare function oai:ListMetadataFormats($project, $identifier){
     </ListMetadataFormats>
 };
 
-declare function oai:ListRecords($project, $from, $until, $metadataPrefix, $set, $resumptionToken){
+declare function synopsx.oai:ListRecords($project, $from, $until, $metadataPrefix, $set, $resumptionToken){
     <ListRecords>
   
     </ListRecords>
 };
 
-declare function oai:ListSets($project, $resumptionToken){
+declare function synopsx.oai:ListSets($project, $resumptionToken){
     <ListSets>
       {
         for $set in db:open($project)//*:teiCorpus 
           return 
           <set>
             <setSpec>
-              {string-join($set/ancestor-or-self::*:teiCorpus/@xml:id,':')}
+              {fn:string-join($set/ancestor-or-self::*:teiCorpus/@xml:id,':')}
             </setSpec>
             <setName>
               {$set/*:teiHeader/*:fileDesc/*:titleStmt/*:title/text()}
             </setName>
             <setDescription>
               { if ($set/*:teiHeader) then
-                xslt:transform($set/*:teiHeader, $oai:tei2dc)
+                xslt:transform($set/*:teiHeader, $synopsx.oai:tei2dc)
                 else ''
               }
             </setDescription>
