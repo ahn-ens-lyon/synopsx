@@ -81,8 +81,10 @@ function corpusHtml() {
       'dataType' : 'getCorpusList'
     }
     let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
-    let $layout  := fn:trace(synopsx.lib.commons:getLayoutPath($queryParams, 'blogHtml5.xhtml'), 'layout:' )
-    return synopsx.lib.commons:main($queryParams, $outputParams, $layout)
+    let $data := synopsx.models.tei:getCorpusList($queryParams)
+    let $layout  := 'blogHtml5.xhtml'
+    return (: synopsx.lib.commons:main($queryParams, $outputParams, $layout) :)
+    synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams, $layout, '') (: give $data instead of $queryParams:)
 };
 
 

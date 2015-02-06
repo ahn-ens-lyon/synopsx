@@ -46,7 +46,7 @@ declare default function namespace 'synopsx.webapp';
  :)
 
 (:~
- : this resource function 
+ : this resource function redirect to /home
  :)
 declare 
   %restxq:path("")
@@ -61,7 +61,8 @@ function index() {
 
 (:~
  : this resource function 
- @todo move project test to lib/ ?
+ : @return a home based on the default project
+ : @todo move project test to lib/ ?
  :)
 declare 
   %restxq:path("/home")

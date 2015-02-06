@@ -108,7 +108,7 @@ return $injected
  : @todo treat in the same loop @* and text()
  : @todo send to pattern $meta and $contents in a single map
  :)
-declare function wrapper($queryParams as map(*), $data as map(*), $options as map(*), $layout as xs:string, $pattern as xs:string){
+declare function wrapper($queryParams as map(*), $data as map(*), $options as map(*), $layout as xs:string, $pattern as xs:string?){
   let $layout := synopsx.lib.commons:getLayoutPath($queryParams, $layout)
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data,'content')
