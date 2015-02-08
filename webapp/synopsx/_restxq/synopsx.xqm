@@ -1,9 +1,9 @@
 xquery version "3.0" ;
-module namespace synopsx.synopsx = 'synopsx.synopsx';
+module namespace synopsx.synopsx = 'synopsx.synopsx' ;
 (:~
- : This module is the RESTXQ for SynopsX
+ : This module is the RESTXQ for SynopsX's installation processes
  : @version 0.2 (Constantia edition)
- : @date 2014-11-10 
+ : @since 2014-11-10 
  : @author synopsx team
  :
  : This file is part of SynopsX.
@@ -23,38 +23,67 @@ module namespace synopsx.synopsx = 'synopsx.synopsx';
  :
  :)
 
-import module namespace G = "synopsx.globals" at '../globals.xqm';
+import module namespace G = "synopsx.globals" at '../globals.xqm' ;
+import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
 
-(: Put here all import modules declarations as needed :)
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm' ;
+import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
 
-(: Put here all import declarations for mapping according to models :)
-import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm';
-
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm';
-
-(: Use a default namespace :)
-declare default function namespace 'synopsx.synopsx';
+declare default function namespace 'synopsx.synopsx' ;
 
 (:~
- : ~:~:~:~:~:~:~:~:~
- : To be use to implement the synopsx entry points
- : Used in the last version of synopsx  
- : ~:~:~:~:~:~:~:~:~
- : These five functions analyze the given path and retrieve the data
- :
+ : this resource function redirects to the synopsx' home
  :)
-
+declare 
+  %restxq:path("/synopsx")
+function index() {
+  <rest:response>
+    <http:response status="303" message="See Other">
+      <http:header name="location" value="/synopsx/home"/>
+    </http:response>
+  </rest:response>
+};
 
 (:~
- : this resource function 
- @ todo : installation program
+ : this resource function is the synopsx' home
+ : @todo give contents
+ :)
+declare 
+  %restxq:path("/synopsx/home")
+  %output:method("html")
+  %output:html-version("5.0")
+function home(){
+ <html lang="fr" xml:lang="fr" xmlns="htpp://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="utf-8"/>
+      <title>Un document xHTML minimal</title>
+      <link href="styles.css" rel="stylesheet"/>
+      <script src="scripts.js"></script>
+   </head>
+   <body>
+      <p>Faisons chauffer le navigateur en mode XHTML5.</p>
+   </body>
+ </html>
+};
+
+(:~
+ : this resource function is the installation
+ @ todo : installation process
  :)
 declare 
   %restxq:path("/synopsx/install")
-  %output:method("xhtml")
-  %output:omit-xml-declaration("no")
-  %output:doctype-public("xhtml")
-function install() {
-  <p>TODO Synopsx install</p>
+  %output:method("html")
+  %output:html-version("5.0")
+function install(){
+  <html lang="fr" xml:lang="fr" xmlns="htpp://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="utf-8"/>
+      <title>Un document xHTML minimal</title>
+      <link href="styles.css" rel="stylesheet"/>
+      <script src="scripts.js"></script>
+   </head>
+   <body>
+      <p>Faisons chauffer le navigateur en mode XHTML5.</p>
+   </body>
+ </html>
 };
