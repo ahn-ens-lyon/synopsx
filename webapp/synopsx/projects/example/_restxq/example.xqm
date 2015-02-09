@@ -36,6 +36,34 @@ import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWr
 (: Use a default namespace :)
 declare default function namespace 'example.webapp' ;
 
+
+(:~
+ : this resource function is the html representation of the corpus resource
+ : @return an html representation of the corpus resource with a bibliographical list
+ : the HTML serialization also shows a bibliographical list
+ :)
+declare 
+  %restxq:path('/example/home')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function home() {
+    let $project := 'example'
+    let $model := 'example.models.mixed'
+    let $queryParams := map {
+      'project' : $project,
+      'dbName' : 'hyperdonat', (: todo synopsx.lib.commons:getDbByProject($project) :)
+      'model' : $model, (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
+      'dataType' : 'getCorpusList'
+    }
+    let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
+    let $data := getHtmlHeader() (: TODO dynamyser choix fonction - function-lookup :)
+    let $layout  := 'home.xhtml'
+    return fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $layout))
+}; 
+
+
+
 (:~
  : this resource function is the corpus resource
  : @return an HTTP message with Content-location against the user-agent request
@@ -46,15 +74,9 @@ declare default function namespace 'example.webapp' ;
  : @bug not working curl -I -H "Accept:text/html,application/xhtml+xml,applicati/xml;q=0.9,*/*;q=0.8" http://localhost:8984/corpus/
  :)
 declare 
-  %restxq:path('/corpus')
+  %restxq:path('/example/corpus')
 function corpus() {
-  <rest:response>
-    <http:response status="200" message="OK">
-      <http:header name="Content-Location" value="http://localhost:8984/corpus/corpus.html"/>
-      <http:header name="Content-Type" value="text/html; charset=utf-8"/>
-      <http:header name="Connection" value="Keep-Alive"/>
-      </http:response>
-  </rest:response>
+  <rest:redirect>/corpus/corpus.html</rest:redirect> (: TODO : content negociation :)
 };
 
 (:~
@@ -63,7 +85,7 @@ function corpus() {
  : the HTML serialization also shows a bibliographical list
  :)
 declare 
-  %restxq:path('/corpus/corpus.html')
+  %restxq:path('/example/corpus.html')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -72,13 +94,13 @@ function corpusHtml() {
     let $model := 'synopsx.models.tei'
     let $queryParams := map {
       'project' : $project,
-      'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
+      'dbName' : 'hyperdonat', (: todo synopsx.lib.commons:getDbByProject($project) :)
       'model' : $model, (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
       'dataType' : 'getCorpusList'
     }
     let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
-    let $data := synopsx.models.tei:getCorpusList($queryParams)
-    let $layout  := 'blogHtml5.xhtml'
+    let $data := synopsx.models.tei:getCorpusList($queryParams) (: TODO dynamyser choix fonction - function-lookup :)
+    let $layout  := 'blog.xhtml'
     return (: synopsx.lib.commons:main($queryParams, $outputParams, $layout) :)
     synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams, $layout, '') (: give $data instead of $queryParams:)
 };
@@ -90,14 +112,14 @@ function corpusHtml() {
  : @todo use this tag !
  :)
 declare 
-  %restxq:path("/corpus/list/html")
-  %restxq:query-param("pattern", "{$pattern}")
-function corpusListHtml($pattern as xs:string?) {
+  %restxq:path("/example/corpus/list/html")
+ (:  %restxq:query-param("pattern", "{$pattern}") :)
+function corpusListHtml() {
     let $project := 'example'
     let $model := 'synopsx.models.tei'
     let $queryParams := map {
       'project' : $project,
-      'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
+      'dbName' : 'hyperdonat', (: todo synopsx.lib.commons:getDbByProject($project) :)
       'model' : $model, (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
       'dataType' : 'getCorpusList'
     }
@@ -117,14 +139,14 @@ function corpusListHtml($pattern as xs:string?) {
  : @todo use this tag !
  :)
 declare 
-  %restxq:path("/biblio/list/html")
+  %restxq:path("/example/biblio/list/html")
   %restxq:query-param("pattern", "{$pattern}")
 function biblioListHtml($pattern as xs:string?) {
     let $project := 'example'
     let $model := 'synopsx.models.tei'
     let $queryParams := map {
       'project' : $project,
-      'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
+      'dbName' : 'hyperdonat', (: todo synopsx.lib.commons:getDbByProject($project) :)
       'model' : $model, (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
       'dataType' : 'getBiblioList'
     }
@@ -132,7 +154,21 @@ function biblioListHtml($pattern as xs:string?) {
     (: let $layout  := synopsx.lib.commons:getLayoutPath($queryParams, 'home.xhtml') :)
     let $data := synopsx.models.tei:getBiblStructList($queryParams)
     let $layout  := 'inc_blogListSerif.xhtml'
-    let $pattern := 'inc_blogArticleSerif.xhtml'
+    let $pattern := 'inc_biblItemSerif.xhtml'
     return (: synopsx.lib.commons:main($queryParams, $outputParams, $layout) :)
            synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams, $layout, $pattern) (: give $data instead of $queryParams:)
+};
+
+
+declare 
+  %restxq:path("/example/html/header")
+function getHtmlHeader() {
+    fn:doc($G:PROJECTS||'example/templates/inc_header.xhtml')
+};
+
+declare 
+  %restxq:path("/example/html/footer")
+function getHtmlFooter() {
+      fn:doc($G:PROJECTS||'example/templates/inc_footer.xhtml')
+  
 };

@@ -71,19 +71,3 @@ declare function main($queryParams as map(*), $outputParams as map(*)){
   return fn:function-lookup(xs:QName($dataModel  || ':' || $dataType), 1)($queryParams)
 };
 
-(:~
- : this function is Where everything will be decided later on
- : @param $queryParams params built from the url
- : @param $outputParams options e.g. locals, etc.
- : @param $layout layout for the project
- : @return adding the @data-model to the layout nodes when missing with the model specified in $queryParams->dataType
- copy the selected layout and modify to prepare data injection
- return the template instanciated 
- :) 
-declare function main($queryParams as map(*), $outputParams as map(*), $layout as xs:string){
-   copy $template := fn:doc($layout) modify (
-    for $node in $template//*[@data-function][fn:not(@data-model)]
-    return insert node attribute data-model {map:get($queryParams, 'model')} into $node
-    )
-    return synopsx.mappings.htmlWrapping:globalWrapper($queryParams, $outputParams, $template)
-};

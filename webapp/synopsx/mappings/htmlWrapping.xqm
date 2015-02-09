@@ -36,56 +36,8 @@ declare namespace html = 'http://www.w3.org/1999/xhtml';
 
 declare variable $synopsx.mappings.htmlWrapping:xslt := '../../static/xslt2/tei2html.xsl' ;
 
-(:~
- : This function 
- : @param $queryParams transformation params
- : @param $outputParams options params
- : @param $layout layout file
- :)
-declare function globalWrapper($queryParams as map(*), $outputParams as map(*), $layout as document-node()){
-  copy $injected := $layout modify ( 
-    (: Calling the function specified with :
-        - namespace:@data-model
-        - function-name:@data-function
-    :)
-    for $node in $injected//*[@data-function] 
-    let $data-model := fn:string($node/@data-model)
-    let $result := fn:function-lookup(xs:QName($data-model || ':' || map:get($queryParams, 'dataType')), 1)($queryParams)
-    (: 
-      - If the function contains a node or a string the result is inserted
-      - If the function return a map, each item is wrapped according to the pattern specified in the @data-pattern, by calling the function pattern. 
-     :)
-    return typeswitch($result)
-      case map(*) return
-        let $meta := map:get($result, 'meta')
-        let $contents := map:get($result,'content') 
-        return map:for-each($contents, function($key, $content) {
-     (: insert node pattern($meta, $content, $outputParams, $G:TEMPLATES || fn:string($node/@data-pattern) || '.xhtml') into $node :)
-        insert node pattern($result, $outputParams, synopsx.lib.commons:getLayoutPath(map:get($queryParams, 'project'), fn:string($node/@data-pattern) || '.xhtml')) into $node
-    })
-      default
-       return insert node fn:function-lookup(xs:QName(fn:string($node/@data-model)  || ':' || fn:string($node/@data-function)), 1)($queryParams) into $node
-     )  
-  return $injected
-};
 
-(:@date : 2/02/15:)
-declare function pattern($data as map(*), $outputParams as map(*), $pattern as xs:string) as document-node()* {
-  let $meta := map:get($data, 'meta')
-  let $content := fn:trace(map:get($data, 'content'), 'content: ')
-  return 
-    copy $injected := fn:doc($pattern) modify (
-      map:for-each($content, function($key, $item) {
-        for $node in $injected//.[@data-key=$key]
-          return replace value of node $node with fn:string($item) ,
-        for $attribute in $injected//@*[fn:matches(.,'\{'||$key||'\}')]
-          let $key := fn:replace($attribute, '\{|\}', '')
-          return
-            replace value of node $attribute with fn:string($item)
-    })
-)
-return $injected
-};
+
 
 
 (:~
@@ -108,26 +60,29 @@ return $injected
  : @todo treat in the same loop @* and text()
  : @todo send to pattern $meta and $contents in a single map
  :)
-declare function wrapper($queryParams as map(*), $data as map(*), $options as map(*), $layout as xs:string, $pattern as xs:string?){
-  let $layout := synopsx.lib.commons:getLayoutPath($queryParams, $layout)
-  let $meta := map:get($data, 'meta')
-  let $contents := map:get($data,'content')
-  let $wrap := fn:doc($layout)
-  return $wrap update (
-    for $text in .//@*
-      where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-      let $key := fn:replace($text, '\{|\}', '')
-      let $value := map:get($meta, $key)
-      return replace value of node $text with fn:string($value) ,
-    for $text in .//text()
-      where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-      let $key := fn:replace($text, '\{|\}', '')
-      let $value := map:get($meta,$key)
-      return if ($key = 'content') 
-        then replace node $text with simplePattern($queryParams, $meta, $contents, $options, $pattern)
-        else replace node $text with $value 
-    )
+declare function wrapper($queryParams as map(*), $data as map(*), $options as map(*), $layout as xs:string, $pattern as xs:string){
+      if (map:size($queryParams) = 0 or map:size($data) = 0) then fn:doc($G:TEMPLATES||'notFound.xhtml')
+      else
+          let $layout := synopsx.lib.commons:getLayoutPath($queryParams, $layout)
+          let $meta := map:get($data, 'meta')
+          let $contents := map:get($data,'content')
+          let $wrap := fn:doc($layout)
+          return $wrap update (
+            for $text in .//@*
+              where fn:starts-with($text, '{') and fn:ends-with($text, '}')
+              let $key := fn:replace($text, '\{|\}', '')
+              let $value := map:get($meta, $key)
+              return replace value of node $text with fn:string($value) ,
+            for $text in .//text()
+              where fn:starts-with($text, '{') and fn:ends-with($text, '}')
+              let $key := fn:replace($text, '\{|\}', '')
+              let $value := map:get($meta,$key)
+              return if ($key = 'content') 
+                then replace node $text with simplePattern($queryParams, $meta, $contents, $options, $pattern)
+                else replace node $text with $value 
+            )
 };
+
 
 (:~
  : This function iterates the pattern template with contents
@@ -154,7 +109,7 @@ declare function simplePattern($queryParams, $meta as map(*), $contents  as map(
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key) 
         return if ($key = 'tei') 
-          then replace node $text with $value
+          then replace node $text with $value (: TODO : options : xslt, etc. :)
           else replace node $text with $value
       )
   })

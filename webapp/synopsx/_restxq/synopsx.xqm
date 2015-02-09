@@ -61,7 +61,7 @@ function home(){
       <script src="scripts.js"></script>
    </head>
    <body>
-      <p>Faisons chauffer le navigateur en mode XHTML5.</p>
+      <h1>Faisons chauffer le navigateur en mode XHTML5 ! Home</h1>
    </body>
  </html>
 };
@@ -75,15 +75,24 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function install(){
-  <html lang="fr" xml:lang="fr" xmlns="htpp://www.w3.org/1999/xhtml">
-   <head>
-      <meta charset="utf-8"/>
-      <title>Un document xHTML minimal</title>
-      <link href="styles.css" rel="stylesheet"/>
-      <script src="scripts.js"></script>
-   </head>
-   <body>
-      <p>Faisons chauffer le navigateur en mode XHTML5.</p>
-   </body>
- </html>
+ 
+      <h1>Faisons chauffer le navigateur en mode XHTML5 ! Install</h1>
+   
+};
+
+
+
+
+declare 
+  %restxq:path("/synopsx/html/header")
+function getHtmlHeader() {
+ fn:doc($G:TEMPLATES||'inc_header.xhtml')
+};
+
+declare 
+  %restxq:path("/synopsx/html/footer")
+function getHtmlFooter() {
+ 
+fn:doc($G:TEMPLATES||'inc_footer.xhtml')
+
 };
