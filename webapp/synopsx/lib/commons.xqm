@@ -1,7 +1,8 @@
 xquery version "3.0" ;
 module namespace synopsx.lib.commons = 'synopsx.lib.commons';
 (:~
- : This module is the RESTXQ for SynopsX
+ : This module is a function library for SynopsX
+ :
  : @version 0.2 (Constantia edition)
  : @date 2014-11-10 
  : @author synopsx team
@@ -25,12 +26,6 @@ module namespace synopsx.lib.commons = 'synopsx.lib.commons';
 
 import module namespace G = "synopsx.globals" at '../globals.xqm';
 
-(: Put here all import declarations for mapping according to models :)
-import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm';
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm';
-
-
-(: Use a default namespace :)
 declare default function namespace 'synopsx.lib.commons';
 
 (:~
@@ -45,24 +40,32 @@ declare function getProjectDB($project as xs:string) as xs:string {
 
 (:~
  : this function built the layout path based on the project hierarchy
+ :
  : @param $queryParams the query params
  : @param $template the template name.extension
  : @return a path 
  :)
- declare function getLayoutPath($queryParams as map(*), $template as xs:string) as xs:string {
-   let $path := $G:PROJECTS || map:get($queryParams, 'project') || '/templates/' || $template
-   return 
-     if (file:exists($path)) 
-     then $path
-     else if (file:exists($G:TEMPLATES || $template)) then $G:TEMPLATES || $template
-     else if (fn:empty($template)) then 'default.xhtml'
-     else $G:TEMPLATES || 'default.xhtml'
- };
+declare function getLayoutPath($queryParams as map(*), $template as xs:string?) as xs:string {
+  if (fn:empty($template)) then $G:TEMPLATES || 'inc_default.xhtml' 
+  else let $path := $G:PROJECTS || map:get($queryParams, 'project') || '/templates/' || $template
+  return 
+    if (file:exists($path)) 
+    then $path
+    else if (file:exists($G:TEMPLATES || $template)) then $G:TEMPLATES || $template
+    else if (fn:empty($template)) then $G:TEMPLATES || 'default.xhtml'
+    else $G:TEMPLATES || 'default.xhtml'
+};
 
 (:~
  : this function launches processings according to the resource functions (restxq)
+ :
+ : @param $queryParams the query params
+ : @param $outputParams the serialization params
+ : @return find the function name
+ :
  : @todo return error messages
  : @todo test heritage
+ : @rmq depreciated
  :)
 declare function main($queryParams as map(*), $outputParams as map(*)){
   (: fn:function-lookup(xs:QName($data-model  || ':' || fn:string($node/@data-function)), 1)($queryParams :)
@@ -70,4 +73,3 @@ declare function main($queryParams as map(*), $outputParams as map(*)){
   let $dataType := map:get($queryParams, 'dataType')
   return fn:function-lookup(xs:QName($dataModel  || ':' || $dataType), 1)($queryParams)
 };
-

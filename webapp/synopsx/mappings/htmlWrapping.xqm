@@ -2,6 +2,7 @@ xquery version "3.0" ;
 module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping';
 (:~
  : This module is an HTML mapping for templating
+ :
  : @since 2014-11-10 
  : @version 0.3 (Constantia edition)
  : @author synopsx's team
@@ -24,15 +25,15 @@ module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping'
  :)
 
 import module namespace G = "synopsx.globals" at '../globals.xqm';
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm'; 
-import module namespace synopsx.models.mixed = 'synopsx.models.mixed' at '../models/mixed.xqm'; 
-import module namespace synopsx.models.ead = 'synopsx.models.ead' at '../models/ead.xqm'; 
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm'; 
 
-declare default function namespace 'synopsx.mappings.htmlWrapping';
-
+import module namespace synopsx.models.ead = 'synopsx.models.ead' at '../models/ead.xqm'; 
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm'; 
+import module namespace synopsx.models.mixed = 'synopsx.models.mixed' at '../models/mixed.xqm'; 
 
 declare namespace html = 'http://www.w3.org/1999/xhtml';
+
+declare default function namespace 'synopsx.mappings.htmlWrapping';
 
 declare variable $synopsx.mappings.htmlWrapping:xslt := '../../static/xslt2/tei2html.xsl' ;
 
@@ -44,9 +45,8 @@ declare variable $synopsx.mappings.htmlWrapping:xslt := '../../static/xslt2/tei2
  : @param $outputParams the serialization params
  : @return an updated HTML document and instantiate pattern
  :
- : @todo modify to replace text nodes like "{quantity} éléments" EC2014-11-15
- : @todo treat in the same loop @* and text()
- : @todo send to pattern $meta and $contents in a single map
+ : @todo modify to replace mixted content like "{quantity} éléments" 
+ : @todo treat in the same loop @* and text() ?
  :)
 declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)) {
   if (map:size($queryParams) = 0) then 'Pas de queryParams associés à cette requête...' (: redirect to error pages in restxq :)
@@ -77,15 +77,16 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
  : @param $queryParams the query params defined in restxq
  : @param $data the result of the query
  : @param $outputParams the serialization params
- : @return an updated HTML document and instantiate pattern
+ : @return instantiate the pattern with $data
  :
- : @toto modify to replace text nodes like "{quantity} éléments" (mixed content) EC2014-11-15
- : @toto treat in the same loop @* and text()
+ : @todo modify to replace mixed content like "{quantity} éléments"
+ : @todo treat in the same loop @* and text()
+ : @todo use $outputParams to use an xslt
  :)
-declare function pattern($queryParams as map(*), $data as map(*), $outputParams) as document-node()* {
+declare function pattern($queryParams as map(*), $data as map(*), $outputParams as map(*)) as document-node()* {
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data,'content')
-  let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
+  let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'template'))
   return map:for-each($contents, function($key, $content) {
     fn:doc($pattern) update (
       for $text in .//@*
