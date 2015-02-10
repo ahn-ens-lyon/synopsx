@@ -1,7 +1,9 @@
 xquery version "3.0" ;
 module namespace example.webapp = 'example.webapp' ;
+
 (:~
  : This module is the RESTXQ for SynopsX's example
+ :
  : @version 0.2 (Constantia edition)
  : @since 2015-02-05 
  : @author synopsx team
@@ -38,6 +40,7 @@ declare default function namespace 'example.webapp' ;
 
 (:~
  : this resource function redirect to /home
+ :
  :)
 declare 
   %restxq:path("/example")
@@ -51,6 +54,7 @@ function index() {
 
 (:~
  : this resource function is the html representation of the corpus resource
+ :
  : @return an html representation of the corpus resource with a bibliographical list
  : the HTML serialization also shows a bibliographical list
  :)
@@ -66,20 +70,19 @@ function home() {
     'model' : 'example.models.tei', (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
     'dataType' : 'getTextsList'
     }
-  let $data := synopsx.models.tei:getTextsList($queryParams) (: TODO dynamyser choix fonction - function-lookup :)
+  let $data := synopsx.models.tei:getTextsList($queryParams) (: TODO choose function dynamicaly :)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
-    'pattern' : ''
+    'pattern' : 'inc_blogArticleSerif.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
 }; 
 
-
-
 (:~
  : this resource function is the corpus resource
+ :
  : @return an HTTP message with Content-location against the user-agent request
  : @rmq Content-location in HTTP can be used when a requested resource has 
  : multiple representations. The selection of the resource returned will depend 
@@ -98,15 +101,13 @@ function textsJS() {
       'model' : 'synopsx.models.tei' (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
     }
     
-    return synopsx.models.tei:getTextsList($queryParams) (: TODO dynamyser choix fonction - function-lookup :)
+    return synopsx.models.tei:getTextsList($queryParams) (: TODO choose function dynamicaly :)
      
 };
 
-
-
-
 (:~
  : this resource function is the html representation of the corpus resource
+ :
  : @return an html representation of the corpus resource with a bibliographical list
  : the HTML serialization also shows a bibliographical list
  :)
@@ -116,87 +117,84 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function textsHtml() {
-
-    let $queryParams := map {
-     'project' : 'example',
-     'dataType' : 'getTextsList',
-     'model' : 'synopsx.models.tei',
-      'dbName' : 'example' (: todo synopsx.lib.commons:getDbByProject($project) :)
+  let $queryParams := map {
+    'project' : 'example',
+    'dataType' : 'getTextsList',
+    'model' : 'synopsx.models.tei',
+    'dbName' : 'example' (: todo synopsx.lib.commons:getDbByProject($project) :)
     }
-    let $data := synopsx.models.tei:getTextsList($queryParams) (: TODO dynamyser choix fonction - function-lookup :)
-    let $outputParams := map {
-      'lang' : 'fr',
-      'layout' : 'blog.xhtml',
-      'pattern' : ''
-      (: specify an xslt mode and other kind of output options :)
-      }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
+  let $data := synopsx.models.tei:getTextsList($queryParams) (: TODO choose function dynamicaly :)
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'home.xhtml',
+    'pattern' : 'inc_blogArticleSerif.xhtml'
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
 };
 
 (:~
  : this resource function is a corpus list for testing
- : @return an html representation of the corpus list
+ :
  : @param $pattern a GET param giving the name of the calling HTML tag
+ : @return an html representation of the corpus list
  : @todo use this tag !
  :)
 declare 
   %restxq:path("/example/texts/list/html")
  (:  %restxq:query-param("pattern", "{$pattern}") :)
 function corpusListHtml() {
-
-    let $queryParams := map {
-      'project' :'example',
-      'dataType' : 'getTextsList',
-      'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
-      'model' : 'synopsx.models.tei' (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
-
+  let $queryParams := map {
+    'project' :'example',
+    'dataType' : 'getTextsList',
+    'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
+    'model' : 'synopsx.models.tei' (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
     }
-    let $data := synopsx.models.tei:getTextsList($queryParams)
-    let $outputParams := map {
-      'lang' : 'fr',
-      'layout' : 'inc_blogListSerif.xhtml',
-      'pattern' : 'inc_blogArticleSerif.xhtml'
-      (: specify an xslt mode and other kind of output options :)
-      }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
+  let $data := synopsx.models.tei:getTextsList($queryParams)
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'inc_blogListSerif.xhtml',
+    'pattern' : 'inc_blogArticleSerif.xhtml'
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
 };
 
 (:~
  : this resource function is a bibliographical list for testing
- : @return an html representation of the bibliographical list
+ :
  : @param $pattern a GET param giving the name of the calling HTML tag
+ : @return an html representation of the bibliographical list
  : @todo use this tag !
  :)
 declare 
   %restxq:path("/example/resp/list/html")
   %restxq:query-param("pattern", "{$pattern}")
 function biblioListHtml($pattern as xs:string?) {
-    let $queryParams := map {
-      'project' :'example',
-      'dataType' : 'getRespList',
-      'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
-      'model' : 'synopsx.models.tei' (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
+  let $queryParams := map {
+    'project' :'example',
+    'dataType' : 'getRespList',
+    'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
+    'model' : 'synopsx.models.tei' (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
     }
-    let $data := synopsx.models.tei:getRespList($queryParams)
-    let $outputParams := map {
-      'lang' : 'fr',
-      'layout' : 'inc_blogListSerif.xhtml',
-      'pattern' : 'inc_blogArticleSerif.xhtml'
-      (: specify an xslt mode and other kind of output options :)
-      }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
+  let $data := synopsx.models.tei:getRespList($queryParams)
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'inc_blogListSerif.xhtml',
+    'pattern' : 'inc_blogArticleSerif.xhtml'
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
 };
-
 
 declare 
   %restxq:path("/example/html/header")
 function getHtmlHeader() {
-    fn:doc($G:PROJECTS||'example/templates/inc_header.xhtml')
+  fn:doc($G:PROJECTS || 'example/templates/inc_header.xhtml')
 };
 
 declare 
   %restxq:path("/example/html/footer")
 function getHtmlFooter() {
-      fn:doc($G:PROJECTS||'example/templates/inc_footer.xhtml')
-  
+  fn:doc($G:PROJECTS || 'example/templates/inc_footer.xhtml')
 };

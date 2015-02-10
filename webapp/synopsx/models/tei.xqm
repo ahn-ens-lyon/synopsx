@@ -23,24 +23,22 @@ module namespace synopsx.models.tei = 'synopsx.models.tei';
  :
  :)
 
-import module namespace G = "synopsx.globals" at '../globals.xqm'; (: import globals variables :)
+import module namespace G = "synopsx.globals" at '../globals.xqm';
 
-declare default function namespace 'synopsx.models.tei'; (: This is the default namespace:)
-declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
+declare namespace tei = 'http://www.tei-c.org/ns/1.0';
 
-
-
+declare default function namespace 'synopsx.models.tei';
 
 (:~
- : This function creates a map of two maps : one for metadata, one for content data
+ : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getTextsList($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:TEI/tei:teiHeader
-  let $lang := 'la'
+  let $lang := 'fr'
   let $meta := map{
     'title' : 'Liste des textes', 
     'author' : getAuthors($texts),
-    'copyright'  : getCopyright($texts),
+    'copyright' : getCopyright($texts),
     'description' : getDescription($texts, $lang),
     'keywords' : getKeywords($texts, $lang)
     }
@@ -54,10 +52,8 @@ declare function getTextsList($queryParams) {
     }
 };
 
-
-
 (:~
- : This function creates a map of two maps : one for metadata, one for content data
+ : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getCorpusList($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus/tei:teiHeader
@@ -80,7 +76,7 @@ declare function getCorpusList($queryParams) {
 };
 
 (:~
- : This function creates a map of two maps : one for metadata, one for content data
+ : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getBiblStructList($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:listBibl
@@ -99,9 +95,8 @@ declare function getBiblStructList($queryParams) {
     }
 };
 
-
 (:~
- : This function creates a map of two maps : one for metadata, one for content data
+ : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getRespList($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:respStmt
@@ -120,7 +115,7 @@ declare function getRespList($queryParams) {
 };
 
 (:~
- : This function creates a map for a corpus item with teiHeader 
+ : this function creates a map for a corpus item with teiHeader 
  :
  : @param $item a corpus item
  : @return a map with content for each item
@@ -139,7 +134,7 @@ declare function getHeader($item as element()) {
 };
 
 (:~
- : This function creates a map for a corpus item with teiHeader 
+ : this function creates a map for a corpus item with teiHeader 
  :
  : @param $item a corpus item
  : @return a map with content for each item
@@ -156,9 +151,8 @@ declare function getBiblStruct($item as element()) {
   }
 };
 
-
 (:~
- : This function creates a map for a corpus item with teiHeader 
+ : this function creates a map for a corpus item with teiHeader 
  :
  : @param $item a corpus item
  : @return a map with content for each item
@@ -171,10 +165,6 @@ declare function getResp($item as element()) {
     'resp' : $item//tei:resp/text()
   }
 };
-
-
-
-
 
 (:~
  : ~:~:~:~:~:~:~:~:~
@@ -207,7 +197,6 @@ declare function getBiblTitles($content as element()*, $lang as xs:string){
     return fn:normalize-space($title(: (:[fn:starts-with(@xml:lang, $lang)]:) :)),
     ', ')
 };
-
 
 (:~
  : this function get abstract
@@ -252,7 +241,7 @@ declare function getBiblAuthors($content as element()*){
  : @return the @target url of licence
  :
  : @rmq if a sequence get the first one
- : @toto make it better !
+ : @todo make it better !
  :)
 declare function getCopyright($content){
   ($content//tei:licence/@target)[1]
@@ -270,7 +259,6 @@ declare function getDate($content as element()*, $dateFormat as xs:string){
     $content//tei:publicationStmt/tei:date
   )
 };
-
 
 (:~
  : this function get date
@@ -323,9 +311,6 @@ declare function getName($named as element()*){
     )
 };
 
-
-
-
 (:~
  : this function get tei doc by id
  : @param $id documents id to retrieve
@@ -335,18 +320,13 @@ declare function getXmlTeiById($queryParams){
   db:open(map:get($queryParams, 'dbName'))//tei:TEI[//tei:sourceDesc[@xml-id = map:get($queryParams, 'value')]]
 }; 
 
-
-
-
 (:~
  : this function get url
  : @param $content texts to process
  : @param $lang iso langcode starts
  : @return a string of comma separated titles
- : @toto print the real uri
+ : @todo print the real uri
  :)
 declare function getUrl($content as element()*, $lang as xs:string){
   $G:PROJECTBLOGROOT || $content//tei:sourceDesc/@xml:id
 };
-
-

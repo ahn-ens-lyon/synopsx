@@ -18,26 +18,22 @@
          $('*[data-url]').each(function(){
            var url = $(this).data('url')+'?pattern='+$(this).prop('tagName').toLowerCase();
            $(this).load(url);
-           //alert(url);
+           // alert(url);
            });
          }); 
        </script>
    </head>
    <body>
- 
-<header data-url="/example/html/header"/>
-
-<div class="main">
-<hr/>
-<h3>Main section</h3>
-<hr/>
- <nav id="contextual" class="sidebar-nav" data-url="/example/resp/list/html" /> 
-<section data-url="/example/texts/list/html" id="texts" />       
-
-  </div> 
-  
+     <header data-url="/example/html/header"/>
+     <div class="main">
+       <hr/>
+       <h3>Main section</h3>
+       <hr/>
+       <nav id="contextual" class="sidebar-nav" data-url="/example/resp/list/html" /> 
+       <section>{content}</section>
+       <section data-url="/example/texts/list/html" id="texts" />       
+     </div>
 <footer data-url="/example/html/footer"/>
-
      <!-- script menu -->
      <script><![CDATA[
       $(document).ready(function() {
