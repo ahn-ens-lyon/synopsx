@@ -7,7 +7,7 @@
       <meta name="keywords" content="{keywords}" />
       <link rel="copyright" href="{copyright}"/>
      <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" />
-  <!--      <link href="/static/css/ahn.css" rel="stylesheet" /> -->
+    <!--    <link href="/static/css/ahn.css" rel="stylesheet" /> -->
       <link href="/static/css/main.css" rel="stylesheet" />
       <script src="plugin.js"></script>
       <!-- ajouter js pour lt IE 9 -->
@@ -18,26 +18,31 @@
          $('*[data-url]').each(function(){
            var url = $(this).data('url')+'?pattern='+$(this).prop('tagName').toLowerCase();
            $(this).load(url);
-           //alert(url);
+          // alert(url);
            });
          }); 
        </script>
    </head>
    <body>
  
-<header data-url="/example/html/header"/>
+<header data-url="/synopsx/html/header"/>
 
 <div class="main">
 <hr/>
 <h3>Main section</h3>
 <hr/>
- <nav id="contextual" class="sidebar-nav" data-url="/example/resp/list/html" /> 
-<section data-url="/example/texts/list/html" id="texts" />       
+  <nav id="contextual" class="sidebar-nav">
+  <h3>The SynopsX default contextual nav</h3>
+  </nav>
+ 
+                <section>
+              <h1>No query params or no data !</h1> 
+
+            </section>
 
   </div> 
-  
-<footer data-url="/example/html/footer"/>
-
+<hr/>
+<footer data-url="/synopsx/html/footer"/>
      <!-- script menu -->
      <script><![CDATA[
       $(document).ready(function() {

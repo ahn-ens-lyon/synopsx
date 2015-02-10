@@ -70,23 +70,9 @@ function home() {
       else fn:doc($G:CONFIGFILE)//project[1]/resourceName/text()
     else ()
   return if(fn:empty($project)) then
-    <rest:response>
-      <http:response status="303" message="See Other">
-        <http:header name="location" value="/synopsx/install"/>
-      </http:response>
-    </rest:response>
+    <rest:forward>/synopsx/install</rest:forward>
   else 
-  let $model := 'synopsx.models.tei'
-  let $queryParams := map {
-    'project' : $project,
-    'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
-    'model' : $model, (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
-    'dataType' : 'getCorpusList'
-  }
-  let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
-  let $data := synopsx.models.tei:getCorpusList($queryParams)
-  let $layout  := 'home.xhtml'
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams, $layout, '') (: give $data instead of $queryParams:)
+   <rest:forward>/{$project}/home</rest:forward>
 };
 
 (:~
@@ -108,19 +94,20 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function default($project) {
-    let $project := $project
-    let $model := 'todo'
     let $queryParams := map {
       'project' : $project,
-      'dbName' : 'todo', (: todo synopsx.lib.commons:getDbByProject($project) :)
-      'model' : $model, (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
-      'dataType' : 'todo'
-    }
-    let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
-    let $data := todo (: synopsx.models.tei:getCorpusList($queryParams) :)
-    let $layout  := 'todo.xhtml'
-    return (: synopsx.lib.commons:main($queryParams, $outputParams, $layout) :)
-    synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams, $layout, '') (: give $data instead of $queryParams:)
+      'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
+      'model' : 'synopsx.models.tei', (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
+      'dataType' : 'home'
+      }
+    let $data := map{} (: synopsx.models.tei:getCorpusList($queryParams) :)
+    let $outputParams := map {
+      'lang' : 'fr',
+      'layout' : 'default.xhtml',
+      'pattern' : ''
+      (: specify an xslt mode and other kind of output options :)
+      }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
 };
 
 (:~
@@ -131,20 +118,22 @@ declare
   %restxq:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function default($project, $dataType) {
-    let $project := $project
-    let $model := 'todo'
-    let $queryParams := map {
-      'project' : $project,
-      'dbName' : 'todo', (: todo synopsx.lib.commons:getDbByProject($project) :)
-      'model' : $model, (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
-      'dataType' : 'todo'
+function default($project as xs:string, $dataType as xs:string) {
+  let $queryParams := map {
+    'project' : $project,
+    'dataType' : $dataType,      
+    'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
+    'model' : 'synopsx.models.tei' (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
     }
-    let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
-    let $data := todo (: synopsx.models.tei:getCorpusList($queryParams) :)
-    let $layout  := 'todo.xhtml'
-    return (: synopsx.lib.commons:main($queryParams, $outputParams, $layout) :)
-    synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams, $layout, '') (: give $data instead of $queryParams:)
+  let $data := map{} (: synopsx.models.tei:getCorpusList($queryParams) :)
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'default.xhtml',
+    'pattern' : ''
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return (: synopsx.lib.commons:main($queryParams, $outputParams, $layout) :)
+    synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
 };
 
 (:~
@@ -155,20 +144,21 @@ declare
   %restxq:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function default($project, $dataType, $value) {
-    let $project := $project
-    let $model := 'todo'
-    let $queryParams := map {
-      'project' : $project,
-      'dbName' : 'todo', (: todo synopsx.lib.commons:getDbByProject($project) :)
-      'model' : $model, (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
-      'dataType' : 'todo'
+function default($project as xs:string, $dataType as xs:string, $value as xs:string) {
+  let $queryParams := map {
+    'project' : $project,
+    'dataType' : $dataType,      
+    'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
+    'model' : 'synopsx.models.tei' (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
     }
-    let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
-    let $data := todo (: synopsx.models.tei:getCorpusList($queryParams) :)
-    let $layout  := 'todo.xhtml'
-    return (: synopsx.lib.commons:main($queryParams, $outputParams, $layout) :)
-    synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams, $layout, '') (: give $data instead of $queryParams:)
+  let $data := map{} (: synopsx.models.tei:getCorpusList($queryParams) :)
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'default.xhtml',
+    'pattern' : ''
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
 };
 
 (:~
@@ -180,18 +170,19 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function default($project, $dataType, $value, $options) {
-    let $project := $project
-    let $model := 'todo'
-    let $queryParams := map {
-      'project' : $project,
-      'dbName' : 'todo', (: todo synopsx.lib.commons:getDbByProject($project) :)
-      'model' : $model, (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
-      'dataType' : 'todo'
+  let $queryParams := map {
+    'project' : $project,
+    'dataType' : $dataType,
+    'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
+    'model' : 'synopsx.models.tei' (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
     }
-    let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
-    let $data := todo (: synopsx.models.tei:getCorpusList($queryParams) :)
-    let $layout  := 'todo.xhtml'
-    return (: synopsx.lib.commons:main($queryParams, $outputParams, $layout) :)
-    synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams, $layout, '') (: give $data instead of $queryParams:)
+  let $data := map{} (: synopsx.models.tei:getCorpusList($queryParams) :)
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'default.xhtml',
+    'pattern' : ''
+    (: specify an xslt mode and other kind of output options :)
+    }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
 };
 
