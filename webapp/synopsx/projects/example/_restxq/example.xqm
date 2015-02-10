@@ -60,17 +60,20 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function home() {
-    let $queryParams := map {
-      'project' : 'example',
-      'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
-      'model' : 'example.models.tei', (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
-      'dataType' : 'getTextsList'
+  let $queryParams := map {
+    'project' : 'example',
+    'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
+    'model' : 'example.models.tei', (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
+    'dataType' : 'getTextsList'
     }
-    let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
-    let $data := synopsx.models.tei:getTextsList($queryParams) (: TODO dynamyser choix fonction - function-lookup :)
-    let $layout  := 'home.xhtml'
-  
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams, $layout, '') (: give $data instead of $queryParams:)
+  let $data := synopsx.models.tei:getTextsList($queryParams) (: TODO dynamyser choix fonction - function-lookup :)
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'home.xhtml',
+    'pattern' : ''
+    (: specify an xslt mode and other kind of output options :)
+    }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
 }; 
 
 
@@ -120,10 +123,14 @@ function textsHtml() {
      'model' : 'synopsx.models.tei',
       'dbName' : 'example' (: todo synopsx.lib.commons:getDbByProject($project) :)
     }
-    let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
     let $data := synopsx.models.tei:getTextsList($queryParams) (: TODO dynamyser choix fonction - function-lookup :)
-    let $layout  := 'blog.xhtml'
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams, $layout, '') (: give $data instead of $queryParams:)
+    let $outputParams := map {
+      'lang' : 'fr',
+      'layout' : 'blog.xhtml',
+      'pattern' : ''
+      (: specify an xslt mode and other kind of output options :)
+      }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
 };
 
 (:~
@@ -144,12 +151,14 @@ function corpusListHtml() {
       'model' : 'synopsx.models.tei' (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
 
     }
-    let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
     let $data := synopsx.models.tei:getTextsList($queryParams)
-    let $layout  := 'inc_blogListSerif.xhtml'
-    let $pattern := 'inc_blogArticleSerif.xhtml'
-    return (: synopsx.lib.commons:main($queryParams, $outputParams, $layout) :)
-           synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams, $layout, $pattern) (: give $data instead of $queryParams:)
+    let $outputParams := map {
+      'lang' : 'fr',
+      'layout' : 'inc_blogListSerif.xhtml',
+      'pattern' : 'inc_blogArticleSerif.xhtml'
+      (: specify an xslt mode and other kind of output options :)
+      }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
 };
 
 (:~
@@ -168,12 +177,14 @@ function biblioListHtml($pattern as xs:string?) {
       'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
       'model' : 'synopsx.models.tei' (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
     }
-    let $outputParams := map {'lang' : 'fr'} (: specify an xslt mode and other kind of option :)
     let $data := synopsx.models.tei:getRespList($queryParams)
-    let $layout  := 'inc_blogListSerif.xhtml'
-    let $pattern := 'inc_respItemSerif.xhtml'
-    return (: synopsx.lib.commons:main($queryParams, $outputParams, $layout) :)
-           synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams, $layout, $pattern) (: give $data instead of $queryParams:)
+    let $outputParams := map {
+      'lang' : 'fr',
+      'layout' : 'inc_blogListSerif.xhtml',
+      'pattern' : 'inc_blogArticleSerif.xhtml'
+      (: specify an xslt mode and other kind of output options :)
+      }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
 };
 
 
