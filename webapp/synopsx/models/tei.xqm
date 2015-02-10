@@ -35,10 +35,10 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
  : This function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getTextsList($queryParams) {
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:TEI/tei:teiHeader
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:teiHeader
   let $lang := 'la'
   let $meta := map{
-    'title' : 'Liste de textes', 
+    'title' : 'Liste des textes', 
     'author' : getAuthors($texts),
     'copyright'  : getCopyright($texts),
     'description' : getDescription($texts, $lang),
@@ -99,6 +99,26 @@ declare function getBiblStructList($queryParams) {
     }
 };
 
+
+(:~
+ : This function creates a map of two maps : one for metadata, one for content data
+ :)
+declare function getRespList($queryParams) {
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:respStmt
+  let $lang := 'fr'
+  let $meta := map{
+    'title' : 'RespStmt'
+    }
+  let $content as map(*) := map:merge(
+    for $item in $texts
+    return  map:entry( fn:generate-id($item), getResp($item) )
+    )
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
 (:~
  : This function creates a map for a corpus item with teiHeader 
  :
@@ -132,14 +152,25 @@ declare function getBiblStruct($item as element()) {
     'title' : getBiblTitles($item, $lang),
     'date' : getBiblDate($item, $dateFormat),
     'author' : getBiblAuthors($item),
-    'tei' : $item,
-    'url' : getUrl($item, $lang)
-    (: ', teiAbstract' : getAbstract($item, $lang) :)
+    'tei' : $item
   }
 };
 
 
-
+(:~
+ : This function creates a map for a corpus item with teiHeader 
+ :
+ : @param $item a corpus item
+ : @return a map with content for each item
+ : @rmq subdivised with let to construct complex queries (EC2014-11-10)
+ :)
+declare function getResp($item as element()) {
+  let $lang := 'fr'
+  return map {
+    'name' : getName($item),
+    'resp' : $item//tei:resp/text()
+  }
+};
 
 
 

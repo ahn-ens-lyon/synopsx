@@ -61,9 +61,9 @@ declare variable $synopsx.mappings.htmlWrapping:xslt := '../../static/xslt2/tei2
  : @todo send to pattern $meta and $contents in a single map
  :)
 declare function wrapper($queryParams as map(*), $data as map(*), $options as map(*), $layout as xs:string, $pattern as xs:string){
-      if (map:size($queryParams) = 0 or map:size($data) = 0) then fn:doc($G:TEMPLATES||'notFound.xhtml')
-      else
-          let $layout := synopsx.lib.commons:getLayoutPath($queryParams, $layout)
+          if(map:size($queryParams) = 0) then 'Pas de queryParams associés à cette requête...'
+          else if (map:size($data) = 0) then 'Pas de data associées à cette requête...'
+         else let $layout := synopsx.lib.commons:getLayoutPath($queryParams, $layout)
           let $meta := map:get($data, 'meta')
           let $contents := map:get($data,'content')
           let $wrap := fn:doc($layout)
