@@ -35,7 +35,7 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
  : This function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getTextsList($queryParams) {
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:teiHeader
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:TEI/tei:teiHeader
   let $lang := 'la'
   let $meta := map{
     'title' : 'Liste des textes', 
@@ -67,7 +67,7 @@ declare function getCorpusList($queryParams) {
     'author' : getAuthors($texts),
     'copyright'  : getCopyright($texts),
     'description' : getDescription($texts, $lang),
-    'keywords' : getKeywords($texts, $lang)
+    'subject' : getKeywords($texts, $lang)
     }
   let $content as map(*) := map:merge(
     for $item in $texts

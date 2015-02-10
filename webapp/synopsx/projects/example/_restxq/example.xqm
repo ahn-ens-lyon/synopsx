@@ -81,14 +81,26 @@ function home() {
  : @rmq Content-location in HTTP can be used when a requested resource has 
  : multiple representations. The selection of the resource returned will depend 
  : on the Accept headers in the original GET request.
- : @see http://httpd.apache.org/docs/2.2/fr/content-negotiation.html
- : @bug not working curl -I -H "Accept:text/html,application/xhtml+xml,applicati/xml;q=0.9,*/*;q=0.8" http://localhost:8984/corpus/
+ : @bug not working curl -I -H "Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" http://localhost:8984/corpus/
  :)
 declare 
   %restxq:path('/example/texts')
-function corpus() {
-  <rest:redirect>/example/texts.html</rest:redirect> (: TODO : content negociation :)
+  %rest:produces('application/json')
+  %output:method('json')
+function textsJS() {
+   let $queryParams := map {
+      'project' : 'example',
+      'dataType' : 'getTextsList',      
+      'dbName' : 'example', (: todo synopsx.lib.commons:getDbByProject($project) :)
+      'model' : 'synopsx.models.tei' (: todo synopsx.lib.commons:getModelByProject($project, $model) :)
+    }
+    
+    return synopsx.models.tei:getTextsList($queryParams) (: TODO dynamyser choix fonction - function-lookup :)
+     
 };
+
+
+
 
 (:~
  : this resource function is the html representation of the corpus resource
@@ -96,11 +108,11 @@ function corpus() {
  : the HTML serialization also shows a bibliographical list
  :)
 declare 
-  %restxq:path('/example/texts.html')
+  %restxq:path('/example/texts')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function corpusHtml() {
+function textsHtml() {
 
     let $queryParams := map {
      'project' : 'example',
