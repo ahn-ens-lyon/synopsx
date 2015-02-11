@@ -181,7 +181,7 @@ function biblioListHtml($pattern as xs:string?) {
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'inc_blogListSerif.xhtml',
-    'pattern' : 'inc_blogArticleSerif.xhtml'
+    'pattern' : 'inc_respItemSerif.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
