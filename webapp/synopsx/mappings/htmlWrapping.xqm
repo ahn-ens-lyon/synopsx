@@ -27,9 +27,7 @@ module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping'
 import module namespace G = "synopsx.globals" at '../globals.xqm';
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm'; 
 
-import module namespace synopsx.models.ead = 'synopsx.models.ead' at '../models/ead.xqm'; 
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm'; 
-import module namespace synopsx.models.mixed = 'synopsx.models.mixed' at '../models/mixed.xqm'; 
+
 
 declare namespace html = 'http://www.w3.org/1999/xhtml';
 
