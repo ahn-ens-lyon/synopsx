@@ -86,7 +86,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
 declare function pattern($queryParams as map(*), $data as map(*), $outputParams as map(*)) as document-node()* {
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data,'content')
-  let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'template'))
+  let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
   return map:for-each($contents, function($key, $content) {
     fn:doc($pattern) update (
       for $text in .//@*
