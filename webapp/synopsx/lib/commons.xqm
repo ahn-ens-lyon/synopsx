@@ -60,12 +60,10 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
  : this function launches processings according to the resource functions (restxq)
  :
  : @param $queryParams the query params
- : @param $outputParams the serialization params
- : @return find the function name
- :
+ : @return the function
  : @todo return error messages
  : @todo test heritage
- : @rmq depreciated
+ :
  :)
 declare function getQueryFunction($queryParams){
   (: fn:function-lookup(xs:QName($data-model  || ':' || fn:string($node/@data-function)), 1)($queryParams :)
@@ -76,8 +74,8 @@ declare function getQueryFunction($queryParams){
 
   let $function := 
     (: test if a model file exists in the asking project :)
-      if (file:exists($projectUri ||$file)) then 
-        for $f in inspect:functions($projectUri)
+      if (file:exists($projectUri || $file)) then 
+        for $f in inspect:functions($projectUri || $file)
         where fn:local-name-from-QName(fn:function-name($f)) = $functionName
         return $f($queryParams)
       else
