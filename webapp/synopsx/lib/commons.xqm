@@ -67,9 +67,26 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
  : @todo test heritage
  : @rmq depreciated
  :)
-declare function main($queryParams as map(*), $outputParams as map(*)){
+declare function getQueryFunction($queryParams){
   (: fn:function-lookup(xs:QName($data-model  || ':' || fn:string($node/@data-function)), 1)($queryParams :)
-  let $dataModel := map:get($queryParams, 'dataModel')
+  let $project :=  map:get($queryParams, 'project')
+  let $file := map:get($queryParams, 'model') || '.xqm'
+  let $projectUri := $G:PROJECTS || $project || '/models/'
+  let $functionName := map:get($queryParams, 'function') 
+
+  let $function := 
+    (: test if a model file exists in the asking project :)
+      if (file:exists($projectUri ||$file)) then 
+        for $f in inspect:functions($projectUri)
+        where fn:local-name-from-QName(fn:function-name($f)) = $functionName
+        return $f($queryParams)
+      else
+        for $f in inspect:functions($G:MODELS || $file)
+        where fn:local-name-from-QName(fn:function-name($f)) = $functionName
+        return $f($queryParams)
+   return $function
+      
+  (:let $model := map:get($queryParams, 'model')
   let $dataType := map:get($queryParams, 'dataType')
-  return fn:function-lookup(xs:QName($dataModel  || ':' || $dataType), 1)($queryParams)
+  return fn:function-lookup(xs:QName($model  || ':' || $dataType), 1)($queryParams):)
 };

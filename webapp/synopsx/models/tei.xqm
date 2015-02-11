@@ -23,7 +23,7 @@ module namespace synopsx.models.tei = 'synopsx.models.tei';
  :
  :)
 
-import module namespace G = "synopsx.globals" at '../globals.xqm';
+(: import module namespace G = "synopsx.globals" at '../globals.xqm'; :)
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0';
 
@@ -102,7 +102,7 @@ declare function getRespList($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:respStmt
   let $lang := 'fr'
   let $meta := map{
-    'title' : 'RespStmt'
+    'title' : 'Responsables de l édition'
     }
   let $content as map(*) := map:merge(
     for $item in $texts
@@ -320,7 +320,7 @@ declare function getXmlTeiById($queryParams){
   db:open(map:get($queryParams, 'dbName'))//tei:TEI[//tei:sourceDesc[@xml-id = map:get($queryParams, 'value')]]
 }; 
 
-(:~
+(: (:~
  : this function get url
  : @param $content texts to process
  : @param $lang iso langcode starts
@@ -329,4 +329,4 @@ declare function getXmlTeiById($queryParams){
  :)
 declare function getUrl($content as element()*, $lang as xs:string){
   $G:PROJECTBLOGROOT || $content//tei:sourceDesc/@xml:id
-};
+}; :)
