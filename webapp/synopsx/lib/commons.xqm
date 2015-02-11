@@ -60,12 +60,10 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
  : this function launches processings according to the resource functions (restxq)
  :
  : @param $queryParams the query params
- : @param $outputParams the serialization params
- : @return find the function name
- :
+ : @return the function
  : @todo return error messages
  : @todo test heritage
- : @rmq depreciated
+ :
  :)
 declare function getQueryFunction($queryParams){
   (: fn:function-lookup(xs:QName($data-model  || ':' || fn:string($node/@data-function)), 1)($queryParams :)
