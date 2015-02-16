@@ -46,14 +46,14 @@ declare function getProjectDB($project as xs:string) as xs:string {
  : @return a path 
  :)
 declare function getLayoutPath($queryParams as map(*), $template as xs:string?) as xs:string {
-  if (fn:empty($template)) then $G:TEMPLATES || 'inc_default.xhtml' 
+  if (fn:empty($template)) then $G:TEMPLATES || 'inc_defaultItem.xhtml' 
   else let $path := $G:PROJECTS || map:get($queryParams, 'project') || '/templates/' || $template
   return 
     if (file:exists($path)) 
     then $path
     else if (file:exists($G:TEMPLATES || $template)) then $G:TEMPLATES || $template
-    else if (fn:empty($template)) then $G:TEMPLATES || 'default.xhtml'
-    else $G:TEMPLATES || 'default.xhtml'
+    else if (fn:empty($template)) then $G:TEMPLATES || 'defaultLayout.xhtml'
+    else $G:TEMPLATES || 'defaultLayout.xhtml'
 };
 
 (:~

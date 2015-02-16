@@ -47,9 +47,21 @@ declare variable $synopsx.mappings.htmlWrapping:xslt := '../../static/xslt2/tei2
  : @todo treat in the same loop @* and text() ?
  :)
 declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)) {
-  if (map:size($queryParams) = 0) then 'Pas de queryParams associés à cette requête...' (: redirect to error pages in restxq :)
-    else if (map:size($data) = 0) then 'Pas de data associées à cette requête...' (: redirect to error pages in restxq :)
-    else let $meta := map:get($data, 'meta')
+  (:if (map:size($queryParams) = 0) then 
+    <rest:response>
+    <http:response status="404" message="Not Found">
+      <http:header name="location" value="/error404"/>
+    </http:response>
+  </rest:response>:)
+  (:'Pas de queryParams associés à cette requête...':) (: redirect to error pages in restxq :)
+    (: else if (map:size($data) = 0) then 'Pas de data associées à cette requête...':)  (:redirect to error pages in restxq :)
+    (:else if (map:size($data) = 0) then  
+    <rest:response>
+    <http:response status="404" message="Not Found">
+      <http:header name="location" value="/error404"/>
+    </http:response>
+  </rest:response>
+    else:) let $meta := map:get($data, 'meta')
          let $contents := map:get($data,'content')
          let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
          let $wrap := fn:doc($layout)

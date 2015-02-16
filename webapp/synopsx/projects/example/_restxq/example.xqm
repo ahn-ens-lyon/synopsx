@@ -79,7 +79,7 @@ function home() {
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
-    'pattern' : 'inc_blogArticleSerif.xhtml'
+    'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
@@ -130,7 +130,7 @@ function textsHtml() {
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
-    'pattern' : 'inc_blogArticleSerif.xhtml'
+    'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
@@ -151,8 +151,30 @@ function respHtml() {
   let $data := synopsx.lib.commons:getQueryFunction($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
-    'layout' : 'resp.xhtml',
-    'pattern' : 'inc_respItemSerif.xhtml'
+    'layout' : 'home.xhtml',
+    'pattern' : 'inc_respItem.xhtml'
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
+};
+
+declare 
+  %restxq:path('/example/bibl')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function biblHtml() {
+  let $queryParams := map {
+    'project' : $example.webapp:project,
+    'dbName' : $example.webapp:db,
+    'model' : 'tei',
+    'function' : 'getBiblList'
+    }
+  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'home.xhtml',
+    'pattern' : 'inc_biblItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
@@ -178,8 +200,8 @@ function corpusListHtml() {
   let $data := synopsx.lib.commons:getQueryFunction($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
-    'layout' : 'inc_blogListSerif.xhtml',
-    'pattern' : 'inc_blogArticleSerif.xhtml'
+    'layout' : 'inc_defaultList.xhtml',
+    'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
@@ -205,8 +227,8 @@ function biblioListHtml($pattern as xs:string?) {
   let $data := synopsx.lib.commons:getQueryFunction($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
-    'layout' : 'inc_listSection.xhtml',
-    'pattern' : 'inc_respItemSerif.xhtml'
+    'layout' : 'inc_defaultList.xhtml',
+    'pattern' : 'inc_respItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
@@ -215,11 +237,20 @@ function biblioListHtml($pattern as xs:string?) {
 declare 
   %restxq:path("/example/html/header")
 function getHtmlHeader() {
-  fn:doc($G:PROJECTS || 'example/templates/inc_header.xhtml')
+  let $queryParams := map {
+    'project' :$example.webapp:project,
+    'dbName' : $example.webapp:db
+    }
+  return fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, 'inc_header.xhtml'))
+  
 };
 
 declare 
   %restxq:path("/example/html/footer")
 function getHtmlFooter() {
-  fn:doc($G:PROJECTS || 'example/templates/inc_footer.xhtml')
+  let $queryParams := map {
+    'project' :$example.webapp:project,
+    'dbName' : $example.webapp:db
+    }
+  return fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, 'inc_footer.xhtml'))
 };

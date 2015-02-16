@@ -33,6 +33,49 @@ declare default function namespace 'synopsx.webapp' ;
 
 (:~
  : ~:~:~:~:~:~:~:~:~
+ : Default error
+ : ~:~:~:~:~:~:~:~:~
+ :
+ : @return Only xquery error
+ : These function return a 404 error page
+ :)
+ 
+declare 
+  %restxq:error('err:*')
+  %restxq:error-param("description", "{$error}")
+function error($error) {
+  <error-page>
+    <error-code>404</error-code>
+    <location>/error404?description={$error}</location>
+  </error-page>
+};
+
+(:~
+ : this resource function is the error 404
+ : @return a error page
+ :)
+declare 
+  %restxq:path("/error404")
+  %restxq:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function errorHtml() {
+  let $project := 
+    if(file:exists($G:CONFIGFILE)) then
+      if(fn:doc($G:CONFIGFILE)//project[@default="true"]/resourceName/text()) then 
+        fn:doc($G:CONFIGFILE)//project[@default="true"]/resourceName/text()
+      else fn:doc($G:CONFIGFILE)//project[1]/resourceName/text()
+    else ()
+  return if(fn:empty($project)) then
+    fn:doc($G:TEMPLATES || 'error404.xhtml')
+  else 
+   <rest:forward>/{$project}/error404</rest:forward>
+};
+
+
+
+(:~
+ : ~:~:~:~:~:~:~:~:~
  : Default home
  : ~:~:~:~:~:~:~:~:~
  :
@@ -103,7 +146,7 @@ function default($project) {
     let $data := map{} (: synopsx.models.tei:getCorpusList($queryParams) :)
     let $outputParams := map {
       'lang' : 'fr',
-      'layout' : 'default.xhtml',
+      'layout' : 'defaultLayout.xhtml',
       'pattern' : ''
       (: specify an xslt mode and other kind of output options :)
       }
@@ -128,7 +171,7 @@ function default($project as xs:string, $dataType as xs:string) {
   let $data := map{} (: synopsx.models.tei:getCorpusList($queryParams) :)
   let $outputParams := map {
     'lang' : 'fr',
-    'layout' : 'default.xhtml',
+    'layout' : 'defaultLayout.xhtml',
     'pattern' : ''
     (: specify an xslt mode and other kind of output options :)
     }
@@ -154,7 +197,7 @@ function default($project as xs:string, $dataType as xs:string, $value as xs:str
   let $data := map{} (: synopsx.models.tei:getCorpusList($queryParams) :)
   let $outputParams := map {
     'lang' : 'fr',
-    'layout' : 'default.xhtml',
+    'layout' : 'defaultLayout.xhtml',
     'pattern' : ''
     (: specify an xslt mode and other kind of output options :)
     }
@@ -179,7 +222,7 @@ function default($project, $dataType, $value, $options) {
   let $data := map{} (: synopsx.models.tei:getCorpusList($queryParams) :)
   let $outputParams := map {
     'lang' : 'fr',
-    'layout' : 'default.xhtml',
+    'layout' : 'defaultLayout.xhtml',
     'pattern' : ''
     (: specify an xslt mode and other kind of output options :)
     }

@@ -78,16 +78,16 @@ declare function getCorpusList($queryParams) {
 (:~
  : this function creates a map of two maps : one for metadata, one for content data
  :)
-declare function getBiblStructList($queryParams) {
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:listBibl
+declare function getBiblList($queryParams) {
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:bibl
   let $lang := 'fr'
   let $meta := map{
     'title' : 'Bibliographie'
     }
   let $content as map(*) := map:merge(
-    for $item in $texts/tei:biblStruct
+    for $item in $texts
     order by fn:number(getBiblDate($item, $lang))
-    return  map:entry( fn:generate-id($item), getBiblStruct($item) )
+    return  map:entry( fn:generate-id($item), getBibl($item) )
     )
   return  map{
     'meta'    : $meta,
@@ -140,7 +140,7 @@ declare function getHeader($item as element()) {
  : @return a map with content for each item
  : @rmq subdivised with let to construct complex queries (EC2014-11-10)
  :)
-declare function getBiblStruct($item as element()) {
+declare function getBibl($item as element()) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   return map {
