@@ -74,9 +74,8 @@ function home() {
     'model' : 'tei' ,
     'function' : 'getTextsList'
     }
- (:  let $data := synopsx.models.tei:getTextsList($queryParams) :) (: TODO choose function dynamicaly :)
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
-  let $outputParams := map {
+    let $data := synopsx.lib.commons:getQueryFunction($queryParams)($queryParams)
+    let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
     'pattern' : 'inc_defaultItem.xhtml'
@@ -126,7 +125,7 @@ function textsHtml() {
     'model' : 'tei',
     'function' : 'getTextsList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
+  let $data := synopsx.lib.commons:getQueryFunction($queryParams)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
@@ -148,7 +147,7 @@ function respHtml() {
     'model' : 'tei',
     'function' : 'getRespList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
+  let $data := synopsx.lib.commons:getQueryFunction($queryParams)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
@@ -170,7 +169,7 @@ function biblHtml() {
     'model' : 'tei',
     'function' : 'getBiblList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
+  let $data := synopsx.lib.commons:getQueryFunction($queryParams)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
@@ -197,7 +196,7 @@ function corpusListHtml() {
     'model' : 'tei',
     'function' : 'getTextsList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
+  let $data := synopsx.lib.commons:getQueryFunction($queryParams)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'inc_defaultList.xhtml',
@@ -224,7 +223,7 @@ function biblioListHtml($pattern as xs:string?) {
     'model' : 'tei',
     'function' : 'getRespList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
+  let $data := synopsx.lib.commons:getQueryFunction($queryParams)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'inc_defaultList.xhtml',

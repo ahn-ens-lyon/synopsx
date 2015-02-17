@@ -108,7 +108,7 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
         where fn:starts-with($text, '{') and fn:ends-with($text, '}')
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key) 
-        return if ($key = 'tei') 
+        return if ($key = 'xsl') 
           then replace node $text with $value (: TODO : options : xslt, etc. :)
           else replace node $text with $value
       )
