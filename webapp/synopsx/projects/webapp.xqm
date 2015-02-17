@@ -25,8 +25,6 @@ module namespace synopsx.webapp = 'synopsx.webapp' ;
 
 import module namespace G = "synopsx.globals" at '../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
-
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm' ;
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
 
 declare default function namespace 'synopsx.webapp' ;
@@ -40,7 +38,7 @@ declare default function namespace 'synopsx.webapp' ;
  : These function return a 404 error page
  :)
  
-declare 
+(: declare 
   %restxq:error('err:*')
   %restxq:error-param("description", "{$error}")
 function error($error) {
@@ -48,7 +46,7 @@ function error($error) {
     <error-code>404</error-code>
     <location>/error404?description={$error}</location>
   </error-page>
-};
+}; :)
 
 (:~
  : this resource function is the error 404
