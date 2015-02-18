@@ -38,6 +38,16 @@ declare function getProjectDB($project as xs:string) as xs:string {
   fn:doc($G:CONFIGFILE)//config/projects/project[resourceName/text() = $project]/dbName/text()
 };
 
+declare function getDefaultProject() as xs:string {
+    if(file:exists($G:CONFIGFILE)) then
+      if(fn:doc($G:CONFIGFILE)//project[@default="true"]/resourceName/text()) then 
+        fn:doc($G:CONFIGFILE)//project[@default="true"]/resourceName/text()
+      else fn:doc($G:CONFIGFILE)//project[1]/resourceName/text()
+    else ''
+};
+
+
+
 (:~
  : this function built the layout path based on the project hierarchy
  :
@@ -58,7 +68,7 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
         return $G:TEMPLATES || $prefix || 'defaultList.xhtml'
 };
 (:~
- : this function checks if the given function exists in the given module
+ : this function checks if the given function exists in the given module with the given arity
  : without inspecting functions (i.e. without compiling the module)
  :
  : @param module uri and function name
@@ -67,40 +77,19 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
  : @todo test heritage
  :
  :)
-declare function getFunctionName($moduleUri as xs:string, $functionName as xs:string) as xs:string {
-        if (file:exists($moduleUri)) then 
-          let $xml := inspect:module($moduleUri)
-          return fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName]/@name)          
-        else ''
-};
-(:~
- : this function launches processings according to the resource functions (restxq)
- :
- : @param $queryParams the query params
- : @return the function
- : @todo return error messages
- : @todo test heritage
- :
- :)
-declare function getQueryFunction($queryParams as map(*)) {
-  (: fn:function-lookup(xs:QName($data-model  || ':' || fn:string($node/@data-function)), 1)($queryParams :)
-  let $project :=  map:get($queryParams, 'project')
-  let $file := map:get($queryParams, 'model') || '.xqm'
-  let $projectModelsUri := $G:PROJECTS || $project || '/models/'
-  let $functionName := map:get($queryParams, 'function') 
-
-  let $function := 
-    let $fullFunctionName := getFunctionName($projectModelsUri || $file, $functionName)
-    return if($fullFunctionName != '') then 
-        for $f in inspect:functions($projectModelsUri || $file)
-        where fn:string(fn:function-name($f)) = $fullFunctionName
-        return $f
-     else
-        let $fullFunctionName := getFunctionName($G:MODELS || $file, $functionName)
-        return if ($fullFunctionName != '') then
-            for $f in inspect:functions($G:MODELS || $file)
-           where fn:string(fn:function-name($f)) = $fullFunctionName
-            return $f
-          else ()
-   return $function
+ 
+declare function getFunctionModulePrefix($queryParams as map(*), $arity as xs:integer) as xs:string {
+         let $project :=  map:get($queryParams, 'project')
+         let $file := map:get($queryParams, 'model') || '.xqm'
+         let $projectModelsUri := $G:PROJECTS || $project || '/models/'
+         let $functionName := map:get($queryParams, 'function') 
+         return if (file:exists($projectModelsUri || $file)) then 
+            let $xml := inspect:module($projectModelsUri || $file)
+            (: if the function exists in this module, returns the module name :)
+            return fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)          
+                else if (file:exists($G:MODELS || $file)) then 
+                     let $xml := inspect:module($G:MODELS || $file)
+                     (: if the function exists in this module, returns the module name :)
+                      return fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)          
+                      else ''
 };

@@ -24,7 +24,7 @@ module namespace synopsx.files = 'synopsx.files' ;
  :)
 
 import module namespace G = "synopsx.globals" at '../globals.xqm' ;
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
+
 
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm' ;
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
@@ -33,11 +33,11 @@ import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWr
 
 (:~
  : this resource function 
- :)
+ :) 
 declare 
   %restxq:path("/files/{$dir}/{$file}")
-function synopsx.files:getFile($dir, $file) {
-    fn:trace(fn:doc($G:FILES || $dir || '/' || $file)) 
+  function synopsx.files:getFile($dir, $file) {
+    file:read-text($G:FILES || $dir || '/' || $file)
 };
 
 

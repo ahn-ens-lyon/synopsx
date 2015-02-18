@@ -30,7 +30,7 @@ import module namespace G = "synopsx.globals" at '../../../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
 
 (: Put here all import modules declarations as needed :)
-(: import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ; :)
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
 
 (: Put here all import declarations for mapping according to models :)
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
@@ -67,22 +67,46 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function home() {
-
   let $queryParams := map {
     'project' : $example.webapp:project,
     'dbName' :  $example.webapp:db,
     'model' : 'tei' ,
     'function' : 'getTextsList'
     }
-    let $data := synopsx.lib.commons:getQueryFunction($queryParams)($queryParams)
+  return try {
+    let $prefix := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  }catch err:*{    
+      let $data := map{
+        'meta' : map {
+          'error-code' : $err:code,
+          'error-description' : $err:description
+        },
+        'content' : map{
+          'queryParams' : $queryParams
+        }
+      }
+      let $outputParams := map {
+         'lang' : 'fr',
+         'layout' : 'error404.xhtml',
+         'pattern' : 'inc_defaultItem.xhtml'
+         (: specify an xslt mode and other kind of output options :)
+       }
+       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    }
 }; 
+
+
+
+
+
  
 (:~
  : this resource function is the corpus resource
@@ -104,7 +128,8 @@ function textsJS() {
       'model' : 'tei',
       'function' : 'getTextsList'
     }    
-    return synopsx.lib.commons:getQueryFunction($queryParams)     
+    let $prefix := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    return fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
 };
 
 (:~
@@ -118,21 +143,41 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function textsHtml() {
-  let $queryParams := map {
+function textsHtml() {  
+    let $queryParams := map {
     'project' : $example.webapp:project,
-    'dbName' : $example.webapp:db,
-    'model' : 'tei',
+    'dbName' :  $example.webapp:db,
+    'model' : 'tei' ,
     'function' : 'getTextsList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)($queryParams)
-  let $outputParams := map {
+  return try {
+    let $prefix := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  }catch err:*{    
+      let $data := map{
+        'meta' : map {
+          'error-code' : $err:code,
+          'error-description' : $err:description
+        },
+        'content' : map{
+          'queryParams' : $queryParams
+        }
+      }
+      let $outputParams := map {
+         'lang' : 'fr',
+         'layout' : 'error404.xhtml',
+         'pattern' : 'inc_defaultItem.xhtml'
+         (: specify an xslt mode and other kind of output options :)
+       }
+       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    }
 };
 
 declare 
@@ -141,20 +186,40 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function respHtml() {
-  let $queryParams := map {
+    let $queryParams := map {
     'project' : $example.webapp:project,
-    'dbName' : $example.webapp:db,
-    'model' : 'tei',
+    'dbName' :  $example.webapp:db,
+    'model' : 'tei' ,
     'function' : 'getRespList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)($queryParams)
-  let $outputParams := map {
+  return try {
+    let $prefix := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
     'pattern' : 'inc_respItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  }catch err:*{    
+      let $data := map{
+        'meta' : map {
+          'error-code' : $err:code,
+          'error-description' : $err:description
+        },
+        'content' : map{
+          'queryParams' : $queryParams
+        }
+      }
+      let $outputParams := map {
+         'lang' : 'fr',
+         'layout' : 'error404.xhtml',
+         'pattern' : 'inc_defaultItem.xhtml'
+         (: specify an xslt mode and other kind of output options :)
+       }
+       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    }
 };
 
 declare 
@@ -163,20 +228,40 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function biblHtml() {
-  let $queryParams := map {
+    let $queryParams := map {
     'project' : $example.webapp:project,
-    'dbName' : $example.webapp:db,
-    'model' : 'tei',
+    'dbName' :  $example.webapp:db,
+    'model' : 'tei' ,
     'function' : 'getBiblList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)($queryParams)
-  let $outputParams := map {
+  return try {
+    let $prefix := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
-    'pattern' : 'inc_biblItem.xhtml'
+    'pattern' : 'inc_BiblItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  }catch err:*{    
+      let $data := map{
+        'meta' : map {
+          'error-code' : $err:code,
+          'error-description' : $err:description
+        },
+        'content' : map{
+          'queryParams' : $queryParams
+        }
+      }
+      let $outputParams := map {
+         'lang' : 'fr',
+         'layout' : 'error404.xhtml',
+         'pattern' : 'inc_defaultItem.xhtml'
+         (: specify an xslt mode and other kind of output options :)
+       }
+       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    }
 };
 
 (:~
@@ -190,20 +275,40 @@ declare
   %restxq:path("/example/texts/list/html")
  (:  %restxq:query-param("pattern", "{$pattern}") :)
 function corpusListHtml() {
-  let $queryParams := map {
-    'project' :$example.webapp:project,
-    'dbName' : $example.webapp:db,  
-    'model' : 'tei',
+    let $queryParams := map {
+    'project' : $example.webapp:project,
+    'dbName' :  $example.webapp:db,
+    'model' : 'tei' ,
     'function' : 'getTextsList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)($queryParams)
-  let $outputParams := map {
+  return try {
+    let $prefix := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'inc_defaultList.xhtml',
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  }catch err:*{    
+      let $data := map{
+        'meta' : map {
+          'error-code' : $err:code,
+          'error-description' : $err:description
+        },
+        'content' : map{
+          'queryParams' : $queryParams
+        }
+      }
+      let $outputParams := map {
+         'lang' : 'fr',
+         'layout' : 'error404.xhtml',
+         'pattern' : 'inc_defaultItem.xhtml'
+         (: specify an xslt mode and other kind of output options :)
+       }
+       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    }
 };
 
 (:~
@@ -218,20 +323,40 @@ declare
   %restxq:query-param("pattern", "{$pattern}")
 function biblioListHtml($pattern as xs:string?) {
   let $queryParams := map {
-    'project' :$example.webapp:project,
-    'dbName' : $example.webapp:db,
-    'model' : 'tei',
+    'project' : $example.webapp:project,
+    'dbName' :  $example.webapp:db,
+    'model' : 'tei' ,
     'function' : 'getRespList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)($queryParams)
-  let $outputParams := map {
+  return try {
+    let $prefix := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'inc_defaultList.xhtml',
-    'pattern' : 'inc_respItem.xhtml'
+    'pattern' : 'inc_RespItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
-}; 
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  }catch err:*{    
+      let $data := map{
+        'meta' : map {
+          'error-code' : $err:code,
+          'error-description' : $err:description
+        },
+        'content' : map{
+          'queryParams' : $queryParams
+        }
+      }
+      let $outputParams := map {
+         'lang' : 'fr',
+         'layout' : 'error404.xhtml',
+         'pattern' : 'inc_defaultItem.xhtml'
+         (: specify an xslt mode and other kind of output options :)
+       }
+       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    }
+};  
 
 declare 
   %restxq:path("/example/html/header")

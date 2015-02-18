@@ -28,12 +28,11 @@ import module namespace G = "synopsx.globals" at '../globals.xqm';
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm'; 
 
 
-
 declare namespace html = 'http://www.w3.org/1999/xhtml';
 
 declare default function namespace 'synopsx.mappings.htmlWrapping';
 
-declare variable $synopsx.mappings.htmlWrapping:xslt := '../../static/xslt2/tei2html.xsl' ;
+declare variable $synopsx.mappings.htmlWrapping:xslt := '../files/xsl/tei2html.xsl' ;
 
 (:~
  : this function wrap the content in an HTML layout
@@ -46,27 +45,23 @@ declare variable $synopsx.mappings.htmlWrapping:xslt := '../../static/xslt2/tei2
  : @todo modify to replace mixted content like "{quantity} éléments" 
  : @todo treat in the same loop @* and text() ?
  :)
-declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)) {
-  (:if (map:size($queryParams) = 0) then 
-    <rest:response>
-    <http:response status="404" message="Not Found">
-      <http:header name="location" value="/error404"/>
-    </http:response>
-  </rest:response>:)
-  (:'Pas de queryParams associés à cette requête...':) (: redirect to error pages in restxq :)
-    (: else if (map:size($data) = 0) then 'Pas de data associées à cette requête...':)  (:redirect to error pages in restxq :)
-    (:else if (map:size($data) = 0) then  
-    <rest:response>
-    <http:response status="404" message="Not Found">
-      <http:header name="location" value="/error404"/>
-    </http:response>
-  </rest:response>
-    else:) let $meta := map:get($data, 'meta')
+declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)){
+         let $meta := map:get($data, 'meta')
          let $contents := map:get($data,'content')
          let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
          let $wrap := fn:doc($layout)
          return $wrap update (
-           for $text in .//@*
+           (: Head part of the HTML page if exists : css, js, etc. :)
+           (: for $text in .//*:head//*:link/@*:href
+             where fn:starts-with($text, '{') and fn:ends-with($text, '}')
+             let $path := fn:replace($text, '\{|\}', '')
+             return replace value of node $text with fn:trace(synopsx.lib.files:getFile($path), 'CSS File :'),
+           for $text in .//*:head//*:script/@*:src
+             where fn:starts-with($text, '{') and fn:ends-with($text, '}')
+             let $path := fn:replace($text, '\{|\}', '')
+             return replace value of node $text with synopsx.lib.files:getFile($path), :)
+           (: Other meta and body part of the HTML page if exists : title, items... :)  
+           for $text in .//*:body/@*
              where fn:starts-with($text, '{') and fn:ends-with($text, '}')
              let $key := fn:replace($text, '\{|\}', '')
              let $value := map:get($meta, $key)

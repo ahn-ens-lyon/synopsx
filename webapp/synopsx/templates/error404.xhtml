@@ -5,13 +5,16 @@
       <meta name="description" content="{description}" />
       <meta name="author" content="{author}" />
       <meta name="keywords" content="{keywords}" />
-      <link rel="copyright" href="{copyright}"/>
-     <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" />
-    <!--    <link href="/static/css/ahn.css" rel="stylesheet" /> -->
-      <link href="/static/css/main.css" rel="stylesheet" />
-      <script src="plugin.js"></script>
-      <!-- ajouter js pour lt IE 9 -->
+      
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+      <link href="/files/css/main.css" rel="stylesheet" />
+      <link href="/files/css/ahn.css" rel="stylesheet" />
+      
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+      <script src="/files/js/plugin.js"></script>
+      <!-- ajouter js pour lt IE 9 -->
+      
        <script type="text/javascript">
          // synopsx's composition
          $(document).ready(function(){
@@ -26,16 +29,18 @@
    <body>
  
 <header data-url="/synopsx/html/header"/>
-
 <div class="main">
 <hr/>
-<h3>Main section</h3>
+<h3>The SynopsX error page</h3>
 <hr/>
-  <nav id="contextual" class="sidebar-nav">
-  <h3>The SynopsX default contextual nav</h3>
-  </nav>
     <section>
-      <h1>No query params or no data !</h1> 
+      <h1>An error occured :(</h1> 
+      <p>Error code : <span>{error-code}</span></p>
+      <p>Error description : <span>{error-description}</span></p>
+      <p>Requested project : <span>{project}</span></p>
+      <p>Requested database : <span>{dbName}</span></p>
+      <p>Requested model : <span>{model}</span></p>
+      <p>Requested function : <span>{function}</span></p>
     </section>
 
   </div> 

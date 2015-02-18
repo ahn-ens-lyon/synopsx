@@ -29,7 +29,7 @@ declare namespace xsi = "http://www.w3.org/2001/XMLSchema-instance";
 declare namespace xslt="http://basex.org/modules/xslt";
 import module namespace request = "http://exquery.org/ns/request";
 
-declare variable $synopsx.oai:tei2dc := "http://ahn-basex.cbp.ens-lyon.fr:8984/static/xsl/tei2dc.xsl";
+declare variable $synopsx.oai:tei2dc := "/files/xsl/tei2dc.xsl";
          
 
 
