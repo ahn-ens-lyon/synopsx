@@ -4,8 +4,10 @@
       <title>{title}</title>
       <meta name="description" content="{description}" />
       <meta name="author" content="{author}" />
-      <meta name="keywords" content="{keywords}" />
-      
+      <meta name="keywords" content="{subject}" />
+      <link rel="copyright" href="{copyright}"/>
+     
+     
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
       <link href="/synopsx/files/css/main.css" rel="stylesheet" />
       <link href="/synopsx/files/css/ahn.css" rel="stylesheet" />
@@ -21,32 +23,24 @@
          $('*[data-url]').each(function(){
            var url = $(this).data('url')+'?pattern='+$(this).prop('tagName').toLowerCase();
            $(this).load(url);
-          // alert(url);
+           //alert(url);
            });
          }); 
        </script>
    </head>
    <body>
  
-<header data-url="/synopsx/html/header"/>
+<header data-url="/example/html/header"/>
+
 <div class="main">
 <hr/>
-<h3>The SynopsX error page</h3>
+<h3>{title}</h3>
 <hr/>
-    <section>
-      <h1>An error occured :(</h1> 
-      <p>Error code : <span>{error-code}</span></p>
-      <p>Error description : <span>{error-description}</span></p>
-      <p>Requested project : <span>{project}</span></p>
-      <p>Requested database : <span>{dbName}</span></p>
-      <p>Requested model : <span>{model}</span></p>
-      <p>Requested function : <span>{function}</span></p>
-       <p>Other parameters : <span>{otherParams}</span></p>
-    </section>
 
-  </div> 
-<hr/>
-<footer data-url="/synopsx/html/footer"/>
+  <section>{content}</section>
+  </div>   
+<footer data-url="/example/html/footer"/>
+
      <!-- script menu -->
      <script><![CDATA[
       $(document).ready(function() {
