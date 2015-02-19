@@ -32,12 +32,35 @@ import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWr
 
 
 (:~
- : this resource function 
- :) 
-declare 
-  %restxq:path("/files/{$dir}/{$file}")
-  function synopsx.files:getFile($dir, $file) {
-    file:read-text($G:FILES || $dir || '/' || $file)
+: Returns a file.
+: @param $file file or unknown path
+: @return rest response and binary file
+:)
+declare
+%rest:path("/synopsx/files/{$file=.+}")
+function synopsx.files:file($file as xs:string) as item()+ {
+  let $path := $G:FILES || $file
+  return (
+    <rest:response>
+      <http:response>
+        <http:header name="Cache-Control" value="max-age=3600,public"/>
+      </http:response>
+      <output:serialization-parameters>
+      <output:media-type value='{ synopsx.files:mime-type($path) }'/>
+      <output:method value='raw'/>
+      </output:serialization-parameters>
+    </rest:response>,
+    file:read-binary($path))
 };
 
 
+(:~
+ : Returns the mime-type for the specified file.
+ : @param  $name  file name
+ : @return mime type
+ :)
+declare function synopsx.files:mime-type(
+  $name  as xs:string
+) as xs:string {
+  Q{java:org.basex.io.MimeTypes}get($name)
+};
