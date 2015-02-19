@@ -1,9 +1,11 @@
-xquery version "3.0" ;
+xquery version '3.0' ;
 module namespace synopsx.files = 'synopsx.files' ;
+
 (:~
  : This module is the RESTXQ for SynopsX's installation processes
- : @version 0.2 (Constantia edition)
- : @since 2014-11-10 
+ :
+ : @version 2.0 (Constantia edition)
+ : @since 2014-11-10
  : @author synopsx team
  :
  : This file is part of SynopsX.
@@ -23,13 +25,10 @@ module namespace synopsx.files = 'synopsx.files' ;
  :
  :)
 
-import module namespace G = "synopsx.globals" at '../globals.xqm' ;
-
+import module namespace G = 'synopsx.globals' at '../globals.xqm' ;
 
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm' ;
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
-
-
 
 (:~
 : Returns a file.
@@ -37,13 +36,13 @@ import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWr
 : @return rest response and binary file
 :)
 declare
-%rest:path("/synopsx/files/{$file=.+}")
+%rest:path('/synopsx/files/{$file=.+}')
 function synopsx.files:file($file as xs:string) as item()+ {
   let $path := $G:FILES || $file
   return (
     <rest:response>
       <http:response>
-        <http:header name="Cache-Control" value="max-age=3600,public"/>
+        <http:header name='Cache-Control' value='max-age=3600,public'/>
       </http:response>
       <output:serialization-parameters>
       <output:media-type value='{ synopsx.files:mime-type($path) }'/>
@@ -52,7 +51,6 @@ function synopsx.files:file($file as xs:string) as item()+ {
     </rest:response>,
     file:read-binary($path))
 };
-
 
 (:~
  : Returns the mime-type for the specified file.

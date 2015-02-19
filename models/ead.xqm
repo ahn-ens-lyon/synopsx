@@ -1,8 +1,10 @@
-xquery version "3.0" ;
-module namespace synopsx.models.ead = 'synopsx.models.ead';
+xquery version '3.0' ;
+module namespace synopsx.models.ead = 'synopsx.models.ead' ;
+
 (:~
  : This module is for TEI models
- : @version 0.2 (Constantia edition)
+ :
+ : @version 2.0 (Constantia edition)
  : @date 2014-11-10 
  : @author synopsx team
  :

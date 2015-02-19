@@ -1,9 +1,11 @@
-xquery version "3.0" ;
-module namespace synopsx.models.tei = 'synopsx.models.tei';
+xquery version '3.0' ;
+module namespace synopsx.models.tei = 'synopsx.models.tei' ;
+
 (:~
  : This module is for TEI models
- : @version 0.2 (Constantia edition)
- : @date 2014-11-10 
+ :
+ : @version 2.0 (Constantia edition)
+ : @since 2014-11-10 
  : @author synopsx team
  :
  : This file is part of SynopsX.
@@ -23,9 +25,8 @@ module namespace synopsx.models.tei = 'synopsx.models.tei';
  :
  :)
 
-declare namespace lib.commons = " synopsx.lib.commons";
-declare namespace tei = 'http://www.tei-c.org/ns/1.0';
-
+declare namespace lib.commons = 'synopsx.lib.commons' ;
+declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 (:~
  : this function creates a map of two maps : one for metadata, one for content data
