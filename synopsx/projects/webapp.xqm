@@ -86,6 +86,52 @@ function home() {
  : the HTML serialization also shows a bibliographical list
  :)
 declare 
+  %restxq:path('/{$myProject}')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function home($myProject) {
+  let $queryParams := map {
+    'project' : $myProject,
+    'dbName' :  $myProject
+    }
+  return try {
+    let $prefix := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'home.xhtml',
+    'pattern' : 'inc_defaultItem.xhtml'
+    (: specify an xslt mode and other kind of output options :)
+    }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+  }catch err:*{   
+      let $error := map {
+          'error-code' : $err:code,
+          'error-description' : $err:description
+        }
+      let $data := map{
+        'meta' : map:merge(($error, $queryParams)),
+        'content' : map{}
+      }
+      let $outputParams := map {
+         'lang' : 'fr',
+         'layout' : 'error404.xhtml',
+         'pattern' : 'inc_defaultItem.xhtml'
+         (: specify an xslt mode and other kind of output options :)
+       }
+       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+    }
+}; 
+
+
+(:~
+ : this resource function is the html representation of the corpus resource
+ :
+ : @return an html representation of the corpus resource with a bibliographical list
+ : the HTML serialization also shows a bibliographical list
+ :)
+declare 
   %restxq:path('/{$myProject}/{$myFunction}')
   %rest:produces('text/html')
   %output:method("html")
