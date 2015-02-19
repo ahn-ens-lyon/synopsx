@@ -83,13 +83,19 @@ declare function getFunctionModulePrefix($queryParams as map(*), $arity as xs:in
          let $file := map:get($queryParams, 'model') || '.xqm'
          let $projectModelsUri := $G:PROJECTS || $project || '/models/'
          let $functionName := map:get($queryParams, 'function') 
-         return if (file:exists($projectModelsUri || $file)) then 
-            let $xml := inspect:module($projectModelsUri || $file)
-            (: if the function exists in this module, returns the module name :)
-            return fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)          
-                else if (file:exists($G:MODELS || $file)) then 
+         let $customizedFunctionExists :=
+                 if (file:exists($projectModelsUri || $file)) then 
+                     let $xml := inspect:module($projectModelsUri || $file)
+                      (: if the function exists in this module, returns the module name :)
+                      return if($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]) then 
+                              fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)
+                               else ''
+                else ''
+        return if ($customizedFunctionExists = '') then                                     
+                    if (file:exists($G:MODELS || $file)) then 
                      let $xml := inspect:module($G:MODELS || $file)
                      (: if the function exists in this module, returns the module name :)
-                      return fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)          
-                      else ''
+                     return fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)          
+                      else ''  
+               else $customizedFunctionExists
 };
