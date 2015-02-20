@@ -84,22 +84,7 @@ function home() {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   }catch err:*{    
-      let $data := map{
-        'meta' : map {
-          'error-code' : $err:code,
-          'error-description' : $err:description
-        },
-        'content' : map{
-          'queryParams' : $queryParams
-        }
-      }
-      let $outputParams := map {
-         'lang' : 'fr',
-         'layout' : 'error404.xhtml',
-         'pattern' : 'inc_defaultItem.xhtml'
-         (: specify an xslt mode and other kind of output options :)
-       }
-       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
 }; 
 
@@ -161,22 +146,7 @@ function textsHtml() {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   }catch err:*{    
-      let $data := map{
-        'meta' : map {
-          'error-code' : $err:code,
-          'error-description' : $err:description
-        },
-        'content' : map{
-          'queryParams' : $queryParams
-        }
-      }
-      let $outputParams := map {
-         'lang' : 'fr',
-         'layout' : 'error404.xhtml',
-         'pattern' : 'inc_defaultItem.xhtml'
-         (: specify an xslt mode and other kind of output options :)
-       }
-       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+      synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
 };
 
@@ -203,22 +173,7 @@ function respHtml() {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   }catch err:*{    
-      let $data := map{
-        'meta' : map {
-          'error-code' : $err:code,
-          'error-description' : $err:description
-        },
-        'content' : map{
-          'queryParams' : $queryParams
-        }
-      }
-      let $outputParams := map {
-         'lang' : 'fr',
-         'layout' : 'error404.xhtml',
-         'pattern' : 'inc_defaultItem.xhtml'
-         (: specify an xslt mode and other kind of output options :)
-       }
-       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+      synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
 };
 
@@ -245,22 +200,7 @@ function biblHtml() {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   }catch err:*{    
-      let $data := map{
-        'meta' : map {
-          'error-code' : $err:code,
-          'error-description' : $err:description
-        },
-        'content' : map{
-          'queryParams' : $queryParams
-        }
-      }
-      let $outputParams := map {
-         'lang' : 'fr',
-         'layout' : 'error404.xhtml',
-         'pattern' : 'inc_defaultItem.xhtml'
-         (: specify an xslt mode and other kind of output options :)
-       }
-       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+      synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
 };
 
@@ -292,22 +232,7 @@ function corpusListHtml() {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   }catch err:*{    
-      let $data := map{
-        'meta' : map {
-          'error-code' : $err:code,
-          'error-description' : $err:description
-        },
-        'content' : map{
-          'queryParams' : $queryParams
-        }
-      }
-      let $outputParams := map {
-         'lang' : 'fr',
-         'layout' : 'error404.xhtml',
-         'pattern' : 'inc_defaultItem.xhtml'
-         (: specify an xslt mode and other kind of output options :)
-       }
-       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+      synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
 };
 
@@ -339,22 +264,7 @@ function biblioListHtml($pattern as xs:string?) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   }catch err:*{    
-      let $data := map{
-        'meta' : map {
-          'error-code' : $err:code,
-          'error-description' : $err:description
-        },
-        'content' : map{
-          'queryParams' : $queryParams
-        }
-      }
-      let $outputParams := map {
-         'lang' : 'fr',
-         'layout' : 'error404.xhtml',
-         'pattern' : 'inc_defaultItem.xhtml'
-         (: specify an xslt mode and other kind of output options :)
-       }
-       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
 };  
 
