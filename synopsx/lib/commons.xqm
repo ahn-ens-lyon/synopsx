@@ -25,6 +25,7 @@ module namespace synopsx.lib.commons = 'synopsx.lib.commons';
  :)
 
 import module namespace G = "synopsx.globals" at '../globals.xqm';
+import module namespace synopsx.mappings.htmlWrapping = "synopsx.mappings.htmlWrapping" at '../mappings/htmlWrapping.xqm';
 
 declare default function namespace 'synopsx.lib.commons';
 
@@ -98,4 +99,23 @@ declare function getFunctionModulePrefix($queryParams as map(*), $arity as xs:in
                      return fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)          
                       else ''  
                else $customizedFunctionExists
+};
+
+
+declare function error($queryParams, $err:code, $err:description){
+   let $error := map {
+          'error-code' : $err:code,
+          'error-description' : $err:description
+        }
+  let $data := map{
+        'meta' : map:merge(($error, $queryParams)),
+        'content' : map{}
+      }
+      let $outputParams := map {
+         'lang' : 'fr',
+         'layout' : 'error404.xhtml',
+         'pattern' : 'inc_defaultItem.xhtml'
+         (: specify an xslt mode and other kind of output options :)
+       }
+       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
 };

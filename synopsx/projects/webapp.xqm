@@ -106,21 +106,7 @@ function home($myProject) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
   }catch err:*{   
-      let $error := map {
-          'error-code' : $err:code,
-          'error-description' : $err:description
-        }
-      let $data := map{
-        'meta' : map:merge(($error, $queryParams)),
-        'content' : map{}
-      }
-      let $outputParams := map {
-         'lang' : 'fr',
-         'layout' : 'error404.xhtml',
-         'pattern' : 'inc_defaultItem.xhtml'
-         (: specify an xslt mode and other kind of output options :)
-       }
-       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
 }; 
 
@@ -154,21 +140,7 @@ function home($myProject, $myFunction) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
   }catch err:*{   
-      let $error := map {
-          'error-code' : $err:code,
-          'error-description' : $err:description
-        }
-      let $data := map{
-        'meta' : map:merge(($error, $queryParams)),
-        'content' : map{}
-      }
-      let $outputParams := map {
-         'lang' : 'fr',
-         'layout' : 'error404.xhtml',
-         'pattern' : 'inc_defaultItem.xhtml'
-         (: specify an xslt mode and other kind of output options :)
-       }
-       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+      synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
 }; 
 
@@ -203,21 +175,7 @@ function home($myProject, $myFunction, $myOtherParams) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
   }catch err:*{   
-      let $error := map {
-          'error-code' : $err:code,
-          'error-description' : $err:description
-        }
-      let $data := map{
-        'meta' : map:merge(($error, $queryParams)),
-        'content' : map{}
-      }
-      let $outputParams := map {
-         'lang' : 'fr',
-         'layout' : 'error404.xhtml',
-         'pattern' : 'inc_defaultItem.xhtml'
-         (: specify an xslt mode and other kind of output options :)
-       }
-       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
 }; 
 
