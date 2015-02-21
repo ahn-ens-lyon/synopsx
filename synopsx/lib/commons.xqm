@@ -104,6 +104,8 @@ declare function getFunctionModulePrefix($queryParams as map(*), $arity as xs:in
 
 declare function error($queryParams, $err:code, $err:description){
    let $error := map {
+          'title' : 'An error occured :(',
+          'author' : 'SynopsX Team',
           'error-code' : $err:code,
           'error-description' : $err:description
         }

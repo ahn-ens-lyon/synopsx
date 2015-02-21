@@ -17,12 +17,7 @@
       <script src="/synopsx/files/js/synopsx.js"></script>
       <!-- ajouter js pour lt IE 9 -->
       
-       <script type="text/javascript">
-         // synopsx's composition
-         $(document).ready(function(){
-              init();
-         }); 
-       </script>
+
    </head>
    <body>
  
@@ -36,32 +31,11 @@
   <section>{content}</section>
   </div>   
 <footer data-url="/example/html/footer"/>
-
-     <!-- script menu -->
-     <script><![CDATA[
-      $(document).ready(function() {
-  var menu = $('#navigation-menu');
-  var menuToggle = $('#js-mobile-menu');
-  var signUp = $('.sign-up');
-
-  $(menuToggle).on('click', function(e) {
-    e.preventDefault();
-    menu.slideToggle(function(){
-      if(menu.is(':hidden')) {
-        menu.removeAttr('style');
-      }
-    });
-  });
-
-  // underline under the active nav item
-  $(".nav .nav-link").click(function() {
-    $(".nav .nav-link").each(function() {
-      $(this).removeClass("active-nav-item");
-    });
-    $(this).addClass("active-nav-item");
-    $(".nav .more").removeClass("active-nav-item");
-  });
-});
-  ]]></script>
+  <script type="text/javascript">
+         // synopsx's composition
+         $(document).ready(function(){
+              init();
+         }); 
+       </script>
    </body>
 </html>

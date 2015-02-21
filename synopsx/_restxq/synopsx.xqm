@@ -80,7 +80,11 @@ function install(){
    
 };
 
-
+declare 
+  %restxq:path("/synopsx/html/head")
+function getHtmlHead() {
+ fn:doc($G:TEMPLATES||'inc_head.xhtml')
+};
 
 
 declare 
