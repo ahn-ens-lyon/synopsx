@@ -1,8 +1,10 @@
-xquery version "3.0" ;
-module namespace synopsx.models.mixed = 'synopsx.models.mixed';
+xquery version '3.0' ;
+module namespace synopsx.models.ead = 'synopsx.models.ead' ;
+
 (:~
  : This module is for TEI models
- : @version 0.2 (Constantia edition)
+ :
+ : @version 2.0 (Constantia edition)
  : @date 2014-11-10 
  : @author synopsx team
  :
@@ -23,38 +25,16 @@ module namespace synopsx.models.mixed = 'synopsx.models.mixed';
  :
  :)
 
-import module namespace G = 'synopsx.globals' at '../globals.xqm'; (: import globals variables :)
+import module namespace G = "synopsx.globals" at '../globals.xqm'; (: import globals variables :)
 
-declare default function namespace 'synopsx.models.mixed'; (: This is the default namespace:)
+declare default function namespace 'synopsx.models.ead'; (: This is the default namespace:)
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
 
-declare function  getHomeContent($queryParams) {
-  'My home content'
-};
-
-declare function  getTitle($queryParams) {
-  'My project title'
-};
-
-declare function getMainPartnerLogo($queryParams) as map(*) {
-  map{
-    'meta' : map{},
-    'content' : 
-      map{
-        'img' : map{
-          'src' : '/static/img/logo_ENS_sm_blanc.png',
-          'alt' : 'ENS de Lyon',
-          'class' : 'logo'
-        }
-      }
-  }  
-  
-};
-
-declare function getEntries($queryParams) {
-  (: Display EAD unitId to access TEI documents :)
-  'TODO'
+declare function  horizontal-nav-entry($queryParams) {
+  <ul><li>Test 1</li><li>Test 2</li></ul>
 };
 
 
-
+declare function  main($queryParams) {
+  <section>Le corps de la page</section>
+};

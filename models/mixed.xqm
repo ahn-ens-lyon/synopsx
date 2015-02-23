@@ -1,9 +1,11 @@
-xquery version "3.0" ;
-module namespace example.models.mixed = 'example.models.mixed';
+xquery version '3.0' ;
+module namespace synopsx.models.mixed = 'synopsx.models.mixed';
+
 (:~
  : This module is for TEI models
- : @version 0.2 (Constantia edition)
- : @date 2014-11-10 
+ :
+ : @version 2.0 (Constantia edition)
+ : @since 2014-11-10 
  : @author synopsx team
  :
  : This file is part of SynopsX.
@@ -23,9 +25,10 @@ module namespace example.models.mixed = 'example.models.mixed';
  :
  :)
 
-import module namespace G = 'synopsx.globals' at '../../../globals.xqm'; (: import globals variables :)
+import module namespace G = 'synopsx.globals' at '../globals.xqm'; (: import globals variables :)
 
-declare default function namespace 'example.models.mixed'; (: This is the default namespace:)
+declare default function namespace 'synopsx.models.mixed'; (: This is the default namespace:)
+
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
 
 declare function  getHomeContent($queryParams) {
@@ -33,7 +36,7 @@ declare function  getHomeContent($queryParams) {
 };
 
 declare function  getTitle($queryParams) {
-  'My example project title'
+  'My project title'
 };
 
 declare function getMainPartnerLogo($queryParams) as map(*) {
@@ -55,6 +58,3 @@ declare function getEntries($queryParams) {
   (: Display EAD unitId to access TEI documents :)
   'TODO'
 };
-
-
-

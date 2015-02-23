@@ -1,7 +1,9 @@
-xquery version "3.0" ;
-module namespace search = 'http://ahn.ens-lyon.fr/search';
+xquery version '3.0' ;
+module namespace search = 'http://ahn.ens-lyon.fr/search' ;
+
 (:~
  : This module is a demo search fo SynopsX
+ :
  : @version 0.2 (Constantia edition)
  : @date 2014-11-10 
  : @author synopsx team
@@ -29,19 +31,12 @@ module namespace search = 'http://ahn.ens-lyon.fr/search';
  : launches search for a 
  : @word
 :)
-declare function search:query (
-   $db as xs:string,
-   $word as xs:string
-){
+declare function search:query ($db as xs:string, $word as xs:string) {
   let $ftindex := db:info($db)//ftindex = 'true'
   let $outputParams := map {
     'mode' : 'all words',
     'fuzzy' : true()
   }
-  return if ($ftindex) then (
-            ft:search($db, $word, $outputParams)
-  )else ( 
-            db:open($db)//*[ft:contains($db, $word, $outputParams)]
-    )
-    
-}; 
+  return if ($ftindex) then ( ft:search($db, $word, $outputParams) ) 
+  else ( db:open($db)//*[ft:contains($db, $word, $outputParams)] )
+};

@@ -1,10 +1,12 @@
-xquery version "3.0" ;
+xquery version '3.0' ;
 module namespace synopsx.synopsx = 'synopsx.synopsx' ;
+
 (:~
  : This module is the RESTXQ for SynopsX's installation processes
- : @version 0.2 (Constantia edition)
- : @since 2014-11-10 
+ :
  : @author synopsx team
+ : @since 2014-11-10 
+ : @version 2.0 (Constantia edition)
  :
  : This file is part of SynopsX.
  : created by AHN team (http://ahn.ens-lyon.fr)
@@ -23,7 +25,7 @@ module namespace synopsx.synopsx = 'synopsx.synopsx' ;
  :
  :)
 
-import module namespace G = "synopsx.globals" at '../globals.xqm' ;
+import module namespace G = 'synopsx.globals' at '../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
 
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm' ;
@@ -35,11 +37,11 @@ declare default function namespace 'synopsx.synopsx' ;
  : this resource function redirects to the synopsx' home
  :)
 declare 
-  %restxq:path("/synopsx")
+  %restxq:path('/synopsx')
 function index() {
   <rest:response>
-    <http:response status="303" message="See Other">
-      <http:header name="location" value="/synopsx/home"/>
+    <http:response status='303' message='See Other'>
+      <http:header name='location' value='/synopsx/home'/>
     </http:response>
   </rest:response>
 };
@@ -49,9 +51,9 @@ function index() {
  : @todo give contents
  :)
 declare 
-  %restxq:path("/synopsx/home")
-  %output:method("html")
-  %output:html-version("5.0")
+  %restxq:path('/synopsx/home')
+  %output:method('html')
+  %output:html-version('5.0')
 function home(){
  <html lang="fr" xml:lang="fr" xmlns="htpp://www.w3.org/1999/xhtml">
    <head>
@@ -68,31 +70,24 @@ function home(){
 
 (:~
  : this resource function is the installation
- @ todo : installation process
+ : @todo installation process
  :)
 declare 
-  %restxq:path("/synopsx/install")
-  %output:method("html")
-  %output:html-version("5.0")
-function install(){
- 
-      <h1>Faisons chauffer le navigateur en mode XHTML5 ! Install</h1>
-   
+  %restxq:path('/synopsx/install')
+  %output:method('html')
+  %output:html-version('5.0')
+function install() { 
+  <h1>Faisons chauffer le navigateur en mode XHTML5 ! Install</h1> 
 };
 
-
-
-
 declare 
-  %restxq:path("/synopsx/html/header")
+  %restxq:path('/synopsx/html/header')
 function getHtmlHeader() {
- fn:doc($G:TEMPLATES||'inc_header.xhtml')
+  fn:doc($G:TEMPLATES||'inc_header.xhtml')
 };
 
 declare 
-  %restxq:path("/synopsx/html/footer")
-function getHtmlFooter() {
- 
-fn:doc($G:TEMPLATES||'inc_footer.xhtml')
-
+  %restxq:path('/synopsx/html/footer')
+function getHtmlFooter() { 
+  fn:doc($G:TEMPLATES||'inc_footer.xhtml')
 };
