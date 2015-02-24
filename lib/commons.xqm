@@ -68,13 +68,11 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
 };
 
 (:~
- : this function checks if the given function exists in the given module with the given arity
- : without inspecting functions (i.e. without compiling the module)
+ : this function checks if the function exists in the given module
  :
  : @param module uri and function name
  : @return the function name as a string or an empty string
  :
- : @todo return error messages
  : @todo give a regex for function's local-name()
  :)
 declare function getModelFunction($queryParams as map(*)) as xs:string {
