@@ -75,6 +75,29 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
  : @return the function name as a string or an empty string
  :
  : @todo return error messages
+ : @todo give a regex for function's local-name()
+ :)
+declare function getModelFunction($queryParams as map(*)) as xs:string {
+  let $projectName :=  map:get($queryParams, 'project')
+  let $modelName := map:get($queryParams, 'model')
+  let $functionName := map:get($queryParams, 'function') 
+  let $uri := $projectName || '.' || 'models.' || $modelName
+  let $context := inspect:context()
+  return if( $context//function[@name = $functionName and @uri = $uri] ) 
+    then $uri || ':' || $functionName
+    else if ( $context//function[@name = $functionName and @uri = ('synopsx.models.' || $modelName) ] )
+      then 'synopsx.models.' || $modelName || ':' || $functionName 
+      else '' 
+};
+
+(:~
+ : this function checks if the given function exists in the given module with the given arity
+ : without inspecting functions (i.e. without compiling the module)
+ :
+ : @param module uri and function name
+ : @return the function name as a string or an empty string
+ :
+ : @todo return error messages
  : @todo test heritage
  :)
 declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer) as xs:string {
@@ -98,7 +121,6 @@ declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer)
             else ''  
             else $customizedFunction
 };
-
 
 declare function error($queryParams, $err:code, $err:description){
    let $error := map {
