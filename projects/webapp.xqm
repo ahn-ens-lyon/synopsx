@@ -21,7 +21,7 @@ module namespace synopsx.webapp = 'synopsx.webapp' ;
  : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  : See the GNU General Public License for more details.
  : You should have received a copy of the GNU General Public License along 
- : with SynopsX. If not, see <http://www.gnu.org/licenses/>
+ : with SynopsX. If not, see http://www.gnu.org/licenses/
  :
  :)
 
@@ -98,7 +98,7 @@ function home($myProject) {
     'dbName' :  $myProject
     }
   return try {
-    let $prefix := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
     let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
@@ -131,7 +131,7 @@ function home($myProject, $myFunction) {
     'function' : $myFunction
     }
   return try {
-    let $prefix := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
     let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
@@ -165,7 +165,7 @@ function home($myProject, $myFunction, $myOtherParams) {
     'otherParams' : $myOtherParams
     }
   return try {
-    let $prefix := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
     let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',

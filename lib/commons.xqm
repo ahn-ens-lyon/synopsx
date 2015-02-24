@@ -21,7 +21,7 @@ module namespace synopsx.lib.commons = 'synopsx.lib.commons' ;
  : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  : See the GNU General Public License for more details.
  : You should have received a copy of the GNU General Public License along 
- : with SynopsX. If not, see <http://www.gnu.org/licenses/>
+ : with SynopsX. If not, see http://www.gnu.org/licenses/
  :
  :)
 
@@ -73,30 +73,30 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
  :
  : @param module uri and function name
  : @return the function name as a string or an empty string
+ :
  : @todo return error messages
  : @todo test heritage
- :
  :)
-declare function getFunctionModulePrefix($queryParams as map(*), $arity as xs:integer) as xs:string {
+declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer) as xs:string {
   let $project :=  map:get($queryParams, 'project')
-  let $file := map:get($queryParams, 'model') || '.xqm'
-  let $projectModelsUri := $G:PROJECTS || $project || '/models/'
+  let $fileName := map:get($queryParams, 'model') || '.xqm'
+  let $projectModelPath := $G:PROJECTS || $project || '/models/'
   let $functionName := map:get($queryParams, 'function') 
-  let $customizedFunctionExists := 
-    if (file:exists($projectModelsUri || $file)) then 
-    let $xml := inspect:module($projectModelsUri || $file)
-    (: if the function exists in this module, returns the module name :)
-    return if($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]) then 
+  let $customizedFunction := 
+    if (file:exists($projectModelPath || $fileName)) then 
+      let $xml := inspect:module($projectModelPath || $fileName)
+      (: if the function exists in this module, returns the module name :)
+      return if($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]) then 
         fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)
         else ''
         else ''
-        return if ($customizedFunctionExists = '') then                                     
-          if (file:exists($G:MODELS || $file)) then 
-            let $xml := inspect:module($G:MODELS || $file)
+        return if ($customizedFunction = '') then                                     
+          if (file:exists($G:MODELS || $fileName)) then 
+            let $xml := inspect:module($G:MODELS || $fileName)
             (: if the function exists in this module, returns the module name :)
             return fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)          
             else ''  
-            else $customizedFunctionExists
+            else $customizedFunction
 };
 
 
