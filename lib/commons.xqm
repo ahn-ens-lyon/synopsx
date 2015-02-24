@@ -64,7 +64,7 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
     else 
         (: Test if we are looking for a main layout or a 'inc_*' layout:)
         let $prefix := if (fn:contains($template, '_')) then fn:substring-before($template, '_') || '_' else ''
-        return $G:TEMPLATES || $prefix || 'defaultList.xhtml'
+        return $G:TEMPLATES || $prefix || 'inc_defaultList.xhtml'
 };
 
 (:~
