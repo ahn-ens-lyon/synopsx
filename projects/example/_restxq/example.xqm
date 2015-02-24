@@ -74,8 +74,8 @@ function home() {
     'function' : 'getTextsList'
     }
   return try {
-    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
-    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
@@ -131,8 +131,8 @@ function textsHtml() {
     'function' : 'getTextsList'
     }
   return try {
-    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
-    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
@@ -158,8 +158,8 @@ function respHtml() {
     'function' : 'getRespList'
     }
   return try {
-    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
-    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
@@ -185,8 +185,8 @@ function biblHtml() {
     'function' : 'getBiblList'
     }
   return try {
-    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
-    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
@@ -217,8 +217,8 @@ function corpusListHtml() {
     'function' : 'getTextsList'
     }
   return try {
-    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
-    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'inc_defaultList.xhtml',
@@ -249,8 +249,8 @@ function biblioListHtml($pattern as xs:string?) {
     'function' : 'getRespList'
     }
   return try {
-    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
-    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'inc_defaultList.xhtml',
