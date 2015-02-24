@@ -78,7 +78,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
 };
 
 (:~
- : This function iterates the pattern template with contents
+ : this function iterates the pattern template with contents
  :
  : @param $queryParams the query params defined in restxq
  : @param $data the result of the query
@@ -104,9 +104,42 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
         where fn:starts-with($text, '{') and fn:ends-with($text, '}')
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key) 
-        return if ($key = 'xsl') 
-          then replace node $text with $value (: TODO : options : xslt, etc. :)
+        return if ($key = 'tei') 
+          then replace node $text with render($outputParams, $value) (: TODO : options : xslt, etc. :)
           else replace node $text with $value
       )
   })
 };
+
+(:~
+ : this function dispatch the rendering based on $outpoutParams
+ :
+ : @param $value the content to render
+ : @param $outputParams the serialization params
+ : @return an html serialization
+ :
+ : @todo
+ :)
+declare function render($outputParams, $value) as element() {
+  let $xsl :=  map:get($outputParams, 'xsl')
+  let $xquery := map:get($outputParams, 'xquery')
+  return 
+    if ($xquery)
+    then <p>xquery ok</p>
+    else if ($xsl) then xslt:transform($value, $G:FILES || 'xsl/' || $xsl)
+      else <p>rien</p>
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
