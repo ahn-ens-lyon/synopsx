@@ -71,21 +71,21 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
  : this function checks if the function exists in the given module
  :
  : @param module uri and function name
- : @return the function name as a string or an empty string
+ : @return a function QName
  :
- : @todo give a regex for function's local-name()
+ : @todo give a default function
  :)
-declare function getModelFunction($queryParams as map(*)) as xs:string {
+declare function getModelFunction($queryParams as map(*)) as xs:QName {
   let $projectName :=  map:get($queryParams, 'project')
   let $modelName := map:get($queryParams, 'model')
   let $functionName := map:get($queryParams, 'function') 
-  let $uri := $projectName || '.' || 'models.' || $modelName
-  let $context := inspect:context()
-  return if( $context//function[@name = $functionName and @uri = $uri] ) 
-    then $uri || ':' || $functionName
-    else if ( $context//function[@name = $functionName and @uri = ('synopsx.models.' || $modelName) ] )
-      then 'synopsx.models.' || $modelName || ':' || $functionName 
-      else '' 
+  let $uri := $projectName || '.models.' || $modelName
+  let $context := inspect:context()//function[@name = $functionName]
+  return if ($context/@uri/fn:string() = $uri) 
+    then fn:QName($context/@uri, $context/@name)
+    else if ($context/@uri/fn:string() = 'synopsx.models.' || $modelName) 
+      then fn:QName($context/@uri, $context/@name)
+       else fn:QName('synopsx.models.' || $modelName, 'getTextsList')
 };
 
 (:~
