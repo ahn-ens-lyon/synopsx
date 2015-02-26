@@ -73,7 +73,8 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
  : @param module uri and function name
  : @return a function QName
  :
- : @todo give a default function
+ : @rmq the modules namespaces should be imported in the restxq
+ : @todo give a default function or an error
  :)
 declare function getModelFunction($queryParams as map(*)) as xs:QName {
   let $projectName :=  map:get($queryParams, 'project')
@@ -85,18 +86,18 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
     then fn:QName($context/@uri, $context/@name)
     else if ($context/@uri/fn:string() = 'synopsx.models.' || $modelName) 
       then fn:QName($context/@uri, $context/@name)
-       else fn:QName('synopsx.models.' || $modelName, 'getTextsList')
+       else fn:QName('synopsx.models.' || $modelName, 'getTextsList') (: give default or error :)
 };
 
 (:~
  : this function checks if the given function exists in the given module with the given arity
  : without inspecting functions (i.e. without compiling the module)
  :
- : @param module uri and function name
+ : @param $queryParams the query params
+ : @param $arity and arity to retrieve the function
  : @return the function name as a string or an empty string
  :
  : @todo return error messages
- : @todo test heritage
  :)
 declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer) as xs:string {
   let $project :=  map:get($queryParams, 'project')
@@ -120,20 +121,27 @@ declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer)
             else $customizedFunction
 };
 
-declare function error($queryParams, $err:code, $err:description){
-   let $error := map {
-          'error-code' : $err:code,
-          'error-description' : $err:description
-        }
+(:~
+ : this function shows the errors
+ :
+ : @param $queryParams the query params
+ : @param $err:code the error code
+ : @param $err:description the error description
+ : @return send a map with the errors messages to the wrapper
+ :)
+declare function error($queryParams, $err:code, $err:description) {
+  let $error := map {
+    'error-code' : $err:code,
+    'error-description' : $err:description
+    }
   let $data := map{
-        'meta' : map:merge(($error, $queryParams)),
-        'content' : map{}
-      }
-      let $outputParams := map {
-         'lang' : 'fr',
-         'layout' : 'error404.xhtml',
-         'pattern' : 'inc_defaultItem.xhtml'
-         (: specify an xslt mode and other kind of output options :)
-       }
-       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+    'meta' : map:merge(($error, $queryParams)),
+    'content' : map{}
+    }
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'error404.xhtml',
+    'pattern' : 'inc_defaultItem.xhtml'
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
 };
