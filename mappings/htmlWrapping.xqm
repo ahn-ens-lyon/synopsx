@@ -28,12 +28,11 @@ module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping'
 import module namespace G = "synopsx.globals" at '../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ; 
 
+import module namespace synopsx.mappings.tei2html = 'synopsx.mappings.tei2html' at 'tei2html.xqm' ; 
 
 declare namespace html = 'http://www.w3.org/1999/xhtml' ;
 
 declare default function namespace 'synopsx.mappings.htmlWrapping' ;
-
-declare variable $synopsx.mappings.htmlWrapping:xslt := '../files/xsl/tei2html.xsl' ;
 
 (:~
  : this function wrap the content in an HTML layout
@@ -70,7 +69,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
      for $text in .//text()
        where fn:starts-with($text, '{') and fn:ends-with($text, '}')
        let $key := fn:replace($text, '\{|\}', '')
-       let $value := map:get($meta,$key)
+       let $value := map:get($meta, $key)
        return if ($key = 'content') 
          then replace node $text with pattern($queryParams, $data, $outputParams)
          else replace node $text with $value 
@@ -120,26 +119,13 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
  :
  : @todo
  :)
-declare function render($outputParams, $value) as element() {
+declare function render($outputParams as map(*), $value ) as element()* {
   let $xsl :=  map:get($outputParams, 'xsl')
   let $xquery := map:get($outputParams, 'xquery')
+  let $options := 'option'
   return 
-    if ($xquery)
-    then <p>xquery ok</p>
-    else if ($xsl) then xslt:transform($value, $G:FILES || 'xsl/' || $xsl)
-      else <p>rien</p>
+    if ($xquery) then synopsx.mappings.tei2html:dispatch($value, $options)
+      else 
+        if ($xsl) then xslt:transform($value, $G:FILES || 'xsl/' || $xsl)
+        else <p>rien</p>
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
