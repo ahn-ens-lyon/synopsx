@@ -4,7 +4,7 @@ module namespace synopsx.lib.commons = 'synopsx.lib.commons' ;
 (:~
  : This module is a function library for SynopsX
  :
- : @version 0.2 (Constantia edition)
+ : @version 2.0 (Constantia edition)
  : @since 2014-11-10 
  : @author synopsx team
  :
