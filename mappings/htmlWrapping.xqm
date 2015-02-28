@@ -124,8 +124,9 @@ declare function render($outputParams as map(*), $value ) as element()* {
   let $xquery := map:get($outputParams, 'xquery')
   let $options := 'option'
   return 
-    if ($xquery) then synopsx.mappings.tei2html:entry($value, $options)
-      else 
-        if ($xsl) then xslt:transform($value, $G:FILES || 'xsl/' || $xsl)
-        else <p>rien</p>
+    if ($xquery) 
+    then synopsx.mappings.tei2html:entry($value, $options)
+    else if ($xsl) 
+      then xslt:transform($value, $G:FILES || 'xsl/' || $xsl)
+      else <p>rien</p>
 };
