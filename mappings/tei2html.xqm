@@ -35,13 +35,13 @@ declare function entry($node as node()*, $options as xs:string) as item() {
   <div>{ dispatch($node, $options) }</div>
 };
 
-
 (:~
  : this function dispatches the treatment of the XML document
  :)
 declare function dispatch($node as node()*, $options as xs:string) as item()* {
   typeswitch($node)
     case text() return $node
+    case element(tei:teiHeader) return ''
     case element(tei:TEI) return passthru($node, $options)
     case element(tei:text) return passthru($node, $options)
     case element(tei:front) return passthru($node, $options)
@@ -67,7 +67,6 @@ declare function dispatch($node as node()*, $options as xs:string) as item()* {
     (: case element(tei:author) return getResponsability($node, $options) :)
     (: case element(tei:editor) return getResponsability($node, $options) :)
     case element(tei:persName) return persName($node, $options)
-    case element(tei:head) return '' (: bof :)
     default return passthru($node, $options)
 };
 
@@ -86,17 +85,17 @@ declare function passthru($nodes as node(), $options) as item()* {
  : ~:~:~:~:~:~:~:~:~
  :)
 
-declare function div($node as element(tei:div), $options) {
+declare function div($node as element(tei:div)+, $options) {
   <div>
     { if ($node/@xml:id) then attribute id { $node/@xml:id } else (),
     passthru($node, $options)}
   </div>
 };
 
-declare function head($node as element(tei:head), $options) as element() {   
+declare function head($node as element(tei:head)+, $options) as element() {   
   if ($node/parent::tei:div) then
     let $type := $node/parent::tei:div/@type
-    let $level := fn:count($node/ancestor::div) - 1
+    let $level := fn:count($node/ancestor::div)
     return element { 'h' || $level } { passthru($node, $options) }
   else if ($node/parent::tei:figure) then
     if ($node/parent::tei:figure/parent::tei:p) then
@@ -109,20 +108,25 @@ declare function head($node as element(tei:head), $options) as element() {
   else  passthru($node, $options)
 };
 
-declare function p($node as element(tei:p), $options) {
+declare function p($node as element(tei:p)+, $options) {
   <p>{ passthru($node, $options) }</p>
 };
 
-declare function list($node as element(tei:list), $options) {
-  <ul>{ passthru($node, $options) }</ul>
+declare function list($node as element(tei:list)+, $options) {
+  switch ($node) 
+  case $node/@type='ordered' return <ol>{ passthru($node, $options) }</ol>
+  case $node[child::tei:label] return <dl>{ passthru($node, $options) }</dl>
+  default return <ul>{ passthru($node, $options) }</ul>
 };
 
-declare function synopsx.mappings.tei2html:item($node as element(tei:item), $options) {
-  <li>{ passthru($node, $options) }</li>
+declare function synopsx.mappings.tei2html:item($node as element(tei:item)+, $options) {
+  switch ($node)
+  case $node[parent::*/tei:label] return <dd>{ passthru($node, $options) }</dd>
+  default return <li>{ passthru($node, $options) }</li>
 };
 
-declare function label($node as element(tei:label), $options) {
-  <dd>{ passthru($node, $options) }</dd>
+declare function label($node as element(tei:label)+, $options) {
+  <dt>{ passthru($node, $options) }</dt>
 };
 
 (:~
@@ -130,10 +134,17 @@ declare function label($node as element(tei:label), $options) {
  : tei inline
  : ~:~:~:~:~:~:~:~:~
  :)
-declare function hi($node as element(tei:hi), $options) {
-  if ($node/@rend='italic') then <em>{ passthru($node, $options) }</em> 
-  else if ($node/@rend='bold') then '' else (),
-  passthru($node, $options)
+declare function hi($node as element(tei:hi)+, $options) {
+  switch ($node)
+  case ($node/@rend='italic' or $node/@rend='it') return <em>{ passthru($node, $options) }</em> 
+  case ($node/@rend='bold' or $node/@rend='b') return <strong>{ passthru($node, $options) }</strong>
+  case ($node/@rend='superscript' or $node/@rend='sup') return <sup>{ passthru($node, $options) }</sup>
+  case ($node/@rend='underscript' or $node/@rend='sub') return <sub>{ passthru($node, $options) }</sub>
+  case ($node/@rend='underline' or $node/@rend='u') return <u>{ passthru($node, $options) }</u>
+  case ($node/@rend='strikethrough') return <del class="hi">{ passthru($node, $options) }</del>
+  case ($node/@rend='caps' or $node/@rend='uppercase') return <span calss="uppercase">{ passthru($node, $options) }</span>
+  case ($node/@rend='smallcaps' or $node/@rend='sc') return <span class="small-caps">{ passthru($node, $options) }</span>
+  default return <span class="{$node/@rend}">{ passthru($node, $options) }</span>
 };
 
 declare function ref($node as element(tei:ref), $options) {
