@@ -145,3 +145,21 @@ declare function error($queryParams, $err:code, $err:description) {
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
 };
+
+(:~
+ : this function built document node with dbName and path
+ :
+ : @param $queryParams the query params
+ : @return one or several document-node according to dbName and path
+ :)
+declare function getDb($queryParams as map(*)) as document-node()* {
+  let $dbName := map:get($queryParams, 'dbName')
+  let $path := map:get($queryParams, 'path')
+  return
+    if ($path)
+    then db:open($dbName, $path)
+    else db:open($dbName)
+};
+
+
+
