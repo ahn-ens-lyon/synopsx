@@ -29,6 +29,14 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0';
 declare default function namespace 'synopsx.mappings.tei2html' ;
 
 (:~
+ : this function 
+ :)
+declare function entry($node as node()*, $options as xs:string) as item() {
+  <div>{ dispatch($node, $options) }</div>
+};
+
+
+(:~
  : this function dispatches the treatment of the XML document
  :)
 declare function dispatch($node as node()*, $options as xs:string) as item()* {
@@ -109,7 +117,7 @@ declare function list($node as element(tei:list), $options) {
   <ul>{ passthru($node, $options) }</ul>
 };
 
-declare function synopsx.mappings.tei2html:item($node as element(tei:list), $options) {
+declare function synopsx.mappings.tei2html:item($node as element(tei:item), $options) {
   <li>{ passthru($node, $options) }</li>
 };
 
