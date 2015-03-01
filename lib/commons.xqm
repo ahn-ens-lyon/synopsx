@@ -56,7 +56,7 @@ declare function getDefaultProject() as xs:string {
  : @return a path 
  :)
 declare function getLayoutPath($queryParams as map(*), $template as xs:string?) as xs:string { 
-  let $path := $G:PROJECTS || map:get($queryParams, 'project') || '/templates/' || $template
+  let $path := $G:WORKSPACE || map:get($queryParams, 'project') || '/templates/' || $template
   return 
     if (file:exists($path)) 
     then $path
@@ -102,7 +102,7 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
 declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer) as xs:string {
   let $project :=  map:get($queryParams, 'project')
   let $fileName := map:get($queryParams, 'model') || '.xqm'
-  let $projectModelPath := $G:PROJECTS || $project || '/models/'
+  let $projectModelPath := $G:WORKSPACE || $project || '/models/'
   let $functionName := map:get($queryParams, 'function') 
   let $customizedFunction := 
     if (file:exists($projectModelPath || $fileName)) then 
