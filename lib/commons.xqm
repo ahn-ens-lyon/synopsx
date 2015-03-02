@@ -111,14 +111,14 @@ declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer)
       return if($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]) then 
         fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)
         else ''
-        else ''
-        return if ($customizedFunction = '') then                                     
-          if (file:exists($G:MODELS || $fileName)) then 
-            let $xml := inspect:module($G:MODELS || $fileName)
-            (: if the function exists in this module, returns the module name :)
-            return fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)          
-            else ''  
-            else $customizedFunction
+    else ''
+    return if ($customizedFunction = '') then                                     
+              if (file:exists(fn:trace($G:MODELS || $fileName))) then 
+                let $xml := inspect:module($G:MODELS || $fileName)
+                (: if the function exists in this module, returns the module name :)
+                return fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)          
+              else ''  
+           else $customizedFunction
 };
 
 (:~

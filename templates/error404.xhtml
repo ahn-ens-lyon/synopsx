@@ -14,23 +14,18 @@
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
       <script src="/synopsx/files/js/synopsx.js"></script>
       <!-- ajouter js pour lt IE 9 -->
-      
-       <script type="text/javascript">
-         // synopsx's composition
-         $(document).ready(function(){
-              init();
-         }); 
-       </script>
+   
+     
    </head>
    <body>
  
 <header data-url="/synopsx/html/header"/>
-<div class="main">
-<hr/>
-<h3>The SynopsX error page</h3>
-<hr/>
-    <section>
-      <h1>An error occured :(</h1> 
+<div>
+  <nav id="contextual" class="sidebar-nav">
+      <h3>The SynopsX default contextual nav</h3>
+  </nav>
+ <main>
+      <h1>{title}</h1>
       <p>Error code : <span>{error-code}</span></p>
       <p>Error description : <span>{error-description}</span></p>
       <p>Requested project : <span>{project}</span></p>
@@ -38,36 +33,15 @@
       <p>Requested model : <span>{model}</span></p>
       <p>Requested function : <span>{function}</span></p>
        <p>Other parameters : <span>{otherParams}</span></p>
-    </section>
+    </main>
 
   </div> 
-<hr/>
 <footer data-url="/synopsx/html/footer"/>
-     <!-- script menu -->
-     <script><![CDATA[
-      $(document).ready(function() {
-  var menu = $('#navigation-menu');
-  var menuToggle = $('#js-mobile-menu');
-  var signUp = $('.sign-up');
-
-  $(menuToggle).on('click', function(e) {
-    e.preventDefault();
-    menu.slideToggle(function(){
-      if(menu.is(':hidden')) {
-        menu.removeAttr('style');
-      }
-    });
-  });
-
-  // underline under the active nav item
-  $(".nav .nav-link").click(function() {
-    $(".nav .nav-link").each(function() {
-      $(this).removeClass("active-nav-item");
-    });
-    $(this).addClass("active-nav-item");
-    $(".nav .more").removeClass("active-nav-item");
-  });
-});
-  ]]></script>
+      <script type="text/javascript">
+         // synopsx's composition
+         $(document).ready(function(){
+              init();
+         }); 
+       </script>
    </body>
 </html>

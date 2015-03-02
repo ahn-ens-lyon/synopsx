@@ -55,17 +55,7 @@ declare
   %output:method('html')
   %output:html-version('5.0')
 function home(){
- <html lang="fr" xml:lang="fr" xmlns="htpp://www.w3.org/1999/xhtml">
-   <head>
-      <meta charset="utf-8"/>
-      <title>Un document xHTML minimal</title>
-      <link href="styles.css" rel="stylesheet"/>
-      <script src="scripts.js"></script>
-   </head>
-   <body>
-      <h1>Faisons chauffer le navigateur en mode XHTML5 ! Home</h1>
-   </body>
- </html>
+ fn:doc($G:TEMPLATES||'defaultLayout.xhtml')
 };
 
 (:~
@@ -77,8 +67,10 @@ declare
   %output:method('html')
   %output:html-version('5.0')
 function install() { 
-  <h1>Faisons chauffer le navigateur en mode XHTML5 ! Install</h1> 
+  fn:doc($G:TEMPLATES||'defaultLayout.xhtml')
 };
+
+
 
 declare 
   %restxq:path('/synopsx/html/header')
