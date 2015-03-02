@@ -1,7 +1,9 @@
-xquery version "3.0" ;
-module namespace synopsx.models.ead = 'synopsx.models.ead';
+xquery version '3.0' ;
+module namespace search = 'http://ahn.ens-lyon.fr/search' ;
+
 (:~
- : This module is for TEI models
+ : This module is a demo search fo SynopsX
+ :
  : @version 0.2 (Constantia edition)
  : @date 2014-11-10 
  : @author synopsx team
@@ -19,20 +21,22 @@ module namespace synopsx.models.ead = 'synopsx.models.ead';
  : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  : See the GNU General Public License for more details.
  : You should have received a copy of the GNU General Public License along 
- : with SynopsX. If not, see <http://www.gnu.org/licenses/>
+ : with SynopsX. If not, see http://www.gnu.org/licenses/
  :
+ : @todo to implement
  :)
 
-import module namespace G = "synopsx.globals" at '../globals.xqm'; (: import globals variables :)
 
-declare default function namespace 'synopsx.models.ead'; (: This is the default namespace:)
-declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
-
-declare function  horizontal-nav-entry($queryParams) {
-  <ul><li>Test 1</li><li>Test 2</li></ul>
-};
-
-
-declare function  main($queryParams) {
-  <section>Le corps de la page</section>
+(:
+ : launches search for a 
+ : @word
+:)
+declare function search:query ($db as xs:string, $word as xs:string) {
+  let $ftindex := db:info($db)//ftindex = 'true'
+  let $outputParams := map {
+    'mode' : 'all words',
+    'fuzzy' : true()
+  }
+  return if ($ftindex) then ( ft:search($db, $word, $outputParams) ) 
+  else ( db:open($db)//*[ft:contains($db, $word, $outputParams)] )
 };

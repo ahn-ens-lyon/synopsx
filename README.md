@@ -1,130 +1,33 @@
-README is not up to date !
-
-
 Synopsx
 =======
 
-
-Full XML corpus publishing system developped at ENS Lyon (http://ahn.ens-lyon.fr) based on BaseX
+SynopsX is a light framework to publish full XML corpus with BaseX XML native database.
 
 Installation
-------------
+---
+
+SynopsX 2.0 requires BaseX version 8.0
+
 ```bash
-    cd <path_to_basex>/webapp
-    rm -fr *
-    git clone https://github.com/ahn-ens-lyon/synopsx.git .
+  git clone https//github.com/ahn-ens-lyon/synopsx.git synopsx
+  cd <path-to-basex>/webapp
+  ln -s <path-to-synospx>/ synopsx
 ```
-
-Don't forget to change your admin password an
-
 
 Configuration
--------------
+---
 
-### Default syntax
+Copy paste 'config.sample' to 'config.xml'
 
-If you use the BaseX Client use the default syntax : http://docs.basex.org/wiki/Commands
-You can also use the command line syntax : http://docs.basex.org/wiki/REST#Command_Line
-
-
-#### Config database
-
-`CREATE DB 'config'` create the config database (http://docs.basex.org/wiki/Commands#CREATE_DB)
-
-`OPEN DB 'config'` open the config database (http://docs.basex.org/wiki/Commands#OPEN_DB)
-
-`ADD synopsx.xml` add the config file  (http://docs.basex.org/wiki/Commands#ADD)
-
-```xml
-    <configuration name="synopsx">
-        <output name="html" value="synopsx_html"/>
-        <output name="oai" value="synopsx_oai"/>
-    </configuration>
+```bash
+  cd <path-to-synopsx>
+  cp config.sample config.xml
 ```
 
-#### Project database
+Then open 'config.xml' in an editor and complete with your informations. Copy/paste the exemple to create as many projects as needed. The @default attribute is used to define a default home.
 
-`CREATE DB 'myproject'`
+Creates your projects directories in the 'workspace/' directory as specified in the 'config.xml'.  
 
-`OPEN DB 'myproject'`
+---
 
-`ADD myproject_data.xml` (or ADD TO 'myproject/' myproject_data.zip)
-
-`OPEN DB 'config'`
-
-`ADD myproject.xml`
-
-```xml
-    <!-- config file for 'myproject' -->
-    <configuration name="myproject">
-        <!-- The @value attribute gives the parent xqm module namespace -->
-        <parent value="synopsx"/>  
-        <!-- The @value attribute gives the output xqm module namespace -->
-        <output name="html" value="myproject"/>  
-        <!-- Uncomment this line to overwrite synopx oai default functions -->
-        <!--<output name="oai" value="myproject_oai_namespace"/>-->
-    </configuration>
-```
-
-### XQuery syntax
-
-You can also interact with BaseX with the XQuery syntax for the installation process : http://docs.basex.org/wiki/Database_Module
-
-#### Config database
-
-```xquery
-    <!-- create the config database (http://docs.basex.org/wiki/Database_Module#db:create) -->
-    db:create("config")
-```
-
-```xquery
-    <!-- open the config database (http://docs.basex.org/wiki/Database_Module#db:open) -->
-    db:open("config")
-```
-
-```xquery
-    <!-- add the XML sequence to the config database (http://docs.basex.org/wiki/Database_Module#db:add) -->
-    db:add("config",
-    <configuration name="synopsx">
-        <output name="html" value="synopsx_html"/>
-        <output name="oai" value="synopsx_oai"/>
-    </configuration>, "synopsx.xml" )
-```
-
-#### Project database
-
-```xquery
-    <!-- create the project database (http://docs.basex.org/wiki/Database_Module#db:create) -->
-    db:create("myproject")
-```
-
-```xquery
-    <!-- open the project database (http://docs.basex.org/wiki/Database_Module#db:open) -->
-    db:open("myproject")
-```
-
-```xquery
-<!-- Add XML data to the project database -->
-
-
-```
-
-
-
-```xquery
-    <!-- add the project's config XML sequence to the config database (http://docs.basex.org/wiki/Database_Module#db:add)
-
-    first open the config database (http://docs.basex.org/wiki/Database_Module#db:open) -->
-
-    db:open("config")
-
-    db:add("config",
-    <configuration name="myproject">
-        <!-- The @value attribute gives the parent xqm module namespace -->
-        <parent value="synopsx"/>  
-        <!-- The @value attribute gives the output xqm module namespace -->
-        <output name="html" value="myproject"/>  
-        <!-- Uncomment this line to overwrite synopx oai default functions -->
-        <!--<output name="oai" value="myproject_oai_namespace"/>-->
-    </configuration>, "myproject.xml" )
-```
+Enjoy !
