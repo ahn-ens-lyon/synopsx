@@ -42,8 +42,9 @@ declare default function namespace 'synopsx.mappings.htmlWrapping' ;
  : @param $outputParams the serialization params
  : @return an updated HTML document and instantiate pattern
  :
- : @todo modify to replace mixted content like "{quantity} éléments" 
+ : @todo modify to replace mixted content like "{quantity} éléments" and to improve composite insert points also in attribute nodes like for url composition @href={project}/{page}/{value}... Create a function to handle this
  : @todo treat in the same loop @* and text() ?
+ @todo add handling of outputParams (for example {class} attribute or call to an xslt)
  :)
 declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)){
   let $meta := map:get($data, 'meta')
@@ -51,16 +52,6 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
   let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
   let $wrap := fn:doc($layout)
   return $wrap update (
-    (: Head part of the HTML page if exists : css, js, etc. :)
-    (: for $text in .//*:head//*:link/@*:href
-      where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-      let $path := fn:replace($text, '\{|\}', '')
-      return replace value of node $text with fn:trace(synopsx.lib.files:getFile($path), 'CSS File :'),
-      for $text in .//*:head//*:script/@*:src
-      where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-      let $path := fn:replace($text, '\{|\}', '')
-      return replace value of node $text with synopsx.lib.files:getFile($path), :)
-      (: Other meta and body part of the HTML page if exists : title, items... :)  
     for $text in .//*:body/@*
       where fn:starts-with($text, '{') and fn:ends-with($text, '}')
       let $key := fn:replace($text, '\{|\}', '')
