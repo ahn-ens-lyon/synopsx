@@ -67,7 +67,7 @@ declare
   %output:method('html')
   %output:html-version('5.0')
 function install() { 
-  <h1>Faisons chauffer le navigateur en mode XHTML5 ! Install</h1> 
+  fn:doc($G:TEMPLATES||'defaultLayout.xhtml')
 };
 
 
