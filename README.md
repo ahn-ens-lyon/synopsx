@@ -24,8 +24,9 @@ Copy paste 'config.sample' to 'config.xml'
   cp config.sample config.xml
 ```
 
-Then open 'config.xml' in an editor and complete with your informations.
-The 'projects/' directory is your workspace. Just create your projects directories here.
+Then open 'config.xml' in an editor and complete with your informations. Copy/paste the exemple to create as many projects as needed. The @default attribute is used to define a default home.
+
+Creates your projects directories in the 'workspace/' directory as specified in the 'config.xml'.  
 
 ---
 

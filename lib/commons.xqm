@@ -4,7 +4,7 @@ module namespace synopsx.lib.commons = 'synopsx.lib.commons' ;
 (:~
  : This module is a function library for SynopsX
  :
- : @version 0.2 (Constantia edition)
+ : @version 2.0 (Constantia edition)
  : @since 2014-11-10 
  : @author synopsx team
  :
@@ -21,7 +21,7 @@ module namespace synopsx.lib.commons = 'synopsx.lib.commons' ;
  : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  : See the GNU General Public License for more details.
  : You should have received a copy of the GNU General Public License along 
- : with SynopsX. If not, see <http://www.gnu.org/licenses/>
+ : with SynopsX. If not, see http://www.gnu.org/licenses/
  :
  :)
 
@@ -56,7 +56,7 @@ declare function getDefaultProject() as xs:string {
  : @return a path 
  :)
 declare function getLayoutPath($queryParams as map(*), $template as xs:string?) as xs:string { 
-  let $path := $G:PROJECTS || map:get($queryParams, 'project') || '/templates/' || $template
+  let $path := $G:WORKSPACE || map:get($queryParams, 'project') || '/templates/' || $template
   return 
     if (file:exists($path)) 
     then $path
@@ -64,56 +64,102 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
     else 
         (: Test if we are looking for a main layout or a 'inc_*' layout:)
         let $prefix := if (fn:contains($template, '_')) then fn:substring-before($template, '_') || '_' else ''
-        return $G:TEMPLATES || $prefix || 'defaultList.xhtml'
+        return $G:TEMPLATES || $prefix || 'inc_defaultList.xhtml'
+};
+
+(:~
+ : this function checks if the function exists in the given module
+ :
+ : @param module uri and function name
+ : @return a function QName
+ :
+ : @rmq the modules namespaces should be imported in the restxq
+ : @todo give a default function or an error
+ :)
+declare function getModelFunction($queryParams as map(*)) as xs:QName {
+  let $projectName :=  map:get($queryParams, 'project')
+  let $modelName := map:get($queryParams, 'model')
+  let $functionName := map:get($queryParams, 'function') 
+  let $uri := $projectName || '.models.' || $modelName
+  let $context := inspect:context()//function[@name = $functionName]
+  return if ($context/@uri = $uri) 
+    then fn:QName($context/@uri, $context/@name)
+    else if ($context/@uri = 'synopsx.models.' || $modelName) 
+      then fn:QName($context/@uri, $context/@name)
+       else fn:QName('synopsx.models.' || $modelName, 'getTextsList') (: give default or error :)
 };
 
 (:~
  : this function checks if the given function exists in the given module with the given arity
  : without inspecting functions (i.e. without compiling the module)
  :
- : @param module uri and function name
+ : @param $queryParams the query params
+ : @param $arity and arity to retrieve the function
  : @return the function name as a string or an empty string
- : @todo return error messages
- : @todo test heritage
  :
+ : @todo return error messages
  :)
-declare function getFunctionModulePrefix($queryParams as map(*), $arity as xs:integer) as xs:string {
+declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer) as xs:string {
   let $project :=  map:get($queryParams, 'project')
-  let $file := map:get($queryParams, 'model') || '.xqm'
-  let $projectModelsUri := $G:PROJECTS || $project || '/models/'
+  let $fileName := map:get($queryParams, 'model') || '.xqm'
+  let $projectModelPath := $G:WORKSPACE || $project || '/models/'
   let $functionName := map:get($queryParams, 'function') 
-  let $customizedFunctionExists := 
-    if (file:exists($projectModelsUri || $file)) then 
-    let $xml := inspect:module($projectModelsUri || $file)
-    (: if the function exists in this module, returns the module name :)
-    return if($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]) then 
+  let $customizedFunction := 
+    if (file:exists($projectModelPath || $fileName)) then 
+      let $xml := inspect:module($projectModelPath || $fileName)
+      (: if the function exists in this module, returns the module name :)
+      return if($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]) then 
         fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)
         else ''
         else ''
-        return if ($customizedFunctionExists = '') then                                     
-          if (file:exists($G:MODELS || $file)) then 
-            let $xml := inspect:module($G:MODELS || $file)
+        return if ($customizedFunction = '') then                                     
+          if (file:exists($G:MODELS || $fileName)) then 
+            let $xml := inspect:module($G:MODELS || $fileName)
             (: if the function exists in this module, returns the module name :)
             return fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)          
             else ''  
-            else $customizedFunctionExists
+            else $customizedFunction
 };
 
-
-declare function error($queryParams, $err:code, $err:description){
-   let $error := map {
-          'error-code' : $err:code,
-          'error-description' : $err:description
-        }
+(:~
+ : this function shows the errors
+ :
+ : @param $queryParams the query params
+ : @param $err:code the error code
+ : @param $err:description the error description
+ : @return send a map with the errors messages to the wrapper
+ :)
+declare function error($queryParams, $err:code, $err:description) {
+  let $error := map {
+    'error-code' : $err:code,
+    'error-description' : $err:description
+    }
   let $data := map{
-        'meta' : map:merge(($error, $queryParams)),
-        'content' : map{}
-      }
-      let $outputParams := map {
-         'lang' : 'fr',
-         'layout' : 'error404.xhtml',
-         'pattern' : 'inc_defaultItem.xhtml'
-         (: specify an xslt mode and other kind of output options :)
-       }
-       return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+    'meta' : map:merge(($error, $queryParams)),
+    'content' : map{}
+    }
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'error404.xhtml',
+    'pattern' : 'inc_defaultItem.xhtml'
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
 };
+
+(:~
+ : this function built document node with dbName and path
+ :
+ : @param $queryParams the query params
+ : @return one or several document-node according to dbName and path
+ :)
+declare function getDb($queryParams as map(*)) as document-node()* {
+  let $dbName := map:get($queryParams, 'dbName')
+  let $path := map:get($queryParams, 'path')
+  return
+    if ($path)
+    then db:open($dbName, $path)
+    else db:open($dbName)
+};
+
+
+

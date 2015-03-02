@@ -19,35 +19,30 @@ module namespace G = 'synopsx.globals';
  : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  : See the GNU General Public License for more details.
  : You should have received a copy of the GNU General Public License along 
- : with SynopsX. If not, see <http://www.gnu.org/licenses/>
+ : with SynopsX. If not, see http://www.gnu.org/licenses/
  :
  :)
-(: Webapp directory:)
-declare variable $G:HOME := file:base-dir();
+ 
+declare variable $G:HOME := file:base-dir() ;
 
-declare variable $G:SYNOPSX_DIR := substring-before(file:base-dir(), 'webapp/synopsx') || 'webapp/';
+declare variable $G:CONFIGFILE := $G:HOME || 'config.xml' ;
 
+declare variable $G:WEBAPP := file:current-dir() || 'webapp/' ; (: TO CHECK :)
 
-declare variable $G:CONFIGFILE := $G:SYNOPSX_DIR || 'synopsx/config.xml';
-
-declare variable $G:WEBAPP := file:current-dir() || 'webapp/'; (: TO CHECK :)
-
-declare variable $G:_RESTXQ := $G:SYNOPSX_DIR || 'synopsx/_restxq/';
-declare variable $G:FILES := $G:SYNOPSX_DIR || 'synopsx/files/';
-declare variable $G:MODELS :=  $G:SYNOPSX_DIR || 'synopsx/models/';
-declare variable $G:TEMPLATES :=  $G:SYNOPSX_DIR || 'synopsx/templates/';
-declare variable $G:PROJECTS :=  $G:SYNOPSX_DIR || 'synopsx/projects/';
-
-
+declare variable $G:_RESTXQ := $G:HOME || '_restxq/' ;
+declare variable $G:FILES := $G:HOME || 'files/' ;
+declare variable $G:MODELS :=  $G:HOME || 'models/' ;
+declare variable $G:TEMPLATES :=  $G:HOME || 'templates/' ;
+declare variable $G:WORKSPACE :=  $G:HOME || 'workspace/' ;
 
 (:~ Status: everything ok. :)
-declare variable $G:OK := '1';
+declare variable $G:OK := '1' ;
 (:~ Status: something failed. :)
-declare variable $G:FAILED := '2';
+declare variable $G:FAILED := '2' ;
 (:~ Status: user unknown. :)
-declare variable $G:USER-UNKNOWN := '4';
+declare variable $G:USER-UNKNOWN := '4' ;
 (:~ Status: user exists. :)
-declare variable $G:USER-EXISTS := '5';
+declare variable $G:USER-EXISTS := '5' ;
 
 (:~ Status and error messages. To be internationalized:)
 declare variable $G:STATUS := map {
@@ -56,4 +51,3 @@ declare variable $G:STATUS := map {
   $G:USER-UNKNOWN: 'User is unknown.',
   $G:USER-EXISTS : 'User exists.'
 };
-

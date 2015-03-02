@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <config>
+  <workspacePath>synopsx/workspace/</workspacePath>
   <projects>
     <project xml:lang="fre" default="true"> 
         <resourceName>example</resourceName>

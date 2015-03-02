@@ -21,19 +21,18 @@ module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping'
  : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  : See the GNU General Public License for more details.
  : You should have received a copy of the GNU General Public License along 
- : with SynopsX. If not, see <http://www.gnu.org/licenses/>
+ : with SynopsX. If not, see http://www.gnu.org/licenses/
  :
  :)
 
 import module namespace G = "synopsx.globals" at '../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ; 
 
+import module namespace synopsx.mappings.tei2html = 'synopsx.mappings.tei2html' at 'tei2html.xqm' ; 
 
 declare namespace html = 'http://www.w3.org/1999/xhtml' ;
 
 declare default function namespace 'synopsx.mappings.htmlWrapping' ;
-
-declare variable $synopsx.mappings.htmlWrapping:xslt := '../files/xsl/tei2html.xsl' ;
 
 (:~
  : this function wrap the content in an HTML layout
@@ -70,7 +69,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
      for $text in .//text()
        where fn:starts-with($text, '{') and fn:ends-with($text, '}')
        let $key := fn:replace($text, '\{|\}', '')
-       let $value := map:get($meta,$key)
+       let $value := map:get($meta, $key)
        return if ($key = 'content') 
          then replace node $text with pattern($queryParams, $data, $outputParams)
          else replace node $text with $value 
@@ -78,7 +77,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
 };
 
 (:~
- : This function iterates the pattern template with contents
+ : this function iterates the pattern template with contents
  :
  : @param $queryParams the query params defined in restxq
  : @param $data the result of the query
@@ -104,9 +103,30 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
         where fn:starts-with($text, '{') and fn:ends-with($text, '}')
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key) 
-        return if ($key = 'xsl') 
-          then replace node $text with $value (: TODO : options : xslt, etc. :)
+        return if ($key = 'tei') 
+          then replace node $text with render($outputParams, $value) (: TODO : options : xslt, etc. :)
           else replace node $text with $value
       )
   })
+};
+
+(:~
+ : this function dispatch the rendering based on $outpoutParams
+ :
+ : @param $value the content to render
+ : @param $outputParams the serialization params
+ : @return an html serialization
+ :
+ : @todo
+ :)
+declare function render($outputParams as map(*), $value ) as element()* {
+  let $xsl :=  map:get($outputParams, 'xsl')
+  let $xquery := map:get($outputParams, 'xquery')
+  let $options := 'option'
+  return 
+    if ($xquery) 
+    then synopsx.mappings.tei2html:entry($value, $options)
+    else if ($xsl) 
+      then xslt:transform($value, $G:FILES || 'xsl/' || $xsl)
+      else <p>rien</p>
 };

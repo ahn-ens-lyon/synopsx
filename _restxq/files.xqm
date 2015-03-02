@@ -5,7 +5,7 @@ module namespace synopsx.files = 'synopsx.files' ;
  : This module is the RESTXQ for SynopsX's installation processes
  :
  : @version 2.0 (Constantia edition)
- : @since 2014-11-10
+ : @since 2015-02-23
  : @author synopsx team
  :
  : This file is part of SynopsX.
@@ -21,17 +21,15 @@ module namespace synopsx.files = 'synopsx.files' ;
  : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  : See the GNU General Public License for more details.
  : You should have received a copy of the GNU General Public License along 
- : with SynopsX. If not, see <http://www.gnu.org/licenses/>
+ : with SynopsX. If not, see http://www.gnu.org/licenses/
  :
  :)
 
 import module namespace G = 'synopsx.globals' at '../globals.xqm' ;
 
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm' ;
-import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
-
 (:~
-: Returns a file.
+: resource function for the static files
+:
 : @param $file file or unknown path
 : @return rest response and binary file
 :)
@@ -53,9 +51,10 @@ function synopsx.files:file($file as xs:string) as item()+ {
 };
 
 (:~
- : Returns the mime-type for the specified file.
+ : this function return a mime-type for a specified file
+ :
  : @param  $name  file name
- : @return mime type
+ : @return a mime type for the specified file
  :)
 declare function synopsx.files:mime-type(
   $name  as xs:string
