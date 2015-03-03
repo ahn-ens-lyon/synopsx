@@ -131,7 +131,8 @@ declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer)
  :)
 declare function error($queryParams, $err:code, $err:description) {
   let $error := map {
-    'error-code' : $err:code,
+    'title' : 'An error occured',
+    'error-code' : fn:string($err:code),
     'error-description' : $err:description
     }
   let $data := map{

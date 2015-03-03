@@ -112,7 +112,7 @@ function home($myProject) {
     }
 }; 
 
-(: (:~
+(:~
  : this resource function is the html representation of the corpus resource
  :
  : @return an html representation of the corpus resource with a bibliographical list
@@ -177,4 +177,4 @@ function home($myProject, $myFunction, $myOtherParams) {
   }catch err:*{   
        synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
-};  :)
+};

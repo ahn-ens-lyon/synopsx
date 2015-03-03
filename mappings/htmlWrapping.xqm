@@ -41,30 +41,38 @@ declare default function namespace 'synopsx.mappings.htmlWrapping' ;
  : @param $data the result of the query
  : @param $outputParams the serialization params
  : @return an updated HTML document and instantiate pattern
- :
- : @todo modify to replace mixted content like "{quantity} éléments" and to improve composite insert points also in attribute nodes like for url composition @href={project}/{page}/{value}... Create a function to handle this
+ 
  : @todo treat in the same loop @* and text() ?
  @todo add handling of outputParams (for example {class} attribute or call to an xslt)
  :)
+
 declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)){
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data,'content')
   let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
   let $wrap := fn:doc($layout)
   return $wrap update (
-    for $text in .//*:body/@*
-      where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-      let $key := fn:replace($text, '\{|\}', '')
-      let $value := map:get($meta, $key)
-      return replace value of node $text with fn:string($value),
+    for $text in .//@*
+      return replace value of node $text with inject($text, $queryParams, $meta, $outputParams),
      for $text in .//text()
        where fn:starts-with($text, '{') and fn:ends-with($text, '}')
        let $key := fn:replace($text, '\{|\}', '')
-       let $value := map:get($meta, $key)
        return if ($key = 'content') 
          then replace node $text with pattern($queryParams, $data, $outputParams)
-         else replace node $text with $value 
+         else replace node $text with inject($text, $queryParams, $meta, $outputParams)
      )
+};
+
+declare function inject($text as xs:string, $queryParams as map(*), $meta as map(*), $outputParams as map(*)){
+  let $input as map(*)*:= ($queryParams,$meta,$outputParams)(:sequence of map:)
+  let $map := map:merge($input)(:create a unique map:)
+  let $tokens := fn:tokenize($text, '\{|\}')
+  let $new := fn:string-join( 
+    for $token in $tokens
+      let $value := map:get($map, $token)
+        return if(fn:empty($value)) then $token
+        else $value)
+        return $new
 };
 
 (:~
@@ -86,17 +94,14 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
   return map:for-each($contents, function($key, $content) {
     fn:doc($pattern) update (
       for $text in .//@*
-        where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-        let $key := fn:replace($text, '\{|\}', '')
-        let $value := map:get($content, $key) 
-        return replace value of node $text with fn:string($value) ,
+        return replace value of node $text with inject($text, $queryParams, $content, $outputParams),
       for $text in .//text()
         where fn:starts-with($text, '{') and fn:ends-with($text, '}')
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key) 
-        return if ($key = 'tei') 
+        return if ($key = 'content') 
           then replace node $text with render($outputParams, $value) (: TODO : options : xslt, etc. :)
-          else replace node $text with $value
+          else replace node $text with inject($text, $queryParams, $content, $outputParams)
       )
   })
 };
@@ -119,5 +124,5 @@ declare function render($outputParams as map(*), $value ) as element()* {
     then synopsx.mappings.tei2html:entry($value, $options)
     else if ($xsl) 
       then xslt:transform($value, $G:FILES || 'xsl/' || $xsl)
-      else <p>rien</p>
+      else ()
 };
