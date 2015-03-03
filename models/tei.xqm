@@ -41,7 +41,7 @@ declare function synopsx.models.tei:getTextsList($queryParams) {
     'author' : synopsx.models.tei:getAuthors($texts),
     'copyright' : synopsx.models.tei:getCopyright($texts),
     'description' : synopsx.models.tei:getDescription($texts, $lang),
-    'keywords' : synopsx.models.tei:getKeywords($texts, $lang)
+    'subject' : synopsx.models.tei:getKeywords($texts, $lang)
     }
   let $content as map(*) := map:merge(
     for $item in $texts/tei:teiHeader
@@ -148,7 +148,7 @@ declare function synopsx.models.tei:getBibl($item as element()) {
     'title' : synopsx.models.tei:getBiblTitles($item, $lang),
     'date' : synopsx.models.tei:getBiblDate($item, $dateFormat),
     'author' : synopsx.models.tei:getBiblAuthors($item),
-    'tei' : $item
+    'content' : $item
   }
 };
 
