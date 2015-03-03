@@ -44,8 +44,10 @@ declare function synopsx.models.tei:getTextsList($queryParams) {
     'subject' : synopsx.models.tei:getKeywords($texts, $lang)
     }
   let $content as map(*) := map:merge(
-    for $item in $texts/tei:teiHeader
-    return  map:entry( fn:generate-id($item),synopsx.models.tei:getHeader($item))
+    for $item in $texts
+    let $corpusId := string($item/@xml:id)
+    let $header as map(*) := synopsx.models.tei:getHeader($item)
+    return  map:entry( fn:generate-id($item), map:put($header, 'textId', $corpusId) )
     )
   return  map{
     'meta'    : $meta,
@@ -57,10 +59,10 @@ declare function synopsx.models.tei:getTextsList($queryParams) {
  : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function synopsx.models.tei:getCorpusList($queryParams) {
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus/tei:teiHeader
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus
   let $lang := 'la'
   let $meta := map{
-    'title' : 'Liste de corpus', 
+    'title' : 'Liste des corpus', 
     'author' : synopsx.models.tei:getAuthors($texts),
     'copyright'  : synopsx.models.tei:getCopyright($texts),
     'description' : synopsx.models.tei:getDescription($texts, $lang),
@@ -68,7 +70,9 @@ declare function synopsx.models.tei:getCorpusList($queryParams) {
     }
   let $content as map(*) := map:merge(
     for $item in $texts
-    return  map:entry( fn:generate-id($item), synopsx.models.tei:getHeader($item) )
+    let $corpusId := string($item/@xml:id)
+    let $header as map(*) := synopsx.models.tei:getHeader($item)
+    return  map:entry( fn:generate-id($item), map:put($header, 'corpusId', $corpusId) )
     )
   return  map{
     'meta'    : $meta,
@@ -126,11 +130,10 @@ declare function synopsx.models.tei:getHeader($item as element()) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   return map {
-    'title' : synopsx.models.tei:getTitles($item, $lang),
-    'date' : synopsx.models.tei:getDate($item, $dateFormat),
-    'author' : synopsx.models.tei:getAuthors($item),
-    'abstract' : synopsx.models.tei:getAbstract($item, $lang)
-    (:, 'teiAbstract' : getAbstract($item, $lang) :)
+    'title' : synopsx.models.tei:getTitles($item/tei:teiHeader, $lang),
+    'date' : synopsx.models.tei:getDate($item/tei:teiHeader, $dateFormat),
+    'author' : synopsx.models.tei:getAuthors($item/tei:teiHeader),
+    'abstract' : synopsx.models.tei:getAbstract($item/tei:teiHeader, $lang)
   }
 };
 
@@ -182,8 +185,7 @@ declare function synopsx.models.tei:getResp($item as element()) {
 declare function synopsx.models.tei:getTitles($content as element()*, $lang as xs:string){
   fn:string-join(
     for $title in $content//tei:titleStmt//tei:title
-    return fn:normalize-space($title(: (:[fn:starts-with(@xml:lang, $lang)]:) :)),
-    ', ')
+    return fn:string-join($title(: (:[fn:starts-with(@xml:lang, $lang)]:) :)), ', ')
 };
 
 (:~

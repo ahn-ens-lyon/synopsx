@@ -151,7 +151,7 @@ function home($myProject, $myFunction) {
  : @return an html representation of the corpus resource with a bibliographical list
  : the HTML serialization also shows a bibliographical list
  :)
-declare 
+(: declare 
   %restxq:path('/{$myProject}/{$myFunction}/{$myOtherParams = .+}')
   %rest:produces('text/html')
   %output:method("html")
@@ -177,4 +177,4 @@ function home($myProject, $myFunction, $myOtherParams) {
   }catch err:*{   
        synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
-};
+}; :)
