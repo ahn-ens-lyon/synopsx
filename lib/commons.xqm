@@ -86,7 +86,7 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
     then fn:QName($context/@uri, $context/@name)
     else if ($context/@uri = 'synopsx.models.' || $modelName) 
       then fn:QName($context/@uri, $context/@name)
-       else fn:QName('synopsx.models.' || $modelName, 'getTextsList') (: give default or error :)
+       else ''(:  fn:QName('synopsx.models.' || $modelName, 'getTextsList') (: give default or error :) :)
 };
 
 (:~
@@ -129,11 +129,13 @@ declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer)
  : @param $err:description the error description
  : @return send a map with the errors messages to the wrapper
  :)
-declare function error($queryParams, $err:code, $err:description) {
+declare function error($queryParams, $err:code, $err:description, $err:module, $err:line-number, $err:column-number, $err:additional) {
   let $error := map {
-    'title' : 'An error occured',
-    'error-code' : fn:string($err:code),
-    'error-description' : $err:description
+    'title' : 'An error occured :(',
+    'error code' : fn:string($err:code),
+    'error description' : fn:string($err:description),
+    'error module' : fn:string($err:module || ', ' || $err:line-number || ':' || $err:column-number),
+    'error stack trace' : fn:string($err:additional)
     }
   let $data := map{
     'meta' : map:merge(($error, $queryParams)),

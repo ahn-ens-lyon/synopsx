@@ -96,8 +96,8 @@ function home() {
 function home($myProject) {
   let $queryParams := map {
     'project' : $myProject,
-    'dbName' :  $myProject
-    }
+    'dbName' :  $myProject,
+    'function' :  'home'    }
   return try {
     let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
     let $data := fn:function-lookup($function, 1)($queryParams)
@@ -109,7 +109,7 @@ function home($myProject) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
   }catch err:*{   
-       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
+       synopsx.lib.commons:error($queryParams, $err:code, $err:description, $err:module, $err:line-number, $err:column-number, $err:additional)
     }
 }; 
 
@@ -142,7 +142,7 @@ function home($myProject, $myFunction) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
   }catch err:*{   
-      synopsx.lib.commons:error($queryParams, $err:code, $err:description)
+      synopsx.lib.commons:error($queryParams, $err:code, $err:description, $err:module, $err:line-number, $err:column-number, $err:additional)
     }
 }; 
 
@@ -176,6 +176,6 @@ function home($myProject, $myFunction, $myOtherParams) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
   }catch err:*{   
-       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
+       synopsx.lib.commons:error($queryParams, $err:code, $err:description, $err:module, $err:line-number, $err:column-number, $err:additional)
     }
 }; 
