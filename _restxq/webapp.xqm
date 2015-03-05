@@ -109,7 +109,7 @@ function home($myProject) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
   }catch err:*{   
-       synopsx.lib.commons:error($queryParams, $err:code, $err:description, $err:module, $err:line-number, $err:column-number, $err:additional)
+       synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
     }
 }; 
 
@@ -142,7 +142,7 @@ function home($myProject, $myFunction) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
   }catch err:*{   
-      synopsx.lib.commons:error($queryParams, $err:code, $err:description, $err:module, $err:line-number, $err:column-number, $err:additional)
+      synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
     }
 }; 
 
@@ -176,6 +176,6 @@ function home($myProject, $myFunction, $myOtherParams) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
   }catch err:*{   
-       synopsx.lib.commons:error($queryParams, $err:code, $err:description, $err:module, $err:line-number, $err:column-number, $err:additional)
+       synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
     }
 }; 
