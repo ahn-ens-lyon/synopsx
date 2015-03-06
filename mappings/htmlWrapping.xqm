@@ -99,7 +99,7 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
         where fn:starts-with($text, '{') and fn:ends-with($text, '}')
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key) 
-        return if ($key = 'content') 
+        return if ($key = 'tei') 
           then replace node $text with render($outputParams, $value) (: TODO : options : xslt, etc. :)
           else replace node $text with inject($text, $queryParams, $content, $outputParams)
       )

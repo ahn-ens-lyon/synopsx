@@ -81,13 +81,14 @@ function home() {
    <rest:forward>/{$project}/home</rest:forward>
 };
 
+
 (:~
  : this resource function is the html representation of the corpus resource
  :
  : @return an html representation of the corpus resource with a bibliographical list
  : the HTML serialization also shows a bibliographical list
  :)
-declare 
+ declare 
   %restxq:path('/{$myProject}')
   %rest:produces('text/html')
   %output:method("html")
@@ -95,11 +96,11 @@ declare
 function home($myProject) {
   let $queryParams := map {
     'project' : $myProject,
-    'dbName' :  $myProject
-    }
+    'dbName' :  $myProject,
+    'function' :  'home'    }
   return try {
-    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
-    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
@@ -108,7 +109,7 @@ function home($myProject) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
   }catch err:*{   
-       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
+       synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
     }
 }; 
 
@@ -131,8 +132,8 @@ function home($myProject, $myFunction) {
     'function' : $myFunction
     }
   return try {
-    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
-    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
@@ -141,7 +142,7 @@ function home($myProject, $myFunction) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
   }catch err:*{   
-      synopsx.lib.commons:error($queryParams, $err:code, $err:description)
+      synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
     }
 }; 
 
@@ -151,7 +152,7 @@ function home($myProject, $myFunction) {
  : @return an html representation of the corpus resource with a bibliographical list
  : the HTML serialization also shows a bibliographical list
  :)
-(: declare 
+ declare 
   %restxq:path('/{$myProject}/{$myFunction}/{$myOtherParams = .+}')
   %rest:produces('text/html')
   %output:method("html")
@@ -165,8 +166,8 @@ function home($myProject, $myFunction, $myOtherParams) {
     'otherParams' : $myOtherParams
     }
   return try {
-    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
-    let $data := fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
@@ -175,6 +176,6 @@ function home($myProject, $myFunction, $myOtherParams) {
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
   }catch err:*{   
-       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
+       synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
     }
-}; :)
+}; 

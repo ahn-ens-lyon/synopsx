@@ -79,14 +79,15 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
 declare function getModelFunction($queryParams as map(*)) as xs:QName {
   let $projectName :=  map:get($queryParams, 'project')
   let $modelName := map:get($queryParams, 'model')
-  let $functionName := map:get($queryParams, 'function') 
+  let $functionName := map:get($queryParams, 'function')
   let $uri := $projectName || '.models.' || $modelName
-  let $context := inspect:context()//function[@name = $functionName]
-  return if ($context/@uri = $uri) 
-    then fn:QName($context/@uri, $context/@name)
-    else if ($context/@uri = 'synopsx.models.' || $modelName) 
-      then fn:QName($context/@uri, $context/@name)
-       else fn:QName('synopsx.models.' || $modelName, 'getTextsList') (: give default or error :)
+  let $context := fn:trace(inspect:context()/function)
+  let $function := inspect:context()//function[@name = $functionName]
+  return if ($function/@uri = $uri) 
+    then fn:QName($function/@uri, $function/@name)
+    else if ($function/@uri = 'synopsx.models.' || $modelName) 
+      then fn:QName($function/@uri, $function/@name)
+      else   fn:QName('synopsx.models.mixed', 'notFound') (: give default or error :)
 };
 
 (:~
@@ -126,14 +127,14 @@ declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer)
  :
  : @param $queryParams the query params
  : @param $err:code the error code
- : @param $err:description the error description
+ : @param $err:additional the error description, module, line and column numbers, error message
  : @return send a map with the errors messages to the wrapper
  :)
-declare function error($queryParams, $err:code, $err:description) {
+declare function error($queryParams, $err:code, $err:additional) {
   let $error := map {
-    'title' : 'An error occured',
-    'error-code' : fn:string($err:code),
-    'error-description' : $err:description
+    'title' : 'An error occured :(',
+    'error code' : fn:string($err:code),
+    'error stack trace' : fn:string($err:additional)
     }
   let $data := map{
     'meta' : map:merge(($error, $queryParams)),
