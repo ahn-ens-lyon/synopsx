@@ -107,13 +107,104 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
 };
 
 (:~
+ : this function wrap the content in an HTML layout
+ :
+ : @param $queryParams the query params defined in restxq
+ : @param $data the result of the query
+ : @param $outputParams the serialization params
+ : @return an updated HTML document and instantiate pattern
+ :
+ :)
+declare function wrapperNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element() {
+  let $meta := map:get($data, 'meta')
+  let $content := map:get($data, 'content')
+  let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
+  let $wrap := fn:doc($layout)/*
+  let $regex := '\{(.*?)\}'
+  return
+    $wrap update (
+      for $text in .//@*
+        where fn:matches($text, $regex)
+        let $key := fn:replace($text, '\{|\}', '')
+        let $value := map:get($meta, $key) 
+      return replace value of node $text with fn:string($value) ,
+      for $text in .//text()
+        where fn:matches($text, $regex)
+        let $key := fn:replace($text, '\{|\}', '')
+        let $value := map:get($meta, $key)
+        return if ($key = 'content') 
+          then replace node $text with patternNew($queryParams, $data, $outputParams)
+          else if ($value instance of node()* and $value != empty) 
+           then replace node $text with render($outputParams, $value)
+           else replace node $text with inject($value, $meta)
+      )
+};
+
+(:~
+ : this function iterates the pattern template with contents
+ :
+ : @param $queryParams the query params defined in restxq
+ : @param $data the result of the query to dispacth
+ : @param $outputParams the serialization params
+ : @return instantiate the pattern with $data
+ :
+ :)
+declare function patternNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
+  let $sorting := map:get($queryParams, 'sorting')
+  let $order := map:get($queryParams, 'order')
+  let $meta := map:get($data, 'meta')
+  let $contents := map:get($data, 'content')
+  let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
+  for $content in $contents
+  order by (: @see http://jaketrent.com/post/xquery-dynamic-order/ :)
+    if ($order = 'descending') then map:get($content, $sorting) else () ascending,
+    if ($order = 'descending') then () else map:get($content, $sorting) descending
+  let $regex := '\{(.*?)\}'
+  return
+    fn:doc($pattern)/* update (
+      for $text in .//@*
+        where fn:matches($text, $regex)
+        let $key := fn:replace($text, '\{|\}', '')
+        let $value := map:get($content, $key) 
+      return replace value of node $text with fn:string($value) ,
+      for $text in .//text()
+        where fn:matches($text, $regex)
+        let $key := fn:replace($text, '\{|\}', '')
+        let $value := map:get($content, $key)
+        return if ($value instance of node()* and $value != empty) 
+          then replace node $text with render($outputParams, $value)
+          else replace node $text with inject($text, $content)
+      )
+};
+
+(:~
+ : this function update the text with input content
+ :
+ : @param $text the text node to process
+ : @param $input the content to dispatch
+ : @return an updated text
+ :
+ :)
+declare function inject($text as xs:string, $input as map(*)) as xs:string {
+  let $tokens := fn:tokenize($text, '\{|\}')
+  let $updated := fn:string-join( 
+    for $token in $tokens
+    let $value := map:get($input, $token)
+    return if (fn:empty($value)) 
+      then $token
+      else $value
+    )
+  return $updated
+};
+
+(:~
  : this function dispatch the rendering based on $outpoutParams
  :
  : @param $value the content to render
  : @param $outputParams the serialization params
  : @return an html serialization
  :
- : @todo
+ : @todo check the xslt with an xslt 1.0
  :)
 declare function render($outputParams as map(*), $value ) as element()* {
   let $xsl :=  map:get($outputParams, 'xsl')
@@ -124,5 +215,5 @@ declare function render($outputParams as map(*), $value ) as element()* {
     then synopsx.mappings.tei2html:entry($value, $options)
     else if ($xsl) 
       then xslt:transform($value, $G:FILES || 'xsl/' || $xsl)
-      else ()
+      else <p>rien</p>
 };
