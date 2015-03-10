@@ -39,8 +39,39 @@ import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWr
 declare default function namespace 'example.webapp' ;
 
 
-declare variable $example.webapp:project := 'example';
-declare variable $example.webapp:db := synopsx.lib.commons:getProjectDB($example.webapp:project);
+declare variable $example.webapp:project := 'example' ;
+declare variable $example.webapp:db := synopsx.lib.commons:getProjectDB($example.webapp:project) ;
+
+(:~
+ : resource function to test the new htmlwrapping
+ :
+ : @return a collection of blog's posts
+ :)
+declare 
+  %restxq:path('/test/posts')
+  %rest:produces('text/html')
+  %output:method('html')
+  %output:html-version('5.0')
+function blogPosts() {
+  let $queryParams := map {
+    'project' : $example.webapp:project,
+    'dbName' :  $example.webapp:db,
+    'model' : 'tei' ,
+    'function' : 'getTextsListBis',
+    'sorting' : 'title',
+    'order' : 'ascending'
+    }
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'defaultLayout.xhtml',
+    'pattern' : 'inc_defaultList.xhtml'
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  };
+
 (:~
  : this resource function redirect to /home
  :
