@@ -127,16 +127,16 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($meta, $key) 
-      return replace value of node $text with fn:string($value) ,
+      return replace value of node $text with fn:string($value),
       for $text in .//text()
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($meta, $key)
         return if ($key = 'content') 
           then replace node $text with patternNew($queryParams, $data, $outputParams)
-          else if ($value instance of node()* and $value != empty) 
+          else if ($value instance of node()* and $value) 
            then replace node $text with render($outputParams, $value)
-           else replace node $text with inject($value, $meta)
+           else replace node $text with inject($text, $meta)
       )
 };
 
@@ -148,9 +148,12 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
  : @param $outputParams the serialization params
  : @return instantiate the pattern with $data
  :
+ : @bug default for sorting
  :)
 declare function patternNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
-  let $sorting := map:get($queryParams, 'sorting')
+  let $sorting := if (map:get($queryParams, 'sorting')) 
+    then map:get($queryParams, 'sorting') 
+    else ''
   let $order := map:get($queryParams, 'order')
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data, 'content')
@@ -171,7 +174,7 @@ declare function patternNew($queryParams as map(*), $data as map(*), $outputPara
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key)
-        return if ($value instance of node()* and $value != empty) 
+        return if ($value instance of node()* and $value) 
           then replace node $text with render($outputParams, $value)
           else replace node $text with inject($text, $content)
       )
@@ -206,7 +209,7 @@ declare function inject($text as xs:string, $input as map(*)) as xs:string {
  :
  : @todo check the xslt with an xslt 1.0
  :)
-declare function render($outputParams as map(*), $value ) as element()* {
+declare function render($outputParams as map(*), $value as node()* ) as element()* {
   let $xsl :=  map:get($outputParams, 'xsl')
   let $xquery := map:get($outputParams, 'xquery')
   let $options := 'option'
