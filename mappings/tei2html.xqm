@@ -31,7 +31,7 @@ declare default function namespace 'synopsx.mappings.tei2html' ;
 (:~
  : this function 
  :)
-declare function entry($node as node()*, $options as xs:string) as item() {
+declare function entry($node as node()+, $options as xs:string) as item() {
   <div>{dispatch($node, $options)}</div>
 };
 
@@ -176,7 +176,7 @@ declare function biblItem($node, $options) {
 
 (:~
  : This function treats tei:analytic
- : @toto group author and editor to treat distinctly
+ : @todo group author and editor to treat distinctly
  :)
 declare function getAnalytic($node, $options) {
   getResponsabilities($node, $options), 
@@ -196,8 +196,8 @@ declare function getMonogr($node, $options) {
 
 (:~
  : This function get responsabilities
- : @toto group authors and editors to treat them distinctly
- : @toto "éd." vs "éds."
+ : @todo group authors and editors to treat them distinctly
+ : @todo "éd." vs "éds."
  :)
 declare function getResponsabilities($node, $options) {
   let $nbResponsabilities := fn:count($node/tei:author | $node/tei:editor)

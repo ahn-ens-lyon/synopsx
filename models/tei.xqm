@@ -376,7 +376,7 @@ declare function getName($named as element()*){
  : this function built a quantity message
  : @param $content texts to process
  : @return concatenate quantity and a message
- : @toto to internationalize
+ : @todo to internationalize
  :)
 declare function getQuantity($content as element()*, $unit as xs:string){
   fn:normalize-space(
