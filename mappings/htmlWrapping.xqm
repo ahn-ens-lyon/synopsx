@@ -148,9 +148,12 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
  : @param $outputParams the serialization params
  : @return instantiate the pattern with $data
  :
+ : @bug default for sorting
  :)
 declare function patternNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
-  let $sorting := map:get($queryParams, 'sorting')
+  let $sorting := if (map:get($queryParams, 'sorting')) 
+    then map:get($queryParams, 'sorting') 
+    else ''
   let $order := map:get($queryParams, 'order')
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data, 'content')
