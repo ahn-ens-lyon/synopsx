@@ -25,10 +25,11 @@ module namespace synopsx.models.tei = 'synopsx.models.tei' ;
  :
  :)
 
-declare default function namespace "synopsx.models.tei";
-declare namespace lib.commons = 'synopsx.lib.commons' ;
+import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
+
+declare default function namespace "synopsx.models.tei";
 
 (:~
  : this function get tei doc by id
@@ -56,10 +57,6 @@ declare function getXmlTeiById($queryParams){
     }
 }; 
 
-
-
-
-
 (:~
  : this function creates a map of two maps : one for metadata, one for content data
  :)
@@ -79,6 +76,37 @@ declare function getTextsList($queryParams) {
     let $header as map(*) := getHeader($item)
     return  map:entry( fn:generate-id($item), map:put($header, 'textId', $corpusId) )
     )
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function returns a sequence of map for meta and content 
+ : !! the result structure has changed to allow sorting early in mapping
+ : 
+ : @rmq for testing with new htmlWrapping
+ :)
+declare function getTextsListBis($queryParams as map(*)) as map(*) {
+  let $posts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $meta := map{
+    'title' : 'Teste pour htmlWrappingNew', 
+    'quantity' : getQuantity($posts, ' texte'),
+    'author' : getAuthors($posts),
+    'copyright'  : getCopyright($posts),
+    'description' : getDescription($posts, $lang),
+    'keywords' : getKeywords($posts, $lang)
+    }
+  let $content := for $item in $posts return map {
+    'title' : getTitles($item, $lang),
+    'date' : getDate($item, $dateFormat),
+    'author' : getAuthors($item),
+    'abstract' : getAbstract($item, $lang),
+    'tei' : $item
+  }
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -341,6 +369,20 @@ declare function getName($named as element()*){
   fn:normalize-space(
     for $person in $named/tei:persName 
     return ($person/tei:forename || ' ' || $person/tei:surname)
+    )
+};
+
+(:~
+ : this function built a quantity message
+ : @param $content texts to process
+ : @return concatenate quantity and a message
+ : @toto to internationalize
+ :)
+declare function getQuantity($content as element()*, $unit as xs:string){
+  fn:normalize-space(
+    if (fn:count($content) > 1) 
+      then fn:count($content) || ' ' || $unit || 's disponibles'
+      else fn:count($content) || $unit || ' disponible'
     )
 };
 

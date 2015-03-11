@@ -1,11 +1,16 @@
-<!--
-  TODO : revenir à un système d'attributs @data, par exemple @data-content et @data-attribute pour une écriture plus propre
-  réécrire la fontion synopsx.mappings.htmlWrapping:simplePattern en fonction de ce changement
- -->
-<section>
+<article class="list" xmlns="http://www.w3.org/1999/xhtml">
   <header>
-    <h3 class="type">{title}</h3>
+    <a href="{url}">
+      <h1>{title}</h1>
+      <h2>{subtitle}</h2>
+    </a>
   </header>
-  {content}
-  <hr/>
-</section>
+  <section class="abstract">{abstract}</section>
+  <section class="meta">
+    <ul class="date">{date}</ul>
+    <ul class="author">{author}</ul>
+    <ul class="category">Categorie</ul>
+    <ul class="keywords">mot-clef1, mot-clef2</ul>
+    <ul class="url"><a href="{url}">{url}</a></ul>
+  </section>
+</article>
