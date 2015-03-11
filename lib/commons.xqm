@@ -81,7 +81,7 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
   let $modelName := map:get($queryParams, 'model')
   let $functionName := map:get($queryParams, 'function')
   let $uri := $projectName || '.models.' || $modelName
-  let $context := fn:trace(inspect:context()/function)
+  let $context := inspect:context()/function
   let $function := inspect:context()//function[@name = $functionName]
   return if ($function/@uri = $uri) 
     then fn:QName($function/@uri, $function/@name)
@@ -128,7 +128,7 @@ declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer)
  : @param $queryParams the query params
  : @param $err:code the error code
  : @param $err:additional the error description, module, line and column numbers, error message
- : @return send a map with the errors messages to the wrapper
+ : @return send a map with the errors messages to the wrapperNew
  :)
 declare function error($queryParams, $err:code, $err:additional) {
   let $error := map {
@@ -137,8 +137,8 @@ declare function error($queryParams, $err:code, $err:additional) {
     'error stack trace' : fn:string($err:additional)
     }
   let $data := map{
-    'meta' : map:merge(($error, $queryParams)),
-    'content' : map{}
+    'meta' : $error,
+    'content' : $queryParams
     }
   let $outputParams := map {
     'lang' : 'fr',

@@ -31,51 +31,51 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace "synopsx.models.tei";
 
+
+
+
+
 (:~
- : this function get tei doc by id
- : @param $id documents id to retrieve
- : @return a plain xml-tei document
+ : this function returns a sequence of map for meta and content 
+ : !! the result structure has changed to allow sorting early in mapping
+ : 
+ : @rmq for testing with new htmlWrapping
  :)
-declare function getXmlTeiById($queryParams){
-  let $itemId := map:get($queryParams, 'textId')
-  let $text := db:open(map:get($queryParams, 'dbName'))//tei:*[@xml:id=$itemId]
-  let $lang := 'fr'
+declare function getTextsList($queryParams as map(*)) as map(*) {
+  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
   let $meta := map{
-    'title' : $text/tei:teiHeader//tei:titleStmt/tei:title, 
-    'author' : getAuthors($text),
-    'copyright' : getCopyright($text),
-    'description' : getDescription($text, $lang),
-    'subject' : getKeywords($text, $lang)
+    'title' : 'Teste pour htmlWrappingNew', 
+    'quantity' : getQuantity($texts, ' texte'),
+    'author' : getAuthors($texts),
+    'copyright'  : getCopyright($texts),
+     'description' : getAbstract($texts),
+    'keywords' : getKeywords($texts)
     }
-  let $content as map(*) := map:merge(
-    for $tei as map(*)* in (getFront($text, $lang), getBody($text, $lang))
-    return  map:entry( fn:generate-id($text), map:put($tei, 'textId', $itemId ))
-    )
+  let $content := for $text in $texts return getHeader($text)
   return  map{
     'meta'    : $meta,
     'content' : $content
     }
-}; 
+};
+
 
 (:~
- : this function creates a map of two maps : one for metadata, one for content data
+ : this function returns a sequence of map for meta and content 
+ : !! the result structure has changed to allow sorting early in mapping
+ : 
+ : @rmq for testing with new htmlWrapping
  :)
-declare function getTextsList($queryParams) {
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:TEI
-  let $lang := 'fr'
+declare function getCorpusList($queryParams as map(*)) as map(*) {
+  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:teiCorpus
   let $meta := map{
-    'title' : 'Liste des textes', 
+    'title' : 'Teste pour htmlWrappingNew', 
+    'quantity' : getQuantity($texts, ' texte'),
     'author' : getAuthors($texts),
-    'copyright' : getCopyright($texts),
-    'description' : getDescription($texts, $lang),
-    'subject' : getKeywords($texts, $lang)
+    'copyright'  : getCopyright($texts),
+    'description' : getAbstract($texts),
+    'keywords' : getKeywords($texts)
     }
-  let $content as map(*) := map:merge(
-    for $item in $texts
-    let $corpusId := fn:string($item/@xml:id)
-    let $header as map(*) := getHeader($item)
-    return  map:entry( fn:generate-id($item), map:put($header, 'textId', $corpusId) )
-    )
+  let $content := for $text in $texts return getHeader($text)
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -88,70 +88,37 @@ declare function getTextsList($queryParams) {
  : 
  : @rmq for testing with new htmlWrapping
  :)
-declare function getTextsListBis($queryParams as map(*)) as map(*) {
-  let $posts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
-  let $lang := 'fr'
-  let $dateFormat := 'jjmmaaa'
+declare function getTextById($queryParams as map(*)) as map(*) {
+  let $text := synopsx.lib.commons:getDb($queryParams)//tei:TEI[@xml:id=map:get($queryParams, 'id')]
+
+
   let $meta := map{
     'title' : 'Teste pour htmlWrappingNew', 
-    'quantity' : getQuantity($posts, ' texte'),
-    'author' : getAuthors($posts),
-    'copyright'  : getCopyright($posts),
-    'description' : getDescription($posts, $lang),
-    'keywords' : getKeywords($posts, $lang)
+    'quantity' : getQuantity($text, ' texte'),
+    'author' : getAuthors($text),
+    'copyright'  : getCopyright($text),
+    'description' : getAbstract($text),
+    'keywords' : getKeywords($text)
     }
-  let $content := for $item in $posts return map {
-    'title' : getTitles($item, $lang),
-    'date' : getDate($item, $dateFormat),
-    'author' : getAuthors($item),
-    'abstract' : getAbstract($item, $lang),
-    'tei' : $item
-  }
+  let $content :=  getText($text)
   return  map{
     'meta'    : $meta,
     'content' : $content
     }
 };
 
-(:~
- : this function creates a map of two maps : one for metadata, one for content data
- :)
-declare function getCorpusList($queryParams) {
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus
-  let $lang := 'la'
-  let $meta := map{
-    'title' : 'Liste des corpus', 
-    'author' : getAuthors($texts),
-    'copyright'  : getCopyright($texts),
-    'description' : getDescription($texts, $lang),
-    'subject' : getKeywords($texts, $lang)
-    }
-  let $content as map(*) := map:merge(
-    for $item in $texts
-    let $corpusId := fn:string($item/@xml:id)
-    let $header as map(*) := getHeader($item)
-    return  map:entry( fn:generate-id($item), map:put($header, 'corpusId', $corpusId) )
-    )
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
+
 
 (:~
  : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getBiblList($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:bibl
-  let $lang := 'fr'
+
   let $meta := map{
     'title' : 'Bibliographie'
     }
-  let $content as map(*) := map:merge(
-    for $item in $texts
-    order by fn:number(getBiblDate($item, $lang))
-    return  map:entry( fn:generate-id($item), getBibl($item) )
-    )
+  let $content := for $item in $texts return getBibl($item)
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -163,14 +130,11 @@ declare function getBiblList($queryParams) {
  :)
 declare function getRespList($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:respStmt
-  let $lang := 'fr'
+
   let $meta := map{
     'title' : 'Responsables de l édition'
     }
-  let $content as map(*) := map:merge(
-    for $item in $texts
-    return  map:entry( fn:generate-id($item), getResp($item) )
-    )
+  let $content := for $item in $texts return getResp($item)
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -184,14 +148,12 @@ declare function getRespList($queryParams) {
  : @return a map with content for each item
  : @rmq subdivised with let to construct complex queries (EC2014-11-10)
  :)
-declare function getHeader($item as element()) {
-  let $lang := 'fr'
-  let $dateFormat := 'jjmmaaa'
-  return map {
-    'title' : getTitles($item/tei:teiHeader, $lang),
-    'date' : getDate($item/tei:teiHeader, $dateFormat),
+declare function getText($item as element()) {
+  map {
+    'title' : getTitles($item/tei:teiHeader),
+    'date' : getDate($item/tei:teiHeader),
     'author' : getAuthors($item/tei:teiHeader),
-    'tei' : getAbstract($item/tei:teiHeader, $lang)
+    'tei' : $item
   }
 };
 
@@ -202,12 +164,28 @@ declare function getHeader($item as element()) {
  : @return a map with content for each item
  : @rmq subdivised with let to construct complex queries (EC2014-11-10)
  :)
+declare function getHeader($item as element()) {
+   map {
+    'title' : getTitles($item/tei:teiHeader),
+    'date' : getDate($item/tei:teiHeader),
+    'author' : getAuthors($item/tei:teiHeader),
+    'tei' : getAbstract($item/tei:teiHeader)
+  }
+};
+
+
+
+(:~
+ : this function creates a map for a corpus item with teiHeader 
+ :
+ : @param $item a corpus item
+ : @return a map with content for each item
+ : @rmq subdivised with let to construct complex queries (EC2014-11-10)
+ :)
 declare function getBibl($item as element()) {
-  let $lang := 'fr'
-  let $dateFormat := 'jjmmaaa'
-  return map {
-    'title' : getBiblTitles($item, $lang),
-    'date' : getBiblDate($item, $dateFormat),
+  map {
+    'title' : getBiblTitles($item),
+    'date' : getBiblDate($item),
     'author' : getBiblAuthors($item),
     'tei' : $item
   }
@@ -221,8 +199,7 @@ declare function getBibl($item as element()) {
  : @rmq subdivised with let to construct complex queries (EC2014-11-10)
  :)
 declare function getResp($item as element()) {
-  let $lang := 'fr'
-  return map {
+  map {
     'name' : getName($item),
     'resp' : $item//tei:resp
   }
@@ -240,10 +217,10 @@ declare function getResp($item as element()) {
  : @param $lang iso langcode starts
  : @return a string of comma separated titles
  :)
-declare function getTitles($content as element()*, $lang as xs:string){
+declare function getTitles($content as element()*){
   fn:string-join(
     for $title in $content//tei:titleStmt//tei:title
-    return fn:string-join($title(: (:[fn:starts-with(@xml:lang, $lang)]:) :)), ', ')
+    return fn:string-join($title), ', ')
 };
 
 (:~
@@ -252,10 +229,10 @@ declare function getTitles($content as element()*, $lang as xs:string){
  : @param $lang iso langcode starts
  : @return a string of comma separated titles
  :)
-declare function getBiblTitles($content as element()*, $lang as xs:string){
+declare function getBiblTitles($content as element()*){
   fn:string-join(
     for $title in $content//tei:title
-    return fn:normalize-space($title(: (:[fn:starts-with(@xml:lang, $lang)]:) :)),
+    return fn:normalize-space($title),
     ', ')
 };
 
@@ -264,8 +241,11 @@ declare function getBiblTitles($content as element()*, $lang as xs:string){
  : @param $content texts to process
  : @return a tei abstract
  :)
-declare function getAbstract($content as element()*, $lang as xs:string){
-  $content//tei:projectDesc
+declare function getAbstract($content as element()*){
+   fn:string-join(
+    for $abstract in $content//tei:projectDesc
+    return fn:normalize-space($abstract),
+    ' ')
 };
 
 (:~
@@ -315,7 +295,7 @@ declare function getCopyright($content){
  : @return a date string in the specified format
  : @todo formats
  :)
-declare function getDate($content as element()*, $dateFormat as xs:string){
+declare function getDate($content as element()*){
   fn:normalize-space(
     $content//tei:publicationStmt/tei:date
   )
@@ -328,24 +308,13 @@ declare function getDate($content as element()*, $dateFormat as xs:string){
  : @return a date string in the specified format
  : @todo formats
  :)
-declare function getBiblDate($content as element()*, $dateFormat as xs:string){
+declare function getBiblDate($content as element()*){
   fn:normalize-space(
     $content//tei:imprint/tei:date
   )
 };
 
-(:~
- : this function get description
- : @param $content texts to process
- : @param $lang iso langcode starts
- : @return a comma separated list of 90 first caracters of div[@type='abstract']
- :)
-declare function getDescription($content as element()*, $lang as xs:string){
-  fn:string-join(
-    for $abstract in $content//tei:div[parent::tei:div(:[fn:starts-with(@xml:lang, $lang)]:)][@type='abstract']/tei:p 
-    return fn:substring(fn:normalize-space($abstract), 0, 90),
-    ', ')
-};
+
 
 (:~
  : this function get keywords
@@ -353,9 +322,9 @@ declare function getDescription($content as element()*, $lang as xs:string){
  : @param $lang iso langcode starts
  : @return a comma separated list of values
  :)
-declare function getKeywords($content as element()*, $lang as xs:string){
+declare function getKeywords($content as element()*){
   fn:string-join(
-    for $terms in fn:distinct-values($content//tei:keywords(:[fn:starts-with(@xml:lang, $lang)]:)/tei:term) 
+    for $terms in fn:distinct-values($content//tei:keywords/tei:term) 
     return fn:normalize-space($terms), 
     ', ')
 };
@@ -391,7 +360,7 @@ declare function getQuantity($content as element()*, $unit as xs:string){
  : @param $content texts to process
  : @return a tei abstract
  :)
-declare function getFront($content as element()*, $lang as xs:string){
+declare function getFront($content as element()*){
   map {
     'tei' :   $content//tei:front
   }
@@ -403,7 +372,7 @@ declare function getFront($content as element()*, $lang as xs:string){
  : @param $content texts to process
  : @return a tei abstract
  :)
-declare function getBody($content as element()*, $lang as xs:string){
+declare function getBody($content as element()*){
  map {
     'tei' :   $content//tei:body
   }
@@ -415,7 +384,7 @@ declare function getBody($content as element()*, $lang as xs:string){
  : @param $content texts to process
  : @return a tei abstract
  :)
-declare function getBack($content as element()*, $lang as xs:string){
+declare function getBack($content as element()*){
  map {
     'tei' :   $content//tei:back
   }

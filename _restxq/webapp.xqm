@@ -107,7 +107,7 @@ function home($myProject) {
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data,  $outputParams)
   }catch err:*{   
        synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
     }
@@ -140,7 +140,7 @@ function home($myProject, $myFunction) {
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data,  $outputParams)
   }catch err:*{   
       synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
     }
@@ -174,7 +174,7 @@ function home($myProject, $myFunction, $myOtherParams) {
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data,  $outputParams)
   }catch err:*{   
        synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
     }
