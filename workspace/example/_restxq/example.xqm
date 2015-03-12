@@ -42,37 +42,7 @@ declare default function namespace 'example.webapp' ;
 declare variable $example.webapp:project := 'example' ;
 declare variable $example.webapp:db := synopsx.lib.commons:getProjectDB($example.webapp:project) ;
 
-(:~
- : resource function to test the new htmlwrapping
- :
- : @return a collection of blog's posts
- :)
-declare 
-  %restxq:path('/test/posts')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-function blogPosts() {
-  let $queryParams := map {
-    'project' : $example.webapp:project,
-    'dbName' :  $example.webapp:db,
-    'model' : 'tei' ,
-    'function' : 'getTextsListBis',
-    'sorting' : 'title',
-    'order' : 'ascending'
-    }
- let $outputParams := map {
-    'lang' : 'fr',
-    'layout' : 'defaultLayout.xhtml',
-    'pattern' : 'inc_defaultList.xhtml'
-    (: specify an xslt mode and other kind of output options :)
-    }
-        
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
- 
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
-  };
+
 
 (:~
  : this resource function redirect to /home
@@ -112,14 +82,7 @@ function home() {
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }  
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
-  }catch err:*{    
-       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
-    }
+ return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 };
 
 (:~
@@ -170,14 +133,7 @@ function textsHtml() {
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
-  }catch err:*{    
-      synopsx.lib.commons:error($queryParams, $err:code, $err:description)
-    }
+ return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 };
 
 declare 
@@ -201,14 +157,7 @@ function respHtml() {
     }
     
     
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-   
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
-  }catch err:*{    
-      synopsx.lib.commons:error($queryParams, $err:code, $err:description)
-    }
+ return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 };
 
 declare 
@@ -232,14 +181,7 @@ function biblHtml() {
     }
     
       
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-  
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
-  }catch err:*{    
-      synopsx.lib.commons:error($queryParams, $err:code, $err:description)
-    }
+ return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 };
 
 (:~
@@ -266,16 +208,7 @@ function corpusListHtml() {
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-    
-    
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
-  }catch err:*{    
-      synopsx.lib.commons:error($queryParams, $err:code, $err:description)
-    }
+   return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 };
 
 (:~
@@ -303,13 +236,6 @@ function biblioListHtml($pattern as xs:string?) {
     (: specify an xslt mode and other kind of output options :)
     }
         
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-  
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
-  }catch err:*{    
-       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
-    }
+return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 };  
 

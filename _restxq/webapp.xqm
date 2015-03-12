@@ -108,14 +108,7 @@ function home($myProject) {
     (: specify an xslt mode and other kind of output options :)
     }
     
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data,  $outputParams)
-  }catch err:*{   
-       synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
-    }
+    return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 }; 
 
 (:~
@@ -143,24 +136,16 @@ function home($myProject, $myFunction) {
     (: specify an xslt mode and other kind of output options :)
     }
         
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data,  $outputParams)
-  }catch err:*{   
-      synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
-    }
+   return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 }; 
 
 
 
 declare 
   %restxq:path("/{$myProject}/inc/{$myIncTemplate}")
-function getHtmlHeader($myProject, $myIncTemplate) {
+function getIncTemplate($myProject, $myIncTemplate) {
    let $queryParams := map {
-    'project' :$myProject,
-    'dbName' :synopsx.lib.commons:getProjectDB($myProject)
+    'project' :$myProject
     }
    let $templateName := 'inc_' || $myIncTemplate || '.xhtml'
   return fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $templateName))
