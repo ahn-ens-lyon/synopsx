@@ -157,10 +157,9 @@ function home($myProject, $myFunction) {
 
 declare 
   %restxq:path("/{$myProject}/inc/{$myIncTemplate}")
-function getHtmlHeader($myProject, $myIncTemplate) {
+function getIncTemplate($myProject, $myIncTemplate) {
    let $queryParams := map {
-    'project' :$myProject,
-    'dbName' :synopsx.lib.commons:getProjectDB($myProject)
+    'project' :$myProject
     }
    let $templateName := 'inc_' || $myIncTemplate || '.xhtml'
   return fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $templateName))

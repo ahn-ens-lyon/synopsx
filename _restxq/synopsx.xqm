@@ -69,17 +69,3 @@ declare
 function install() { 
   fn:doc($G:TEMPLATES||'defaultLayout.xhtml')
 };
-
-
-
-declare 
-  %restxq:path('/synopsx/inc/header')
-function getHtmlHeader() {
-  fn:doc($G:TEMPLATES||'inc_header.xhtml')
-};
-
-declare 
-  %restxq:path('/synopsx/inc/footer')
-function getHtmlFooter() { 
-  fn:doc($G:TEMPLATES||'inc_footer.xhtml')
-};
