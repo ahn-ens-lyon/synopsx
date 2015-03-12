@@ -47,7 +47,9 @@ declare function getDefaultProject() as xs:string {
 };
 
 declare function getProjectDB($project as xs:string) as xs:string {
-  fn:doc($G:CONFIGFILE)//config/projects/project[resourceName/text() = $project]/dbName/text()
+  if (fn:doc($G:CONFIGFILE)//config/projects/project[resourceName/text() = $project]/dbName)
+   then fn:doc($G:CONFIGFILE)//config/projects/project[resourceName/text() = $project]/dbName/text()
+  else ''
 };
 
 (:~
@@ -94,6 +96,16 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
       else   fn:QName('synopsx.models.mixed', 'notFound') (: give default or error :)
 };
 
+declare function htmlDisplay($queryParams as map(*), $outputParams as map(*)){
+ try {
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
+    
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+  }catch err:*{   
+       synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
+    }
+};
 
 
 (:~
@@ -117,7 +129,7 @@ declare function error($queryParams, $err:code, $err:additional) {
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'error404.xhtml',
-    'pattern' : 'inc_defaultItem.xhtml'
+    'pattern' : 'inc_errorItem.xhtml'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
 };

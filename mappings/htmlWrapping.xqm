@@ -46,65 +46,6 @@ declare default function namespace 'synopsx.mappings.htmlWrapping' ;
  @todo add handling of outputParams (for example {class} attribute or call to an xslt)
  :)
 
-declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)){
-  let $meta := map:get($data, 'meta')
-  let $contents := map:get($data,'content')
-  let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
-  let $wrap := fn:doc($layout)
-  return $wrap update (
-    for $text in .//@*
-      return replace value of node $text with inject($text, $queryParams, $meta, $outputParams),
-     for $text in .//text()
-       where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-       let $key := fn:replace($text, '\{|\}', '')
-       return if ($key = 'content') 
-         then replace node $text with pattern($queryParams, $data, $outputParams)
-         else replace node $text with inject($text, $queryParams, $meta, $outputParams)
-     )
-};
-
-declare function inject($text as xs:string, $queryParams as map(*), $meta as map(*), $outputParams as map(*)){
-  let $input as map(*)*:= ($queryParams,$meta,$outputParams)(:sequence of map:)
-  let $map := map:merge($input)(:create a unique map:)
-  let $tokens := fn:tokenize($text, '\{|\}')
-  let $new := fn:string-join( 
-    for $token in $tokens
-      let $value := map:get($map, $token)
-        return if(fn:empty($value)) then $token
-        else $value)
-        return $new
-};
-
-(:~
- : this function iterates the pattern template with contents
- :
- : @param $queryParams the query params defined in restxq
- : @param $data the result of the query
- : @param $outputParams the serialization params
- : @return instantiate the pattern with $data
- :
- : @todo modify to replace mixed content like "{quantity} éléments"
- : @todo treat in the same loop @* and text()
- : @todo use $outputParams to use an xslt
- :)
-declare function pattern($queryParams as map(*), $data as map(*), $outputParams as map(*)) as document-node()* {
-  let $meta := map:get($data, 'meta')
-  let $contents := map:get($data,'content')
-  let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
-  return map:for-each($contents, function($key, $content) {
-    fn:doc($pattern) update (
-      for $text in .//@*
-        return replace value of node $text with inject($text, $queryParams, $content, $outputParams),
-      for $text in .//text()
-        where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-        let $key := fn:replace($text, '\{|\}', '')
-        let $value := map:get($content, $key) 
-        return if ($key = 'tei') 
-          then replace node $text with render($outputParams, $value) (: TODO : options : xslt, etc. :)
-          else replace node $text with inject($text, $queryParams, $content, $outputParams)
-      )
-  })
-};
 
 (:~
  : this function wrap the content in an HTML layout
@@ -115,7 +56,7 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
  : @return an updated HTML document and instantiate pattern
  :
  :)
-declare function wrapperNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element() {
+declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element() {
   let $meta := map:get($data, 'meta')
   let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
   let $wrap := fn:doc($layout)
@@ -132,7 +73,7 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($meta, $key)
         return if ($key = 'content') 
-          then replace node $text with patternNew($queryParams, $data, $outputParams)
+          then replace node $text with pattern($queryParams, $data, $outputParams)
           else if ($value instance of node()* and $value) 
            then replace node $text with render($outputParams, $value)
            else replace node $text with inject($text, $meta)
@@ -149,7 +90,7 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
  :
  : @bug default for sorting
  :)
-declare function patternNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
+declare function pattern($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
  let $sorting := if (map:get($queryParams, 'sorting')) 
     then map:get($queryParams, 'sorting') 
     else ''

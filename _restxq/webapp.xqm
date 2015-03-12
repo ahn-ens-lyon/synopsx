@@ -108,14 +108,7 @@ function home($myProject) {
     (: specify an xslt mode and other kind of output options :)
     }
     
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data,  $outputParams)
-  }catch err:*{   
-       synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
-    }
+    return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 }; 
 
 (:~
@@ -143,14 +136,7 @@ function home($myProject, $myFunction) {
     (: specify an xslt mode and other kind of output options :)
     }
         
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data,  $outputParams)
-  }catch err:*{   
-      synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
-    }
+   return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 }; 
 
 
