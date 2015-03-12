@@ -117,12 +117,11 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
  :)
 declare function wrapperNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element() {
   let $meta := map:get($data, 'meta')
-  let $content := map:get($data, 'content')
   let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
-  let $wrap := fn:doc($layout)/*
+  let $wrap := fn:doc($layout)
   let $regex := '\{(.*?)\}'
   return
-    $wrap update (
+    $wrap/* update (
       for $text in .//@*
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')
@@ -151,7 +150,7 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
  : @bug default for sorting
  :)
 declare function patternNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
-  let $sorting := if (map:get($queryParams, 'sorting')) 
+ let $sorting := if (map:get($queryParams, 'sorting')) 
     then map:get($queryParams, 'sorting') 
     else ''
   let $order := map:get($queryParams, 'order')

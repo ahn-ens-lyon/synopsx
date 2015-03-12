@@ -61,14 +61,16 @@ function blogPosts() {
     'sorting' : 'title',
     'order' : 'ascending'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
+ let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'defaultLayout.xhtml',
     'pattern' : 'inc_defaultList.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
+        
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+ 
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   };
 
@@ -104,16 +106,17 @@ function home() {
     'model' : 'tei' ,
     'function' : 'getTextsList'
     }
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    let $outputParams := map {
+  let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
-    }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    }  
+  return try {
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
+
+    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   }catch err:*{    
        synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
@@ -139,8 +142,8 @@ function textsJS() {
       'model' : 'tei',
       'function' : 'getTextsList'
     }    
-    let $prefix := synopsx.lib.commons:getFunctionPrefix($queryParams, 1)
-    return fn:function-lookup(xs:QName($prefix || ':' || map:get($queryParams, 'function')), 1)($queryParams)
+   let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    return fn:function-lookup($function, 1)($queryParams)
 };
 
 (:~
@@ -161,16 +164,17 @@ function textsHtml() {
     'model' : 'tei' ,
     'function' : 'getTextsList'
     }
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    let $outputParams := map {
+   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return try {
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
+
+    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   }catch err:*{    
       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
@@ -188,16 +192,20 @@ function respHtml() {
     'model' : 'tei' ,
     'function' : 'getRespList'
     }
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    let $outputParams := map {
+    
+     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
     'pattern' : 'inc_respItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    
+    
+  return try {
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
+   
+    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   }catch err:*{    
       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
@@ -215,16 +223,20 @@ function biblHtml() {
     'model' : 'tei' ,
     'function' : 'getBiblList'
     }
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
+    
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
     'pattern' : 'inc_BiblItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    
+      
+  return try {
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
+  
+    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   }catch err:*{    
       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
@@ -238,7 +250,7 @@ function biblHtml() {
  : @todo use this tag !
  :)
 declare 
-  %restxq:path("/example/texts/list/html")
+  %restxq:path("/example/inc/texts")
  (:  %restxq:query-param("pattern", "{$pattern}") :)
 function corpusListHtml() {
     let $queryParams := map {
@@ -247,16 +259,20 @@ function corpusListHtml() {
     'model' : 'tei' ,
     'function' : 'getTextsList'
     }
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    let $outputParams := map {
+    
+   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'inc_defaultList.xhtml',
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    
+    
+  return try {
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
+
+    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   }catch err:*{    
       synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
@@ -270,7 +286,7 @@ function corpusListHtml() {
  : @todo use this tag !
  :)
 declare 
-  %restxq:path("/example/resp/list/html")
+  %restxq:path("/example/inc/resp")
   %restxq:query-param("pattern", "{$pattern}")
 function biblioListHtml($pattern as xs:string?) {
   let $queryParams := map {
@@ -279,38 +295,21 @@ function biblioListHtml($pattern as xs:string?) {
     'model' : 'tei' ,
     'function' : 'getRespList'
     }
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    let $outputParams := map {
+
+  let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'inc_defaultList.xhtml',
     'pattern' : 'inc_RespItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+        
+  return try {
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
+  
+    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   }catch err:*{    
        synopsx.lib.commons:error($queryParams, $err:code, $err:description)
     }
 };  
 
-declare 
-  %restxq:path("/example/html/header")
-function getHtmlHeader() {
-  let $queryParams := map {
-    'project' :$example.webapp:project,
-    'dbName' : $example.webapp:db
-    }
-  return fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, 'inc_header.xhtml'))
-  
-};
-
-declare 
-  %restxq:path("/example/html/footer")
-function getHtmlFooter() {
-  let $queryParams := map {
-    'project' :$example.webapp:project,
-    'dbName' : $example.webapp:db
-    }
-  return fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, 'inc_footer.xhtml'))
-};
