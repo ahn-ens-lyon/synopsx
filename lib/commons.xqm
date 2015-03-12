@@ -36,9 +36,7 @@ declare default function namespace 'synopsx.lib.commons' ;
  : ~:~:~:~:~:~:~:~:~
  :)
 
-declare function getProjectDB($project as xs:string) as xs:string {
-  fn:doc($G:CONFIGFILE)//config/projects/project[resourceName/text() = $project]/dbName/text()
-};
+
 
 declare function getDefaultProject() as xs:string {
     if(file:exists($G:CONFIGFILE)) then
@@ -46,6 +44,10 @@ declare function getDefaultProject() as xs:string {
         fn:doc($G:CONFIGFILE)//project[@default="true"]/resourceName/text()
       else fn:doc($G:CONFIGFILE)//project[1]/resourceName/text()
     else ''
+};
+
+declare function getProjectDB($project as xs:string) as xs:string {
+  fn:doc($G:CONFIGFILE)//config/projects/project[resourceName/text() = $project]/dbName/text()
 };
 
 (:~
@@ -81,8 +83,10 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
   let $modelName := map:get($queryParams, 'model')
   let $functionName := map:get($queryParams, 'function')
   let $uri := $projectName || '.models.' || $modelName
-  let $context := inspect:context()/function
-  let $function := inspect:context()//function[@name = $functionName]
+
+  let $context := inspect:context()
+  let $function := $context/function[@name = $functionName]
+
   return if ($function/@uri = $uri) 
     then fn:QName($function/@uri, $function/@name)
     else if ($function/@uri = 'synopsx.models.' || $modelName) 
@@ -90,37 +94,7 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
       else   fn:QName('synopsx.models.mixed', 'notFound') (: give default or error :)
 };
 
-(:~
- : this function checks if the given function exists in the given module with the given arity
- : without inspecting functions (i.e. without compiling the module)
- :
- : @param $queryParams the query params
- : @param $arity and arity to retrieve the function
- : @return the function name as a string or an empty string
- :
- : @todo return error messages
- :)
-declare function getFunctionPrefix($queryParams as map(*), $arity as xs:integer) as xs:string {
-  let $project :=  map:get($queryParams, 'project')
-  let $fileName := map:get($queryParams, 'model') || '.xqm'
-  let $projectModelPath := $G:WORKSPACE || $project || '/models/'
-  let $functionName := map:get($queryParams, 'function') 
-  let $customizedFunction := 
-    if (file:exists($projectModelPath || $fileName)) then 
-      let $xml := inspect:module($projectModelPath || $fileName)
-      (: if the function exists in this module, returns the module name :)
-      return if($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]) then 
-        fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)
-        else ''
-    else ''
-    return if ($customizedFunction = '') then                                     
-              if (file:exists($G:MODELS || $fileName)) then 
-                let $xml := inspect:module($G:MODELS || $fileName)
-                (: if the function exists in this module, returns the module name :)
-                return fn:string($xml/function[@name = fn:string($xml/@prefix) || ':' || $functionName][fn:count(./argument) = $arity]/ancestor::module/@prefix)          
-              else ''  
-           else $customizedFunction
-};
+
 
 (:~
  : this function shows the errors

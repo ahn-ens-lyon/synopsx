@@ -44,11 +44,11 @@ declare default function namespace "synopsx.models.tei";
 declare function getTextsList($queryParams as map(*)) as map(*) {
   let $texts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
   let $meta := map{
-    'title' : 'Teste pour htmlWrappingNew', 
+    'title' : 'Liste des textes', 
     'quantity' : getQuantity($texts, ' texte'),
     'author' : getAuthors($texts),
     'copyright'  : getCopyright($texts),
-     'description' : getAbstract($texts),
+    'description' : getAbstract($texts),
     'keywords' : getKeywords($texts)
     }
   let $content := for $text in $texts return getHeader($text)
@@ -68,7 +68,7 @@ declare function getTextsList($queryParams as map(*)) as map(*) {
 declare function getCorpusList($queryParams as map(*)) as map(*) {
   let $texts := synopsx.lib.commons:getDb($queryParams)//tei:teiCorpus
   let $meta := map{
-    'title' : 'Teste pour htmlWrappingNew', 
+    'title' : 'Liste des corpus', 
     'quantity' : getQuantity($texts, ' texte'),
     'author' : getAuthors($texts),
     'copyright'  : getCopyright($texts),
@@ -90,10 +90,8 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
  :)
 declare function getTextById($queryParams as map(*)) as map(*) {
   let $text := synopsx.lib.commons:getDb($queryParams)//tei:TEI[@xml:id=map:get($queryParams, 'id')]
-
-
   let $meta := map{
-    'title' : 'Teste pour htmlWrappingNew', 
+    'title' : getTitles($text), 
     'quantity' : getQuantity($text, ' texte'),
     'author' : getAuthors($text),
     'copyright'  : getCopyright($text),
@@ -114,7 +112,6 @@ declare function getTextById($queryParams as map(*)) as map(*) {
  :)
 declare function getBiblList($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:bibl
-
   let $meta := map{
     'title' : 'Bibliographie'
     }
@@ -130,7 +127,6 @@ declare function getBiblList($queryParams) {
  :)
 declare function getRespList($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:respStmt
-
   let $meta := map{
     'title' : 'Responsables de l édition'
     }
@@ -345,7 +341,7 @@ declare function getName($named as element()*){
  : this function built a quantity message
  : @param $content texts to process
  : @return concatenate quantity and a message
- : @toto to internationalize
+ : @todo to internationalize
  :)
 declare function getQuantity($content as element()*, $unit as xs:string){
   fn:normalize-space(

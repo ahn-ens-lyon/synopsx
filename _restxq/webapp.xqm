@@ -27,6 +27,7 @@ module namespace synopsx.webapp = 'synopsx.webapp' ;
 
 import module namespace G = "synopsx.globals" at '../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
+import module namespace synopsx.models.tei = "synopsx.models.tei" at '../models/tei.xqm';
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
 
 declare default function namespace 'synopsx.webapp' ;
@@ -96,17 +97,21 @@ function home() {
 function home($myProject) {
   let $queryParams := map {
     'project' : $myProject,
-    'dbName' :  $myProject,
+    'dbName' :  synopsx.lib.commons:getProjectDB($myProject),
+    'model' : 'tei' ,
     'function' :  'home'    }
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
+    
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
+    
+  return try {
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
+    
     return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data,  $outputParams)
   }catch err:*{   
        synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
@@ -131,51 +136,33 @@ function home($myProject, $myFunction) {
     'model' : 'tei' ,
     'function' : $myFunction
     }
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
+        
+  return try {
+    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
+
     return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data,  $outputParams)
   }catch err:*{   
       synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
     }
 }; 
 
-(:~
- : this resource function is the html representation of the corpus resource
- :
- : @return an html representation of the corpus resource with a bibliographical list
- : the HTML serialization also shows a bibliographical list
- :)
- declare 
-  %restxq:path('/{$myProject}/{$myFunction}/{$myOtherParams = .+}')
-  %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
-function home($myProject, $myFunction, $myOtherParams) {
-  let $queryParams := map {
-    'project' : $myProject,
-    'dbName' :  $myProject,
-    'model' : 'tei' ,
-    'function' : $myFunction,
-    'otherParams' : $myOtherParams
+
+
+declare 
+  %restxq:path("/{$myProject}/inc/{$myIncTemplate}")
+function getHtmlHeader($myProject, $myIncTemplate) {
+   let $queryParams := map {
+    'project' :$myProject,
+    'dbName' :synopsx.lib.commons:getProjectDB($myProject)
     }
-  return try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    let $outputParams := map {
-    'lang' : 'fr',
-    'layout' : 'home.xhtml',
-    'pattern' : 'inc_defaultItem.xhtml'
-    (: specify an xslt mode and other kind of output options :)
-    }
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data,  $outputParams)
-  }catch err:*{   
-       synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
-    }
-}; 
+   let $templateName := 'inc_' || $myIncTemplate || '.xhtml'
+  return fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $templateName))
+};
+
