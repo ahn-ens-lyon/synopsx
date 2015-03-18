@@ -63,6 +63,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
   let $regex := '\{(.*?)\}'
   return
     $wrap/* update (
+      (: keys :)      
       for $text in .//@*
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')
@@ -76,7 +77,12 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
           then replace node $text with pattern($queryParams, $data, $outputParams)
           else if ($value instance of node()* and $value) 
            then replace node $text with render($outputParams, $value)
-           else replace node $text with inject($text, $meta)
+           else replace node $text with inject($text, $meta),      
+     (: inc :)
+     (: todo : call wrapping, rendering and injecting functions for these inc layouts too :)
+      for $text in .//*[@data-url] 
+            let $inc := fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $text/@data-url || '.xhtml'))
+            return replace node $text with $inc/*
       )
 };
 

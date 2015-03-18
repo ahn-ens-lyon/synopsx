@@ -141,13 +141,13 @@ function home($myProject, $myFunction) {
 
 
 
-declare 
+(: declare 
   %restxq:path("/{$myProject}/inc/{$myIncTemplate}")
-function getIncTemplate($myProject, $myIncTemplate) {
+function getIncTemplate($myProject, $myIncTemplate) as node() {
    let $queryParams := map {
     'project' :$myProject
     }
    let $templateName := 'inc_' || $myIncTemplate || '.xhtml'
-  return fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $templateName))
-};
+  return fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $templateName))/*
+}; :)
 
