@@ -215,8 +215,8 @@ declare function getResp($item as element()) {
  :)
 declare function getTitles($content as element()*){
   fn:string-join(
-    for $title in $content//tei:titleStmt//tei:title
-    return fn:string-join($title), ', ')
+    for $title in $content/tei:fileDesc/tei:titleStmt/tei:title/text()
+    return fn:string-join($title), ' ')
 };
 
 (:~

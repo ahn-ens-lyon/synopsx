@@ -31,30 +31,36 @@ declare default function namespace 'synopsx.models.mixed'; (: This is the defaul
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: Add namespaces :)
 
+
+declare function  notFound($queryParams) {
+  let $meta := map{
+    'title' : 'We did not find what you were looking for...'
+    }
+  let $content := ()
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
 declare function  getHomeContent($queryParams) {
-  'My home content'
+   let $meta := map{
+    'title' : 'This is how SynopsX welcomes you...'
+    }
+  let $content := ()
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
 };
 
-declare function  getTitle($queryParams) {
-  'My project title'
-};
-
-declare function getMainPartnerLogo($queryParams) as map(*) {
-  map{
-    'meta' : map{},
-    'content' : 
-      map{
-        'img' : map{
-          'src' : '/static/img/logo_ENS_sm_blanc.png',
-          'alt' : 'ENS de Lyon',
-          'class' : 'logo'
-        }
-      }
-  }  
-  
-};
-
-declare function getEntries($queryParams) {
-  (: Display EAD unitId to access TEI documents :)
-  'TODO'
+declare function  getInstall($queryParams) {
+   let $meta := map{
+    'title' : 'Let´s install SynopsX...'
+    }
+  let $content := ()
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
 };
