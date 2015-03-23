@@ -33,7 +33,7 @@ declare namespace xslt= 'http://basex.org/modules/xslt' ;
 declare default function namespace 'synopsx.oai' ;
 declare default element namespace 'http://www.openarchives.org/OAI/2.0/' ;
 
-declare variable $synopsx.oai:tei2dc := '/files/xsl/tei2dc.xsl' ;
+declare variable $synopsx.oai:tei2dc := '../files/xsl/tei2dc.xsl' ;
 
 declare %restxq:path('{$project}/oai')
   %output:method('xml')
