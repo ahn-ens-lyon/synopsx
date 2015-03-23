@@ -87,14 +87,12 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
   let $modelName := map:get($queryParams, 'model')
   let $functionName := map:get($queryParams, 'function')
   let $uri := $projectName || '.models.' || $modelName
-
   let $context := inspect:context()
-  let $function := $context/function[@name = $functionName]
-
+  let $function := $context//function[@name = $functionName]
   return if ($function/@uri = $uri) 
-    then fn:QName($function/@uri, $function/@name)
+    then fn:QName($uri, $functionName)
     else if ($function/@uri = 'synopsx.models.' || $modelName) 
-      then fn:QName($function/@uri, $function/@name)
+      then fn:QName('synopsx.models.' || $modelName, $functionName)
       else   fn:QName('synopsx.models.mixed', 'notFound') (: give default or error :)
 };
 

@@ -31,10 +31,6 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace "synopsx.models.tei";
 
-
-
-
-
 (:~
  : this function returns a sequence of map for meta and content 
  : !! the result structure has changed to allow sorting early in mapping
