@@ -31,28 +31,7 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace "synopsx.models.tei";
 
-(:~
- : this function returns a sequence of map for meta and content 
- : !! the result structure has changed to allow sorting early in mapping
- : 
- : @rmq for testing with new htmlWrapping
- :)
-declare function getTextsList($queryParams as map(*)) as map(*) {
-  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
-  let $meta := map{
-    'title' : 'Liste des textes', 
-    'quantity' : getQuantity($texts, ' texte'),
-    'author' : getAuthors($texts),
-    'copyright'  : getCopyright($texts),
-    'description' : getAbstract($texts),
-    'keywords' : getKeywords($texts)
-    }
-  let $content := for $text in $texts return getHeader($text)
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
+
 
 
 (:~
@@ -77,6 +56,55 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'content' : $content
     }
 };
+
+
+(:~
+ : this function returns a sequence of map for meta and content 
+ : !! the result structure has changed to allow sorting early in mapping
+ : 
+ : @rmq for testing with new htmlWrapping
+ :)
+declare function getCorpusById($queryParams as map(*)) as map(*) {
+  let $corpus := synopsx.lib.commons:getDb($queryParams)//tei:teiCorpus[@xml:id=map:get($queryParams, 'id')]
+  let $meta := map{
+    'title' : getTitles($corpus), 
+    'quantity' : getQuantity($corpus, ' texte(s)'),
+    'author' : getAuthors($corpus),
+    'copyright'  : getCopyright($corpus),
+    'description' : getAbstract($corpus),
+    'keywords' : getKeywords($corpus)
+    }
+  let $content :=  for $text in $corpus return getText($text)
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+
+(:~
+ : this function returns a sequence of map for meta and content 
+ : !! the result structure has changed to allow sorting early in mapping
+ : 
+ : @rmq for testing with new htmlWrapping
+ :)
+declare function getTextsList($queryParams as map(*)) as map(*) {
+  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
+  let $meta := map{
+    'title' : 'Liste des textes', 
+    'quantity' : getQuantity($texts, ' texte'),
+    'author' : getAuthors($texts),
+    'copyright'  : getCopyright($texts),
+    'description' : getAbstract($texts),
+    'keywords' : getKeywords($texts)
+    }
+  let $content := for $text in $texts return getHeader($text)
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
 
 (:~
  : this function returns a sequence of map for meta and content 

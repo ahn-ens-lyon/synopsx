@@ -71,11 +71,12 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
       return replace value of node $text with fn:string($value),
       for $text in .//text()
         where fn:matches($text, $regex)
-        let $key := fn:replace($text, '\{|\}', '')
-        let $value := map:get($meta, $key)
+        let $key := fn:replace($text, '\{|\}', '')        
         return if ($key = 'content') 
           then replace node $text with pattern($queryParams, $data, $outputParams)
-          else if ($value instance of node()* and $value) 
+          else 
+           let $value := map:get($meta, $key)
+           return if ($value instance of node()* and $value) 
            then replace node $text with render($outputParams, $value)
            else replace node $text with inject($text, $meta),      
      (: inc :)
