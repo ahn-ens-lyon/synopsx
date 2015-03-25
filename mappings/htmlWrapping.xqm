@@ -165,5 +165,5 @@ declare function render($outputParams as map(*), $value as node()* ) as element(
     then synopsx.mappings.tei2html:entry($value, $options)
     else if ($xsl) 
       then xslt:transform($value, $G:FILES || 'xsl/' || $xsl)
-      else <p>rien</p>
+      else $value
 };
