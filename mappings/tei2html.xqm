@@ -95,7 +95,7 @@ declare function div($node as element(tei:div)+, $options) {
 declare function head($node as element(tei:head)+, $options) as element() {   
   if ($node/parent::tei:div) then
     let $type := $node/parent::tei:div/@type
-    let $level := fn:count($node/ancestor::div)
+    let $level := if (fn:count($node/ancestor::div) > 0) then fn:count($node/ancestor::div) else 1
     return element { 'h' || $level } { passthru($node, $options) }
   else if ($node/parent::tei:figure) then
     if ($node/parent::tei:figure/parent::tei:p) then
