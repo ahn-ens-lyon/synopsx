@@ -77,7 +77,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
           else 
            let $value := map:get($meta, $key)
            return if ($value instance of node()* and $value) 
-           then replace node $text with render($outputParams, $value)
+           then replace node $text with render($queryParams, $outputParams, $value)
            else replace node $text with inject($text, $meta),      
      (: inc :)
      (: todo : call wrapping, rendering and injecting functions for these inc layouts too :)
@@ -102,7 +102,6 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
     then map:get($queryParams, 'sorting') 
     else ''
   let $order := map:get($queryParams, 'order')
-  let $meta := map:get($data, 'meta')
   let $contents := map:get($data, 'content')
   let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
   for $content in $contents
@@ -122,7 +121,7 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key)
         return if ($value instance of node()* and $value) 
-          then replace node $text with render($outputParams, $value)
+          then replace node $text with render($queryParams, $outputParams, $value)
           else replace node $text with inject($text, $content)
       )
 };
@@ -156,14 +155,14 @@ declare function inject($text as xs:string, $input as map(*)) as xs:string {
  :
  : @todo check the xslt with an xslt 1.0
  :)
-declare function render($outputParams as map(*), $value as node()* ) as element()* {
-  let $xsl :=  map:get($outputParams, 'xsl')
+declare function render($queryParams, $outputParams as map(*), $value as node()* ) as element()* {
   let $xquery := map:get($outputParams, 'xquery')
+  let $xsl :=  map:get($outputParams, 'xsl')
   let $options := 'option'
   return 
     if ($xquery) 
-    then synopsx.mappings.tei2html:entry($value, $options)
+      then synopsx.mappings.tei2html:entry($value, $options)
     else if ($xsl) 
-      then xslt:transform($value, $G:FILES || 'xsl/' || $xsl)
-      else <p>rien</p>
+      then xslt:transform($value, synopsx.lib.commons:getXsltPath($queryParams, $xsl))/*
+      else $value
 };

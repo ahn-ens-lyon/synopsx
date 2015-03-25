@@ -140,6 +140,36 @@ function home($myProject, $myFunction) {
 }; 
 
 
+(:~
+ : this resource function is the html representation of the corpus resource
+ :
+ : @return an html representation of the corpus resource with a bibliographical list
+ : the HTML serialization also shows a bibliographical list
+ :)
+declare 
+  %restxq:path('/{$myProject}/{$myFunction}/{$value}')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function home($myProject, $myFunction, $value) {
+  let $queryParams := map {
+    'project' : $myProject,
+    'dbName' :  $myProject,
+    'model' : 'tei' ,
+    'function' : $myFunction,
+    'id' : $value
+    }
+    let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'home.xhtml',
+    'pattern' : 'inc_defaultItem.xhtml'
+    (: specify an xslt mode and other kind of output options :)
+    }
+        
+   return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+}; 
+
+
 
 (: declare 
   %restxq:path("/{$myProject}/inc/{$myIncTemplate}")

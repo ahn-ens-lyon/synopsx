@@ -74,6 +74,24 @@ declare function getLayoutPath($queryParams as map(*), $template as xs:string?) 
 };
 
 (:~
+ : this function built the layout path based on the project hierarchy
+ :
+ : @param $queryParams the query params
+ : @param $template the template name.extension
+ : @return a path 
+ :)
+declare function getXsltPath($queryParams as map(*), $xsl as xs:string?) as xs:string { 
+  let $path :=  $G:WEBAPP || 'static/' || map:get($queryParams, 'project') || '/xsl/' || $xsl
+  return 
+    if (file:exists($path)) 
+    then $path
+    else if (file:exists($G:FILES || 'xsl/' || $xsl)) then $G:FILES || 'xsl/' || $xsl
+    else $G:FILES || 'xsl/' || 'tei2html.xsl'
+};
+
+ 
+
+(:~
  : this function checks if the function exists in the given module
  :
  : @param module uri and function name
@@ -96,11 +114,11 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
       else   fn:QName('synopsx.models.mixed', 'notFound') (: give default or error :)
 };
 
-declare function htmlDisplay($queryParams as map(*), $outputParams as map(*)){
+declare function htmlDisplay($queryParams as map(*), $outputParams as map(*)) as element(*){
  try {
     let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
     let $data := fn:function-lookup($function, 1)($queryParams)
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   }catch err:*{   
        synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
     }

@@ -24,6 +24,8 @@ module namespace G = 'synopsx.globals';
  :)
  
 declare variable $G:HOME := file:base-dir() ;
+declare variable $G:WEBAPP := file:parent($G:HOME) ;
+
 declare variable $G:CONFIGFILE := $G:HOME || 'config.xml' ;
 declare variable $G:_RESTXQ := $G:HOME || '_restxq/' ;
 declare variable $G:FILES := $G:HOME || 'files/' ;
