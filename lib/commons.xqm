@@ -137,13 +137,13 @@ declare function htmlDisplay($queryParams as map(*), $outputParams as map(*)) as
  : @param $queryParams the query params
  : @param $err:code the error code
  : @param $err:additional the error description, module, line and column numbers, error message
- : @return send a map with the errors messages to the wrapperNew
+ : @return an html view of the error messages
  :)
-declare function error($queryParams, $err:code, $err:additional) {
+declare function error($queryParams as map(*), $err:code as xs:QName, $err:additional as xs:string) as element() {
   let $error := map {
     'title' : 'An error occured :(',
     'error code' : fn:string($err:code),
-    'error stack trace' : fn:string($err:additional)
+    'error stack trace' : $err:additional
     }
   let $data := map{
     'meta' : $error,
