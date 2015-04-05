@@ -36,8 +36,11 @@ declare default function namespace 'synopsx.lib.commons' ;
  : ~:~:~:~:~:~:~:~:~
  :)
 
-
-
+(:~
+ : this function get the default project
+ :
+ : @return the default project specified in the config file
+ :)
 declare function getDefaultProject() as xs:string {
     if(file:exists($G:CONFIGFILE)) then
       if(fn:doc($G:CONFIGFILE)//project[@default="true"]/resourceName/text()) then 
@@ -46,6 +49,12 @@ declare function getDefaultProject() as xs:string {
     else ''
 };
 
+(:~
+ : this function get the project data base
+ :
+ : @param $project the project name
+ : @return the dbName according to the project in the config file
+ :)
 declare function getProjectDB($project as xs:string) as xs:string {
   if (fn:doc($G:CONFIGFILE)//config/projects/project[resourceName/text() = $project]/dbName)
    then fn:doc($G:CONFIGFILE)//config/projects/project[resourceName/text() = $project]/dbName/text()
@@ -89,8 +98,6 @@ declare function getXsltPath($queryParams as map(*), $xsl as xs:string?) as xs:s
     else $G:FILES || 'xsl/' || 'tei2html.xsl'
 };
 
- 
-
 (:~
  : this function checks if the function exists in the given module
  :
@@ -123,7 +130,6 @@ declare function htmlDisplay($queryParams as map(*), $outputParams as map(*)) as
        synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
     }
 };
-
 
 (:~
  : this function shows the errors
@@ -165,6 +171,3 @@ declare function getDb($queryParams as map(*)) as document-node()* {
     then db:open($dbName, $path)
     else db:open($dbName)
 };
-
-
-
