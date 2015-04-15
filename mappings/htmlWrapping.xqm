@@ -140,7 +140,7 @@ declare function inject($text as xs:string, $input as map(*)) as xs:string {
     for $token in $tokens
     let $value := map:get($input, $token)
     return if (fn:empty($value)) 
-      then $token
+      then ()
       else $value
     )
   return $updated
