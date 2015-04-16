@@ -56,7 +56,7 @@ declare default function namespace 'synopsx.mappings.htmlWrapping' ;
  : @return an updated HTML document and instantiate pattern
  :
  :)
-declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element() {
+declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
   let $meta := map:get($data, 'meta')
   let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
   let $wrap := fn:doc($layout)
@@ -71,7 +71,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
       return replace value of node $text with fn:string($value),
       for $text in .//text()
         where fn:matches($text, $regex)
-        let $key := fn:replace($text, '\{|\}', '')        
+        let $key := fn:replace($text, '\{|\}', '')       
         return if ($key = 'content') 
           then replace node $text with pattern($queryParams, $data, $outputParams)
           else 
@@ -97,7 +97,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
  :
  : @bug default for sorting
  :)
-declare function pattern($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
+declare function pattern($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
  let $sorting := if (map:get($queryParams, 'sorting')) 
     then map:get($queryParams, 'sorting') 
     else ''
@@ -120,7 +120,7 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key)
-        return if ($value instance of node()* and $value) 
+        return if ($value instance of node()* and fn:not(fn:empty($value))) 
           then replace node $text with render($queryParams, $outputParams, $value)
           else replace node $text with inject($text, $content)
       )
@@ -155,7 +155,7 @@ declare function inject($text as xs:string, $input as map(*)) as xs:string {
  :
  : @todo check the xslt with an xslt 1.0
  :)
-declare function render($queryParams, $outputParams as map(*), $value as node()* ) as element()* {
+declare function render($queryParams, $outputParams as map(*), $value as node()* ) as node()* {
   let $xquery := map:get($outputParams, 'xquery')
   let $xsl :=  map:get($outputParams, 'xsl')
   let $options := 'option'
@@ -163,6 +163,7 @@ declare function render($queryParams, $outputParams as map(*), $value as node()*
     if ($xquery) 
       then synopsx.mappings.tei2html:entry($value, $options)
     else if ($xsl) 
-      then xslt:transform($value, synopsx.lib.commons:getXsltPath($queryParams, $xsl))/*
+      then 
+         xslt:transform($value, synopsx.lib.commons:getXsltPath($queryParams, $xsl))/*
       else $value
 };
