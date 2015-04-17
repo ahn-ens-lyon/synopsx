@@ -76,7 +76,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
           then replace node $text with pattern($queryParams, $data, $outputParams)
           else 
            let $value := map:get($meta, $key)
-           return if ($value instance of node()* and $value) 
+           return if ($value instance of node()* and  fn:not(fn:empty($value))) 
            then replace node $text with render($queryParams, $outputParams, $value)
            else replace node $text with inject($text, $meta),      
      (: inc :)
@@ -163,7 +163,7 @@ declare function render($queryParams, $outputParams as map(*), $value as node()*
     if ($xquery) 
       then synopsx.mappings.tei2html:entry($value, $options)
     else if ($xsl) 
-      then 
-         xslt:transform($value, synopsx.lib.commons:getXsltPath($queryParams, $xsl))/*
+      then for $node in $value
+           return xslt:transform($node, synopsx.lib.commons:getXsltPath($queryParams, $xsl))/*
       else $value
 };
