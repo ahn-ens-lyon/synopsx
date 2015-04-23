@@ -115,8 +115,7 @@ declare function getTextsList($queryParams as map(*)) as map(*) {
 declare function getTextById($queryParams as map(*)) as map(*) {
   let $text := synopsx.lib.commons:getDb($queryParams)//tei:TEI[@xml:id=map:get($queryParams, 'id')]
   let $meta := map{
-    'title' : getTitles($text), 
-    'quantity' : getQuantity($text, ' texte'),
+    'title' : getTitles($text),
     'author' : getAuthors($text),
     'copyright'  : getCopyright($text),
     'description' : getAbstract($text),
@@ -239,7 +238,7 @@ declare function getResp($item as element()) {
  :)
 declare function getTitles($content as element()*){
   fn:string-join(
-    for $title in $content/tei:fileDesc/tei:titleStmt/tei:title/text()
+    for $title in $content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title/text()
     return fn:string-join($title), ' ')
 };
 
