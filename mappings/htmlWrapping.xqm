@@ -56,6 +56,10 @@ declare default function namespace 'synopsx.mappings.htmlWrapping' ;
  : @return an updated HTML document and instantiate pattern
  :
  :)
+ 
+ 
+
+ 
 declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
   let $meta := map:get($data, 'meta')
   let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
@@ -63,12 +67,15 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
   let $regex := '\{(.*?)\}'
   return
     $wrap/* update (
+       (: todo : call wrapping, rendering and injecting functions for these inc layouts too :)
+      for $text in .//*[@data-url] 
+            let $incOutputParams := map:put($outputParams, 'layout', $text/@data-url || '.xhtml')
+            let $inc :=  wrapper($queryParams, $data, $incOutputParams)
+            return replace node $text with fn:trace($inc),
       (: keys :)      
       for $text in .//@*
         where fn:matches($text, $regex)
-        let $key := fn:replace($text, '\{|\}', '')
-        let $value := map:get($meta, $key) 
-      return replace value of node $text with fn:string($value),
+        return replace value of node $text with replaceOrLeave($text, $meta),
       for $text in .//text()
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')       
@@ -78,12 +85,9 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
            let $value := map:get($meta, $key)
            return if ($value instance of node()* and  fn:not(fn:empty($value))) 
            then replace node $text with render($queryParams, $outputParams, $value)
-           else replace node $text with inject($text, $meta),      
+           else replace node $text with replaceOrDelete($text, $meta)      
      (: inc :)
-     (: todo : call wrapping, rendering and injecting functions for these inc layouts too :)
-      for $text in .//*[@data-url] 
-            let $inc := fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $text/@data-url || '.xhtml'))
-            return replace node $text with $inc/*
+    
       )
 };
 
@@ -111,36 +115,55 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
   let $regex := '\{(.*?)\}'
   return
     fn:doc($pattern)/* update (
-      for $text in .//@*
+       for $text in .//@*
         where fn:matches($text, $regex)
-        let $key := fn:replace($text, '\{|\}', '')
-        let $value := map:get($content, $key) 
-      return replace value of node $text with fn:string($value) ,
+        return replace value of node $text with replaceOrLeave($text, $content),
       for $text in .//text()
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key)
         return if ($value instance of node()* and fn:not(fn:empty($value))) 
           then replace node $text with render($queryParams, $outputParams, $value)
-          else replace node $text with inject($text, $content)
+          else replace node $text with replaceOrDelete($text, $content)
       )
 };
 
 (:~
  : this function update the text with input content
+ : it does not delete the non matching parts of the string (url etc.)
  :
  : @param $text the text node to process
  : @param $input the content to dispatch
  : @return an updated text
  :
  :)
-declare function inject($text as xs:string, $input as map(*)) as xs:string {
+declare function replaceOrLeave($text as xs:string, $input as map(*)) as xs:string {
   let $tokens := fn:tokenize($text, '\{|\}')
   let $updated := fn:string-join( 
     for $token in $tokens
     let $value := map:get($input, $token)
     return if (fn:empty($value)) 
-      then ()
+      then $token (: leave :)
+      else $value
+    )
+  return $updated
+};
+
+(:~
+ : this function update the text with input content
+ : it deletes the non matching parts of the string (unrelevant keys in body, etc.)
+ : @param $text the text node to process
+ : @param $input the content to dispatch
+ : @return an updated text
+ :
+ :)
+declare function replaceOrDelete($text as xs:string, $input as map(*)) as xs:string {
+  let $tokens := fn:tokenize($text, '\{|\}')
+  let $updated := fn:string-join( 
+    for $token in $tokens
+    let $value := map:get($input, $token)
+    return if (fn:empty($value)) 
+      then () (: delete :)
       else $value
     )
   return $updated
