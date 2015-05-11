@@ -203,13 +203,13 @@ declare function wrapping($queryParams as map(*), $data as map(*), $outputParams
   let $regex := '\{.+?\}'
   return
     $wrap/* update (
-      for $node in .//@* | .//text()
-      where fn:matches($node, $regex)
-      let $key := fn:replace($node, '\{|\}', '')
-      let $value := map:get($content, $key) 
-      return typeswitch($value)
-          case text() return replace value of node $node with serialize($queryParams, $data, $outputParams, $node)
-          default return ()
+      for $text in .//@* | .//text()
+      where fn:matches($text, $regex)
+      let $key := fn:replace($text, '\{|\}', '')
+      let $value := map:get($meta, $key) 
+      return if ($key = 'content') 
+        then replace node $text with pattern($queryParams, $data, $outputParams)
+        else serialize($queryParams, $data, $outputParams, $text, $value )
      )
   };
 
@@ -217,9 +217,12 @@ declare function wrapping($queryParams as map(*), $data as map(*), $outputParams
  : this function dispatch the rendering based on $outpoutParams
  :
  :) 
-declare function serialize($queryParams as map(*), $data as map(*), $outputParams as map(*), $node) as node()* {
+declare updating function serialize($queryParams as map(*), $data as map(*), $outputParams as map(*), $text, $value) {
   let $meta := map:get($data, 'meta')
   let $content := map:get($data, 'content')
-  let $regex := '\{.+?\}'
-  return ""
+  let $value := $value
+  return 
+  switch ($value)
+      case $value instance of text() return replace value of node $text with replaceOrDelete($text, $meta)
+      default return replace value of node $text with replaceOrDelete($text, $meta)
   };
