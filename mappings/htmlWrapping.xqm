@@ -67,7 +67,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
   let $regex := '\{(.*?)\}'
   return
     $wrap/* update (
-       (: todo : call wrapping, rendering and injecting functions for these inc layouts too :)
+      (: todo : call wrapping, rendering and injecting functions for these inc layouts too :)
       for $text in .//*[@data-url] 
             let $incOutputParams := map:put($outputParams, 'layout', $text/@data-url || '.xhtml')
             let $inc :=  wrapper($queryParams, $data, $incOutputParams)
@@ -190,3 +190,36 @@ declare function render($queryParams, $outputParams as map(*), $value as node()*
            return xslt:transform($node, synopsx.lib.commons:getXsltPath($queryParams, $xsl))/*
       else $value
 };
+
+(:~
+ : this function dispatch the rendering based on $outpoutParams
+ :
+ :)
+declare function wrapping($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
+  let $meta := map:get($data, 'meta')
+  let $content := map:get($data, 'content')
+  let $layout := map:get($outputParams, 'layout')
+  let $wrap := fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $layout))
+  let $regex := '\{.+?\}'
+  return
+    $wrap/* update (
+      for $node in .//@* | .//text()
+      where fn:matches($node, $regex)
+      let $key := fn:replace($node, '\{|\}', '')
+      let $value := map:get($content, $key) 
+      return typeswitch($value)
+          case text() return replace value of node $node with serialize($queryParams, $data, $outputParams, $node)
+          default return ()
+     )
+  };
+
+(:~
+ : this function dispatch the rendering based on $outpoutParams
+ :
+ :) 
+declare function serialize($queryParams as map(*), $data as map(*), $outputParams as map(*), $node) as node()* {
+  let $meta := map:get($data, 'meta')
+  let $content := map:get($data, 'content')
+  let $regex := '\{.+?\}'
+  return ""
+  };
