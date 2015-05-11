@@ -56,10 +56,6 @@ declare default function namespace 'synopsx.mappings.htmlWrapping' ;
  : @return an updated HTML document and instantiate pattern
  :
  :)
- 
- 
-
- 
 declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
   let $meta := map:get($data, 'meta')
   let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
@@ -192,12 +188,16 @@ declare function render($queryParams, $outputParams as map(*), $value as node()*
 };
 
 (:~
- : this function dispatch the rendering based on $outpoutParams
+ : this function wrap the content in an HTML layout
+ :
+ : @param $queryParams the query params defined in restxq
+ : @param $data the result of the query
+ : @param $outputParams the serialization params
+ : @return an updated HTML document and instantiate pattern
  :
  :)
-declare function wrapping($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
+declare function wrapperNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
   let $meta := map:get($data, 'meta')
-  let $content := map:get($data, 'content')
   let $layout := map:get($outputParams, 'layout')
   let $wrap := fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $layout))
   let $regex := '\{.+?\}'
@@ -208,8 +208,33 @@ declare function wrapping($queryParams as map(*), $data as map(*), $outputParams
       let $key := fn:replace($text, '\{|\}', '')
       let $value := map:get($meta, $key) 
       return if ($key = 'content') 
-        then replace node $text with pattern($queryParams, $data, $outputParams)
-        else serialize($queryParams, $data, $outputParams, $text, $value )
+        then replace node $text with patternNew($queryParams, $data, $outputParams)
+        else serialize($queryParams, $meta, $outputParams, $text, $value )
+     )
+  };
+
+(:~
+ : this function wrap the content in an HTML layout
+ :
+ : @param $queryParams the query params defined in restxq
+ : @param $data the result of the query
+ : @param $outputParams the serialization params
+ : @return an updated HTML document and instantiate pattern
+ :
+ :)
+declare function patternNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
+  let $contents := map:get($data, 'content')
+  let $pattern := map:get($outputParams, 'pattern')
+  let $pattern := fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $pattern))
+  let $regex := '\{.+?\}'
+  for $content in $contents
+  return
+    $pattern/* update (
+      for $text in .//@* | .//text()
+      where fn:matches($text, $regex)
+      let $key := fn:replace($text, '\{|\}', '')
+      let $value := map:get($content, $key) 
+      return serialize($queryParams, $content, $outputParams, $text, $value)
      )
   };
 
@@ -217,12 +242,14 @@ declare function wrapping($queryParams as map(*), $data as map(*), $outputParams
  : this function dispatch the rendering based on $outpoutParams
  :
  :) 
-declare updating function serialize($queryParams as map(*), $data as map(*), $outputParams as map(*), $text, $value) {
-  let $meta := map:get($data, 'meta')
+declare updating function serialize($queryParams, $data as map(*), $outputParams, $text, $value) {
+  let $data := $data
   let $content := map:get($data, 'content')
   let $value := $value
   return 
-  switch ($value)
-      case $value instance of text() return replace value of node $text with replaceOrDelete($text, $meta)
-      default return replace value of node $text with replaceOrDelete($text, $meta)
+    switch ($value)
+      case ($value instance of empty-sequence()) return ()
+      case ($value instance of node()* and fn:not(fn:empty($value))) return replace value of node $text with render($queryParams, $outputParams, $value)
+      default return if ($data instance of empty-sequence()) then () else replace value of node $text with replaceOrLeave($text, $data)
   };
+ 
