@@ -187,6 +187,13 @@ declare function render($queryParams, $outputParams as map(*), $value as node()*
       else $value
 };
 
+
+(:~
+ : ~:~:~:~:~:~:~:~:~
+ : templating reloaded
+ : ~:~:~:~:~:~:~:~:~
+ :)
+ 
 (:~
  : this function wrap the content in an HTML layout
  :
@@ -214,12 +221,12 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
   };
 
 (:~
- : this function wrap the content in an HTML layout
+ : this function iterates the pattern template with contents
  :
  : @param $queryParams the query params defined in restxq
- : @param $data the result of the query
+ : @param $data the result of the query to dispacth
  : @param $outputParams the serialization params
- : @return an updated HTML document and instantiate pattern
+ : @return instantiate the pattern with $data
  :
  :)
 declare function patternNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
@@ -249,7 +256,11 @@ declare updating function serialize($queryParams, $data as map(*), $outputParams
   return 
     switch ($value)
       case ($value instance of empty-sequence()) return ()
-      case ($value instance of node()* and fn:not(fn:empty($value))) return replace value of node $text with render($queryParams, $outputParams, $value)
-      default return if ($data instance of empty-sequence()) then () else replace value of node $text with replaceOrLeave($text, $data)
+      case ($value instance of text()) return 
+        replace value of node $text with $value
+      case ($value instance of node()* and fn:not(fn:empty($value))) return 
+        replace value of node $text with render($queryParams, $outputParams, $value)
+      default return 
+        replace value of node $text with replaceOrLeave($text, $data)
   };
  
