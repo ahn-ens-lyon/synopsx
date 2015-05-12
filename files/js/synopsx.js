@@ -1,17 +1,10 @@
 function init(){
   
-      /* $('div[data-url]').each(function(){
-       var target = $(this);
-       var url = target.data('url') //+'?pattern='+$(this).prop('tagName').toLowerCase()//;
-       var inc = $("<synopsx/>").load(url);
-       target.replaceWith(inc);
-      
-      }); */
-      
-      
-     
-     
-      
+      $('*[data-load]').each(function(){
+       //+'?pattern='+$(this).prop('tagName').toLowerCase()//;
+       $(this).load($(this).data('load') );     
+      }); 
+
       
      var menu = $('#navigation-menu');
       var menuToggle = $('#js-mobile-menu');

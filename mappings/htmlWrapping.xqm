@@ -71,7 +71,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
       for $text in .//*[@data-url] 
             let $incOutputParams := map:put($outputParams, 'layout', $text/@data-url || '.xhtml')
             let $inc :=  wrapper($queryParams, $data, $incOutputParams)
-            return replace node $text with fn:trace($inc),
+            return replace node $text with $inc,
       (: keys :)      
       for $text in .//@*
         where fn:matches($text, $regex)
