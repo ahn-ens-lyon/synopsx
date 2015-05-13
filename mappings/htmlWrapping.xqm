@@ -216,7 +216,7 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
       let $value := map:get($meta, $key) 
       return if ($key = 'content') 
         then replace node $text with patternNew($queryParams, $data, $outputParams)
-        else serialize($queryParams, $meta, $outputParams, $text, $value )
+        else renderNew($queryParams, $meta, $outputParams, $text, $value )
      )
   };
 
@@ -239,27 +239,29 @@ declare function patternNew($queryParams as map(*), $data as map(*), $outputPara
     $pattern/* update (
       for $text in .//@* | .//text()
       where fn:matches($text, $regex)
-      let $key := fn:replace($text, '\{|\}', '')
-      let $value := map:get($content, $key) 
-      return serialize($queryParams, $content, $outputParams, $text, $value)
+      (: let $keys := fn:replace(., '\{.*?\}', '$0') :)
+      let $keys := fn:replace($text, '\{|\}', '')
+      let $values := map:get($content, $keys) 
+      return renderNew($queryParams, $content, $outputParams, $text, $values)
      )
   };
-
+  
+  
 (:~
  : this function dispatch the rendering based on $outpoutParams
  :
  :) 
-declare updating function serialize($queryParams, $data as map(*), $outputParams, $text, $value) {
+declare updating function renderNew($queryParams, $data as map(*), $outputParams, $text, $value) {
   let $data := $data
   let $content := map:get($data, 'content')
   let $value := $value
-  return 
-    switch ($value)
-      case ($value instance of empty-sequence()) return ()
-      case ($value instance of xs:string) return 
-        replace value of node $text with $value
-      case ($value instance of node()* and fn:not(fn:empty($value))) return 
-        replace value of node $text with render($queryParams, $outputParams, $value)
-      default return 
-        replace value of node $text with replaceOrLeave($text, $data)
+  return typeswitch ($value)
+   case empty-sequence() return ()
+   case text() return replace value of node $text with $value
+   case xs:string return replace value of node $text with $value
+   case xs:integer return replace value of node $text with xs:string($value)
+   case node()* return 
+     for $node in $value 
+     return replace value of node $text with render($queryParams, $outputParams, $value)
+   default return replace value of node $text with render($queryParams, $outputParams, $value)
   };
