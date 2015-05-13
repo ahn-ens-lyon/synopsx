@@ -256,11 +256,10 @@ declare updating function serialize($queryParams, $data as map(*), $outputParams
   return 
     switch ($value)
       case ($value instance of empty-sequence()) return ()
-      case ($value instance of text()) return 
+      case ($value instance of xs:string) return 
         replace value of node $text with $value
       case ($value instance of node()* and fn:not(fn:empty($value))) return 
         replace value of node $text with render($queryParams, $outputParams, $value)
       default return 
         replace value of node $text with replaceOrLeave($text, $data)
   };
- 
