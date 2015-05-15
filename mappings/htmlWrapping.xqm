@@ -207,17 +207,15 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
   let $meta := map:get($data, 'meta')
   let $layout := map:get($outputParams, 'layout')
   let $wrap := fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $layout))
-  let $regex := '\{.+?\}'
+  let $regex := '\{(.+?)\}'
   return
     $wrap/* update (
-      for $text in .//@* | .//text()
-      where fn:matches($text, $regex)
-      let $key := fn:replace($text, '\{|\}', '')
-      let $value := map:get($meta, $key) 
+      for $node in .//*[fn:matches(text(), $regex) or fn:matches(@*, $regex)]
+      let $key := fn:analyze-string($node, $regex)//fn:group/text()
       return if ($key = 'content') 
-        then replace node $text with patternNew($queryParams, $data, $outputParams)
-        else renderNew($queryParams, $meta, $outputParams, $text, $value )
-     )
+        then replace node $node with patternNew($queryParams, $data, $outputParams)
+        else renderBis($queryParams, $meta, $outputParams, $node)
+      )
   };
 
 (:~
@@ -233,20 +231,37 @@ declare function patternNew($queryParams as map(*), $data as map(*), $outputPara
   let $contents := map:get($data, 'content')
   let $pattern := map:get($outputParams, 'pattern')
   let $pattern := fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $pattern))
-  let $regex := '\{.+?\}'
+  let $regex := '\{(.+?)\}'
   for $content in $contents
   return
     $pattern/* update (
-      for $text in .//@* | .//text()
-      where fn:matches($text, $regex)
-      (: let $keys := fn:replace(., '\{.*?\}', '$0') :)
-      let $keys := fn:replace($text, '\{|\}', '')
-      let $values := map:get($content, $keys) 
-      return renderNew($queryParams, $content, $outputParams, $text, $values)
-     )
+      for $node in .//*[fn:matches(./text(), $regex) or fn:matches(./@*, $regex) ]      
+      return renderBis($queryParams, $content, $outputParams, $node)
+      )
   };
   
-  
+(:~
+ : this function dispatch the rendering based on $outpoutParams
+ :
+ :) 
+declare updating function renderBis($queryParams as map(*), $data as map(*), $outputParams as map(*), $node as node()) {
+  let $regex := '\{(.+?)\}'
+  let $keys := fn:analyze-string($node, $regex)//fn:group/text()
+  for $key in $keys
+  let $value := map:get($data, $key) 
+  return if ($value instance of item()*) 
+    then replace value of node $node with $value
+    else typeswitch ($value)
+   case empty-sequence() return ()
+   case text() return replace value of node $node with replaceOrDelete($node, $value)
+   case xs:string return replace value of node $node with replaceOrDelete($node, $value)
+   case xs:integer return replace value of node $node with xs:string($value)
+   case node()* return 
+     for $node in $value 
+     return replace value of node $node with render($queryParams, $outputParams, $value)
+   default return replace value of node $node with render($queryParams, $outputParams, $value)
+  };
+
 (:~
  : this function dispatch the rendering based on $outpoutParams
  :
