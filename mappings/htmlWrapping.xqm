@@ -210,7 +210,7 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
   let $regex := '\{(.+?)\}'
   return
     $wrap/* update (
-      for $node in .//*[fn:matches(text(), $regex) or fn:matches(@*, $regex)]
+      for $node in .//*[fn:matches(text(), $regex)]
       let $key := fn:analyze-string($node, $regex)//fn:group/text()
       return if ($key = 'content') 
         then replace node $node with patternNew($queryParams, $data, $outputParams)
