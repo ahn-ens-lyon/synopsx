@@ -210,7 +210,7 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
   let $regex := '\{(.+?)\}'
   return
     $wrap/* update (
-      for $node in .//*[fn:matches(text(), $regex)]
+      for $node in .//*[fn:matches(text(), $regex)] | .//@*[fn:matches(., $regex)]
       let $key := fn:analyze-string($node, $regex)//fn:group/text()
       return if ($key = 'content') 
         then replace node $node with patternNew($queryParams, $data, $outputParams)
@@ -235,7 +235,7 @@ declare function patternNew($queryParams as map(*), $data as map(*), $outputPara
   for $content in $contents
   return
     $pattern/* update (
-      for $node in .//*[fn:matches(./text(), $regex) or fn:matches(./@*, $regex) ]
+      for $node in .//*[fn:matches(text(), $regex)] | .//@*[fn:matches(., $regex)]
       return render($queryParams, $content, $outputParams, $node)
       )
   };
@@ -256,5 +256,5 @@ declare updating function render($queryParams, $data as map(*), $outputParams, $
     case xs:integer return replace value of node $node with xs:string($values)
     case element()+ return replace node $node/text() with 
       (for $value in $values return render($queryParams, $outputParams, $value))
-    default return replace value of node $node with render($queryParams, $outputParams, $values)
+    default return replace value of node $node with 'default'
   };
