@@ -214,7 +214,7 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
       let $key := fn:analyze-string($node, $regex)//fn:group/text()
       return if ($key = 'content') 
         then replace node $node with patternNew($queryParams, $data, $outputParams)
-        else renderBis($queryParams, $meta, $outputParams, $node)
+        else render($queryParams, $meta, $outputParams, $node)
       )
   };
 
@@ -235,48 +235,26 @@ declare function patternNew($queryParams as map(*), $data as map(*), $outputPara
   for $content in $contents
   return
     $pattern/* update (
-      for $node in .//*[fn:matches(./text(), $regex) or fn:matches(./@*, $regex) ]      
-      return renderBis($queryParams, $content, $outputParams, $node)
+      for $node in .//*[fn:matches(./text(), $regex) or fn:matches(./@*, $regex) ]
+      return render($queryParams, $content, $outputParams, $node)
       )
-  };
-  
-(:~
- : this function dispatch the rendering based on $outpoutParams
- :
- :) 
-declare updating function renderBis($queryParams as map(*), $data as map(*), $outputParams as map(*), $node as node()) {
-  let $regex := '\{(.+?)\}'
-  let $keys := fn:analyze-string($node, $regex)//fn:group/text()
-  for $key in $keys
-  let $value := map:get($data, $key) 
-  return if ($value instance of item()*) 
-    then replace value of node $node with $value
-    else typeswitch ($value)
-   case empty-sequence() return ()
-   case text() return replace value of node $node with replaceOrDelete($node, $value)
-   case xs:string return replace value of node $node with replaceOrDelete($node, $value)
-   case xs:integer return replace value of node $node with xs:string($value)
-   case node()* return 
-     for $node in $value 
-     return replace value of node $node with render($queryParams, $outputParams, $value)
-   default return replace value of node $node with render($queryParams, $outputParams, $value)
   };
 
 (:~
  : this function dispatch the rendering based on $outpoutParams
  :
  :) 
-declare updating function renderNew($queryParams, $data as map(*), $outputParams, $text, $value) {
+declare updating function render($queryParams, $data as map(*), $outputParams, $node) {
+  let $regex := '\{(.+?)\}'
   let $data := $data
-  let $content := map:get($data, 'content')
-  let $value := $value
-  return typeswitch ($value)
-   case empty-sequence() return ()
-   case text() return replace value of node $text with $value
-   case xs:string return replace value of node $text with $value
-   case xs:integer return replace value of node $text with xs:string($value)
-   case node()* return 
-     for $node in $value 
-     return replace value of node $text with render($queryParams, $outputParams, $value)
-   default return replace value of node $text with render($queryParams, $outputParams, $value)
+  let $keys := fn:analyze-string($node, $regex)//fn:group/text()
+  let $values := map:get($data, $keys)
+    return typeswitch ($values)
+    case empty-sequence() return ()
+    case text() return replace value of node $node with $values
+    case xs:string return replace value of node $node with $values
+    case xs:integer return replace value of node $node with xs:string($values)
+    case element()+ return replace node $node/text() with 
+      (for $value in $values return render($queryParams, $outputParams, $value))
+    default return replace value of node $node with render($queryParams, $outputParams, $values)
   };
