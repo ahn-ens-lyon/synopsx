@@ -190,7 +190,7 @@ declare function render($queryParams, $outputParams as map(*), $value as node()*
 
 (:~
  : ~:~:~:~:~:~:~:~:~
- : templating reloaded
+ : templating reloaded !
  : ~:~:~:~:~:~:~:~:~
  :)
  
@@ -241,10 +241,14 @@ declare function patternNew($queryParams as map(*), $data as map(*), $outputPara
   };
 
 (:~
- : this function dispatch the rendering based on $outpoutParams
+ : this function dispatch the content with the data
  :
+ : @param $queryParams the query params defined in restxq
+ : @param $data the result of the query to dispacth (meta or content)
+ : @param $outputParams the serialization params
+ : @return an updated node with the data
  :) 
-declare updating function render($queryParams, $data as map(*), $outputParams, $node) {
+declare updating function render($queryParams as map(*), $data as map(*), $outputParams as map(*), $node as node()) {
   let $regex := '\{(.+?)\}'
   let $data := $data
   let $keys := fn:analyze-string($node, $regex)//fn:group/text()
@@ -254,7 +258,12 @@ declare updating function render($queryParams, $data as map(*), $outputParams, $
     case text() return replace value of node $node with $values
     case xs:string return replace value of node $node with $values
     case xs:integer return replace value of node $node with xs:string($values)
-    case element()+ return replace node $node/text() with 
-      (for $value in $values return render($queryParams, $outputParams, $value))
+    case element()+ return replace node $node with 
+      for $value in $values 
+      return element {fn:name($node)} { 
+        for $att in $node/@* return $att, 
+        render($queryParams, $outputParams, $value)
+      }
     default return replace value of node $node with 'default'
   };
+  
