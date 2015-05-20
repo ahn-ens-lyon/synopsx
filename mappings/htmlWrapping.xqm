@@ -248,7 +248,7 @@ declare function patternNew($queryParams as map(*), $data as map(*), $outputPara
  : @param $outputParams the serialization params
  : @return an updated node with the data
  :) 
-declare updating function render($queryParams as map(*), $data as map(*), $outputParams as map(*), $node as node()) {
+declare %updating function render($queryParams as map(*), $data as map(*), $outputParams as map(*), $node as node()) {
   let $regex := '\{(.+?)\}'
   let $data := $data
   let $keys := fn:analyze-string($node, $regex)//fn:group/text()
