@@ -56,10 +56,6 @@ declare default function namespace 'synopsx.mappings.htmlWrapping' ;
  : @return an updated HTML document and instantiate pattern
  :
  :)
- 
- 
-
- 
 declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
   let $meta := map:get($data, 'meta')
   let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
@@ -67,7 +63,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
   let $regex := '\{(.*?)\}'
   return
     $wrap/* update (
-       (: todo : call wrapping, rendering and injecting functions for these inc layouts too :)
+      (: todo : call wrapping, rendering and injecting functions for these inc layouts too :)
       for $text in .//*[@data-url] 
             let $incOutputParams := map:put($outputParams, 'layout', $text/@data-url || '.xhtml')
             let $inc :=  wrapper($queryParams, $data, $incOutputParams)
@@ -190,3 +186,84 @@ declare function render($queryParams, $outputParams as map(*), $value as node()*
            return xslt:transform($node, synopsx.lib.commons:getXsltPath($queryParams, $xsl))/*
       else $value
 };
+
+
+(:~
+ : ~:~:~:~:~:~:~:~:~
+ : templating reloaded !
+ : ~:~:~:~:~:~:~:~:~
+ :)
+ 
+(:~
+ : this function wrap the content in an HTML layout
+ :
+ : @param $queryParams the query params defined in restxq
+ : @param $data the result of the query
+ : @param $outputParams the serialization params
+ : @return an updated HTML document and instantiate pattern
+ :
+ :)
+declare function wrapperNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
+  let $meta := map:get($data, 'meta')
+  let $layout := map:get($outputParams, 'layout')
+  let $wrap := fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $layout))
+  let $regex := '\{(.+?)\}'
+  return
+    $wrap/* update (
+      for $node in .//*[fn:matches(text(), $regex)] | .//@*[fn:matches(., $regex)]
+      let $key := fn:analyze-string($node, $regex)//fn:group/text()
+      return if ($key = 'content') 
+        then replace node $node with patternNew($queryParams, $data, $outputParams)
+        else render($queryParams, $meta, $outputParams, $node)
+      )
+  };
+
+(:~
+ : this function iterates the pattern template with contents
+ :
+ : @param $queryParams the query params defined in restxq
+ : @param $data the result of the query to dispacth
+ : @param $outputParams the serialization params
+ : @return instantiate the pattern with $data
+ :
+ :)
+declare function patternNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
+  let $contents := map:get($data, 'content')
+  let $pattern := map:get($outputParams, 'pattern')
+  let $pattern := fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $pattern))
+  let $regex := '\{(.+?)\}'
+  for $content in $contents
+  return
+    $pattern/* update (
+      for $node in .//*[fn:matches(text(), $regex)] | .//@*[fn:matches(., $regex)]
+      return render($queryParams, $content, $outputParams, $node)
+      )
+  };
+
+(:~
+ : this function dispatch the content with the data
+ :
+ : @param $queryParams the query params defined in restxq
+ : @param $data the result of the query to dispacth (meta or content)
+ : @param $outputParams the serialization params
+ : @return an updated node with the data
+ :) 
+declare %updating function render($queryParams as map(*), $data as map(*), $outputParams as map(*), $node as node()) {
+  let $regex := '\{(.+?)\}'
+  let $data := $data
+  let $keys := fn:analyze-string($node, $regex)//fn:group/text()
+  let $values := map:get($data, $keys)
+    return typeswitch ($values)
+    case empty-sequence() return ()
+    case text() return replace value of node $node with $values
+    case xs:string return replace value of node $node with $values
+    case xs:integer return replace value of node $node with xs:string($values)
+    case element()+ return replace node $node with 
+      for $value in $values 
+      return element {fn:name($node)} { 
+        for $att in $node/@* return $att, 
+        render($queryParams, $outputParams, $value)
+      }
+    default return replace value of node $node with 'default'
+  };
+  
