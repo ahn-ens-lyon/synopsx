@@ -121,6 +121,14 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
       else   fn:QName('synopsx.models.mixed', 'notFound') (: give default or error :)
 };
 
+(:~
+ : this function build the html content and send it to the wrapper
+ :
+ : @param $queryParams the query params
+ : @param $queryParams the output params
+ : @return the html content or an error page
+ : @rmq this function requires to declare namespaces in synopsx (not so user friendly)
+ :)
 declare function htmlDisplay($queryParams as map(*), $outputParams as map(*)) as element(*){
  try {
     let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
