@@ -267,7 +267,7 @@ declare %updating function associate($queryParams as map(*), $data as map(*), $o
       then 
         replace node $node/parent::* with 
           for $value in $values 
-          return element {fn:name($node)} { 
+          return element {fn:name($node/parent::*)} { 
           attribute {fn:name($node)} {$value}
           }
     else
@@ -286,4 +286,3 @@ declare %updating function associate($queryParams as map(*), $data as map(*), $o
       }
     default return replace value of node $node with 'default'
   };
-  
