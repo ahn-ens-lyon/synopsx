@@ -136,14 +136,14 @@ declare function label($node as element(tei:label)+, $options) {
  :)
 declare function hi($node as element(tei:hi)+, $options) {
   switch ($node)
-  case ($node/@rend='italic' or $node/@rend='it') return <em>{ passthru($node, $options) }</em> 
-  case ($node/@rend='bold' or $node/@rend='b') return <strong>{ passthru($node, $options) }</strong>
-  case ($node/@rend='superscript' or $node/@rend='sup') return <sup>{ passthru($node, $options) }</sup>
-  case ($node/@rend='underscript' or $node/@rend='sub') return <sub>{ passthru($node, $options) }</sub>
-  case ($node/@rend='underline' or $node/@rend='u') return <u>{ passthru($node, $options) }</u>
-  case ($node/@rend='strikethrough') return <del class="hi">{ passthru($node, $options) }</del>
-  case ($node/@rend='caps' or $node/@rend='uppercase') return <span calss="uppercase">{ passthru($node, $options) }</span>
-  case ($node/@rend='smallcaps' or $node/@rend='sc') return <span class="small-caps">{ passthru($node, $options) }</span>
+  case ($node[@rend='italic' or @rend='it']) return <em>{ passthru($node, $options) }</em> 
+  case ($node[@rend='bold' or @rend='b']) return <strong>{ passthru($node, $options) }</strong>
+  case ($node[@rend='superscript' or @rend='sup']) return <sup>{ passthru($node, $options) }</sup>
+  case ($node[@rend='underscript' or @rend='sub']) return <sub>{ passthru($node, $options) }</sub>
+  case ($node[@rend='underline' or @rend='u']) return <u>{ passthru($node, $options) }</u>
+  case ($node[@rend='strikethrough']) return <del class="hi">{ passthru($node, $options) }</del>
+  case ($node[@rend='caps' or @rend='uppercase']) return <span calss="uppercase">{ passthru($node, $options) }</span>
+  case ($node[@rend='smallcaps' or @rend='sc']) return <span class="small-caps">{ passthru($node, $options) }</span>
   default return <span class="{$node/@rend}">{ passthru($node, $options) }</span>
 };
 
