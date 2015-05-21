@@ -31,8 +31,8 @@ declare default function namespace 'synopsx.mappings.tei2html' ;
 (:~
  : this function 
  :)
-declare function entry($node as node()*, $options as xs:string) as element() {
-  <div>{ dispatch($node, $options) }</div>
+declare function entry($node as node()*, $options as xs:string) as item()* {
+  dispatch($node, $options)
 };
 
 (:~
@@ -63,6 +63,8 @@ declare function dispatch($node as node()*, $options as xs:string) as item()* {
     case element(tei:bibl) return biblItem($node, $options)
     case element(tei:analytic) return getAnalytic($node, $options)
     case element(tei:monogr) return getMonogr($node, $options)
+    case element(tei:idno) return ()
+    case element(tei:extent) return ()
     case element(tei:edition) return getEdition($node, $options)
     (: case element(tei:author) return getResponsability($node, $options) :)
     (: case element(tei:editor) return getResponsability($node, $options) :)
@@ -265,5 +267,8 @@ declare function getImprint($node, $options) {
   for $publisher in $node/tei:publisher
   return 
     if ($publisher) then ($publisher/text(), ', ')
-    else 's.p.'
+    else 's.p.',
+  for $date in $node/tei:date
+  return $date || '.'
 };
+
