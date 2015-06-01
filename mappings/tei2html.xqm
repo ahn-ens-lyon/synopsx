@@ -31,7 +31,6 @@ declare default function namespace 'synopsx.mappings.tei2html' ;
 (:~
  : this function 
  :)
-
 declare function entry($node as node()*, $options as xs:string) as item()* {
   dispatch($node, $options)
 };
