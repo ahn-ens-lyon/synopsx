@@ -177,7 +177,9 @@ declare function replaceOrDelete($text as xs:string, $input as map(*)) as xs:str
 declare function render($queryParams, $outputParams as map(*), $value as node()* ) as node()* {
   let $xquery := map:get($outputParams, 'xquery')
   let $xsl :=  map:get($outputParams, 'xsl')
-  let $options := 'option'
+  let $options := map{
+    'lb' : map:get($outputParams, 'lb')
+    }
   return 
     if ($xquery) 
       then synopsx.mappings.tei2html:entry($value, $options)
