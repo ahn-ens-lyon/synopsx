@@ -267,7 +267,9 @@ declare %updating function associate($queryParams as map(*), $data as map(*), $o
       then 
         replace node $node/parent::* with 
           element {fn:name($node/parent::*)} {
-            attribute {fn:name($node)} {fn:string-join($values, ' ')}
+          for $att in $node/parent::*/(@* except $node) return $att, 
+          attribute {fn:name($node)} {fn:string-join($values, ' ')},
+          $node/parent::*/text()
           }
       else
         replace node $node with 
