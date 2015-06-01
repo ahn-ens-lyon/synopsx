@@ -273,7 +273,7 @@ declare %updating function associate($queryParams as map(*), $data as map(*), $o
         replace node $node with 
         for $value in $values 
         return element {fn:name($node)} { 
-          for $att in $node/@* return $att,
+          for $att in $node/@* return $att, 
           $value
         } 
     case xs:integer return replace value of node $node with xs:string($values)
