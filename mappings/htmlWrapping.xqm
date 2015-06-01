@@ -174,7 +174,7 @@ declare function replaceOrDelete($text as xs:string, $input as map(*)) as xs:str
  :
  : @todo check the xslt with an xslt 1.0
  :)
-declare function render($queryParams as map(*), $outputParams as map(*), $value as node()* ) as node()* {
+declare function render($queryParams as map(*), $outputParams as map(*), $value as node()* ) as item()* {
   let $xquery := map:get($outputParams, 'xquery')
   let $xsl :=  map:get($outputParams, 'xsl')
   let $options := map{
@@ -266,17 +266,16 @@ declare %updating function associate($queryParams as map(*), $data as map(*), $o
       if ($node instance of attribute()) (: when key is an attribute value :)
       then 
         replace node $node/parent::* with 
-          for $value in $values 
-          return element {fn:name($node/parent::*)} { 
-          attribute {fn:name($node)} {$value}
+          element {fn:name($node/parent::*)} {
+            attribute {fn:name($node)} {fn:string-join($values, ' ')}
           }
-    else
-      replace node $node with 
-      for $value in $values 
-      return element {fn:name($node)} { 
-        for $att in $node/@* return $att,
-        $value
-      } 
+      else
+        replace node $node with 
+        for $value in $values 
+        return element {fn:name($node)} { 
+          for $att in $node/@* return $att,
+          $value
+        } 
     case xs:integer return replace value of node $node with xs:string($values)
     case element()+ return replace node $node with 
       for $value in $values 
@@ -286,3 +285,4 @@ declare %updating function associate($queryParams as map(*), $data as map(*), $o
       }
     default return replace value of node $node with 'default'
   };
+  
