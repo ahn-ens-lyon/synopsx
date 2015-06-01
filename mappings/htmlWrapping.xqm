@@ -263,7 +263,7 @@ declare %updating function associate($queryParams as map(*), $data as map(*), $o
     case xs:string+ return 
       if ($node instance of attribute()) (: when key is an attribute value :)
       then 
-        replace node $node/parent::* with 
+        replace node $node/parent::* with
           element {fn:name($node/parent::*)} {
             attribute {fn:name($node)} {fn:string-join($values, ' ')}
           }
@@ -273,7 +273,7 @@ declare %updating function associate($queryParams as map(*), $data as map(*), $o
         return element {fn:name($node)} { 
           for $att in $node/@* return $att, 
           $value
-        } 
+        }
     case xs:integer return replace value of node $node with xs:string($values)
     case element()+ return replace node $node with 
       for $value in $values 
