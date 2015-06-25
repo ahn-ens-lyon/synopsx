@@ -174,10 +174,12 @@ declare function replaceOrDelete($text as xs:string, $input as map(*)) as xs:str
  :
  : @todo check the xslt with an xslt 1.0
  :)
-declare function render($queryParams, $outputParams as map(*), $value as node()* ) as node()* {
+declare function render($queryParams as map(*), $outputParams as map(*), $value as node()* ) as item()* {
   let $xquery := map:get($outputParams, 'xquery')
   let $xsl :=  map:get($outputParams, 'xsl')
-  let $options := 'option'
+  let $options := map{
+    'lb' : map:get($outputParams, 'lb')
+    }
   return 
     if ($xquery) 
       then synopsx.mappings.tei2html:entry($value, $options)
@@ -201,6 +203,7 @@ declare function render($queryParams, $outputParams as map(*), $value as node()*
  : @param $data the result of the query
  : @param $outputParams the serialization params
  : @return an updated HTML document and instantiate pattern
+ : @bug can't update a element more than once
  :
  :)
 declare function wrapperNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
@@ -214,7 +217,7 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
       let $key := fn:analyze-string($node, $regex)//fn:group/text()
       return if ($key = 'content') 
         then replace node $node with patternNew($queryParams, $data, $outputParams)
-        else render($queryParams, $meta, $outputParams, $node)
+        else associate($queryParams, $meta, $outputParams, $node)
       )
   };
 
@@ -236,7 +239,7 @@ declare function patternNew($queryParams as map(*), $data as map(*), $outputPara
   return
     $pattern/* update (
       for $node in .//*[fn:matches(text(), $regex)] | .//@*[fn:matches(., $regex)]
-      return render($queryParams, $content, $outputParams, $node)
+      return associate($queryParams, $content, $outputParams, $node)
       )
   };
 
@@ -247,8 +250,10 @@ declare function patternNew($queryParams as map(*), $data as map(*), $outputPara
  : @param $data the result of the query to dispacth (meta or content)
  : @param $outputParams the serialization params
  : @return an updated node with the data
+ : @bug doesn't treat mixed content
+ : @bug doesn't copy other attribute when updating attribute with a sequence
  :) 
-declare %updating function render($queryParams as map(*), $data as map(*), $outputParams as map(*), $node as node()) {
+declare %updating function associate($queryParams as map(*), $data as map(*), $outputParams as map(*), $node as node()) {
   let $regex := '\{(.+?)\}'
   let $data := $data
   let $keys := fn:analyze-string($node, $regex)//fn:group/text()
@@ -257,6 +262,22 @@ declare %updating function render($queryParams as map(*), $data as map(*), $outp
     case empty-sequence() return ()
     case text() return replace value of node $node with $values
     case xs:string return replace value of node $node with $values
+    case xs:string+ return 
+      if ($node instance of attribute()) (: when key is an attribute value :)
+      then 
+        replace node $node/parent::* with 
+          element {fn:name($node/parent::*)} {
+          for $att in $node/parent::*/(@* except $node) return $att, 
+          attribute {fn:name($node)} {fn:string-join($values, ' ')},
+          $node/parent::*/text()
+          }
+    else
+      replace node $node with 
+      for $value in $values 
+      return element {fn:name($node)} { 
+        for $att in $node/@* return $att,
+        $value
+      } 
     case xs:integer return replace value of node $node with xs:string($values)
     case element()+ return replace node $node with 
       for $value in $values 
@@ -266,4 +287,5 @@ declare %updating function render($queryParams as map(*), $data as map(*), $outp
       }
     default return replace value of node $node with 'default'
   };
+  
   
