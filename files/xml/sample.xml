@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8"?><TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>TEI by Example. Module 4: Poetry</title>
+                <author xml:id="EV">Edward Vanhoutte</author>
+                <author xml:id="RvdB">Ron Van den Branden</author>
+                <editor>Edward Vanhoutte</editor>
+                <editor>Ron Van den Branden</editor>
+                <editor xml:id="MT">Melissa Terras</editor>
+                <sponsor>Association for Literary and Linguistic Computing (ALLC)</sponsor>
+                <sponsor>Centre for Digital Humanities (CDH), University College London, UK</sponsor>
+                <sponsor>Centre for Computing in the Humanities (CCH), King's College London, UK</sponsor>
+                <sponsor>Centre for Scholarly Editing and Document Studies (CTB) , Royal Academy of Dutch Language and Literature, Belgium</sponsor>
+                <funder>
+                    <address>
+                        <addrLine>Centre for Scholarly Editing and Document Studies (CTB)</addrLine>
+                        <addrLine>Royal Academy of Dutch Language and Literature</addrLine>
+                        <addrLine>Koningstraat 18</addrLine>
+                        <addrLine>9000 Gent</addrLine>
+                        <addrLine>Belgium</addrLine>
+                    </address>
+                    <email>ctb@kantl.be</email>
+                </funder>
+                <principal>Edward Vanhoutte</principal>
+                <principal>Melissa Terras</principal>
+                <principal>Ron Van den Branden</principal>
+            </titleStmt>
+            <publicationStmt>
+                <publisher>Centre for Scholarly Editing and Document Studies (CTB) , Royal Academy of Dutch Language and Literature, Belgium</publisher>
+                <distributor>Centre for Scholarly Editing and Document Studies (CTB) , Royal Academy of Dutch Language and Literature, Belgium</distributor>
+                <pubPlace>Gent</pubPlace>
+                <address>
+                        <addrLine>Centre for Scholarly Editing and Document Studies (CTB)</addrLine>
+                        <addrLine>Royal Academy of Dutch Language and Literature</addrLine>
+                        <addrLine>Koningstraat 18</addrLine>
+                        <addrLine>9000 Gent</addrLine>
+                        <addrLine>Belgium</addrLine>
+                    </address>
+                <availability status="free">
+                    <p>Licensed under a <ref target="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution ShareAlike 3.0 License</ref></p>
+                </availability>
+                <date when="2010-07-09">9 July 2010</date>
+            </publicationStmt>
+            <seriesStmt>
+                <title>TEI By Example.</title>
+                <respStmt>
+                    <name>Edward Vanhoutte</name>
+                    <resp>editor</resp>
+                </respStmt>
+                <respStmt>
+                    <name>Ron Van den Branden</name>
+                    <resp>editor</resp>
+                </respStmt>
+                <respStmt>
+                    <name>Melissa Terras</name>
+                    <resp>editor</resp>
+                </respStmt>
+            </seriesStmt>
+            <sourceDesc>
+                <p>Digitally born</p>
+            </sourceDesc>
+        </fileDesc>
+        <encodingDesc>
+            <projectDesc>
+                <p>TEI By Example offers a series of freely available online tutorials walking individuals through the different stages in marking up a document in TEI (Text Encoding Initiative). Besides a general introduction to text encoding, step-by-step tutorial modules provide example-based introductions to eight different aspects of electronic text markup for the humanities. Each tutorial module is accompanied with a dedicated examples section, illustrating actual TEI encoding practise with real-life examples. The theory of the tutorial modules can be tested in interactive tests and exercises.</p>
+            </projectDesc>
+        </encodingDesc>
+        <profileDesc>
+            <langUsage>
+                <language ident="en-GB">en-GB</language>
+            </langUsage>
+        </profileDesc>
+        <revisionDesc>
+            <change when="2010-07-13" who="#RvdB"><list><item>added distinction <gi>gi</gi> -- <tag>gi scheme="..."</tag> -- <gi>tag</gi></item>
+                <item>final spellcheck</item></list></change>
+            <change when="2010-07-09" who="#RvdB">release</change>    
+            <change when="2010-07-08" who="#EV">revision and added 2.3. grouping structures and 6.2. dedications</change>
+            <change when="2007-10-22" who="#EV">added 6.2 Acrostics</change>
+                <change when="2007-10-22" who="#EV"><list><item>-added new prose with internal rhyme under 3.1</item><item>inserted enjambements under 4.4 and rewrote that section</item><item>edited summary of 4</item><item>added summary to 5</item><item>removed 'suggestions' div</item></list></change>
+            <change when="2007-10-11" who="#EV">correction of text</change>
+            <change when="2007-10-11" who="#EV">revision</change>
+            <change when="2007-09-25" who="#EV">revision</change>
+            <change when="2007-05-22" who="#RvdB">revision</change>            
+        </revisionDesc>
+    </teiHeader>
+    <text xml:id="TBED04v00" type="example">
+        <body><head>Examples for Module 4: Poetry</head><div xml:id="blake" type="example">
+        <head>William Blake: <title>Songs of Innocence and of Experience</title></head>
+        <p>This example features a fragment of William Blake's <title>Songs of innocence and of experience</title>, encoded and made available by the University of Virginia Library, for their Text Collection. It forms a good example of how an anthology can be encoded. The work is considered as a single text (<gi>text</gi>) whose <gi>body</gi> contains both books. Both <title>Songs of Innocence</title>  and <title>Songs of Experience</title> are encoded as <gi>div1</gi> numbered text divisions, with a <att>type</att> attribute with value <val>book</val>. Inside these books, all 45 poems are encoded as <tag>div2 type="poem"</tag>. All poems have a title (<gi>head</gi>) and are subdivided into stanzas (<tag>lg type="stanza"</tag>) and lines (<gi>l</gi>). Page breaks are recorded with <gi>pb/</gi> elements, whose <att>n</att> attribute contain the page number.</p>
+    <egXML xmlns="http://www.tei-c.org/ns/Examples">
+            <text xmlns="http://www.tei-c.org/ns/1.0" xml:id="d1">
+                    <body xml:id="d2"><div1 type="book" xml:id="d3">
+                                    <head>Songs of Innocence</head>
+                                    <pb n="4"/>
+                                    <div2 type="poem" xml:id="d4">
+                                            <head>Introduction</head>
+                                            <lg type="stanza">
+                                                    <l>Piping down the valleys wild, </l>
+                                                    <l>Piping songs of pleasant glee, </l>
+                                                    <l>On a cloud I saw a child, </l>
+                                                    <l>And he laughing said to me: </l>
+                                            </lg>
+                                            <lg type="stanza">
+                                                    <l>"Pipe a song about a Lamb!" </l>
+                                                    <l>So I piped with merry chear. </l>
+                                                    <l>"Piper, pipe that song again;" </l>
+                                                    <l>So I piped, he wept to hear. </l>
+                                            </lg>
+                                            <lg type="stanza">
+                                                    <l>"Drop thy pipe, thy happy pipe; </l>
+                                                    <l>Sing thy songs of happy chear:" </l>
+                                                    <l>So I sung the same again, </l>
+                                                    <l>While he wept with joy to hear. </l>
+                                            </lg>
+                                            <lg type="stanza">
+                                                    <l>"Piper, sit thee down and write </l>
+                                                    <l>In a book, that all may read." </l>
+                                                    <l>So he vanis'd from my sight, </l>
+                                                    <l>And I pluck'd a hollow reed, </l>
+                                            </lg>
+                                            <lg type="stanza">
+                                                    <l>And I made a rural pen, </l>
+                                                    <l>And I stain'd the water clear, </l>
+                                                    <l>And I wrote my happy songs </l>
+                                                    <l>Every child may joy to hear. </l>
+                                            </lg>
+                                    </div2>
+                                    <pb n="5"/>
+                                    <div2 type="poem" xml:id="d5">
+                                            <head>The Shepherd</head>
+                                            <lg type="stanza">
+                                                    <l>How sweet is the Shepherd's sweet lot! </l>
+                                                    <l>From the morn to the evening he strays; </l>
+                                                    <l>He shall follow his sheep all the day, </l>
+                                                    <l>And his tongue shall be filled with praise. </l>
+                                            </lg>
+                                            <lg type="stanza">
+                                                    <l>For he hears the lamb's innocent call, </l>
+                                                    <l>And he hears the ewe's tender reply; </l>
+                                                    <l>He is watchful while they are in peace, </l>
+                                                    <l>For they know when their Shepherd is nigh. </l>
+                                            </lg>
+                                    </div2>
+                                    <pb n="6"/>
+                                    <div2 type="poem" xml:id="d6">
+                                            <head>The Ecchoing Green</head>
+                                            <lg type="stanza">
+                                                    <l>The Sun does arise, </l>
+                                                    <l>And make happy the skies; </l>
+                                                    <l>The merry bells ring </l>
+                                                    <l>To welcome the Spring; </l>
+                                                    <l>The sky-lark and thrush, </l>
+                                                    <l>The birds of the bush, </l>
+                                                    <l>Sing louder around </l>
+                                                    <l>To the bells' chearful sound, </l>
+                                                    <l>While our sports shall be seen </l>
+                                                    <l>On the Ecchoing Green. </l>
+                                            </lg>
+                                            <lg type="stanza">
+                                                    <l>Old John, with white hair, </l>
+                                                    <l>Does laugh away care, </l>
+                                                    <l>Sitting under the oak, </l>
+                                                    <l>Among the old folk. <pb n="7"/></l>
+                                                    <l>They laugh at our play, </l>
+                                                    <l>And soon they all say: </l>
+                                                    <l>"Such, such were the joys </l>
+                                                    <l>When we all, girls &amp; boys, </l>
+                                                    <l>In our youth time were seen </l>
+                                                    <l>On the Ecchoing Green." </l>
+                                            </lg>
+                                            <lg type="stanza">
+                                                    <l>Till the little ones, weary, </l>
+                                                    <l>No more can be merry; </l>
+                                                    <l>The sun does descend, </l>
+                                                    <l>And our sports have an end. </l>
+                                                    <l>Round the laps of their mothers </l>
+                                                    <l>Many sisters and brothers, </l>
+                                                    <l>Like birds in their nest, </l>
+                                                    <l>Are ready for rest, </l>
+                                                    <l>And sport no more seen </l>
+                                                    <l>On the darkening Green. </l>
+                                            </lg>
+                                    </div2>
+                                    <pb n="8"/>
+                                    <div2 type="poem" xml:id="d7">
+                                            <head>The Lamb</head>
+                                            <lg type="stanza">
+                                                    <l rend="indent">Little lamb, who made thee? </l>
+                                                    <l rend="indent">Dost thou know who made thee? </l>
+                                                    <l>Gave thee life &amp; bid thee feed, </l>
+                                                    <l>By the stream &amp; o'er the mead; </l>
+                                                    <l>Gave thee clothing of delight, </l>
+                                                    <l>Softest clothing, wooly, bright; </l>
+                                                    <l>Gave thee such a tender voice, </l>
+                                                    <l>Making all the vales rejoice? </l>
+                                                    <l rend="indent">Little Lamb, who made thee? </l>
+                                                    <l rend="indent">Dost thou know who made thee? </l>
+                                            </lg>
+                                            <lg type="stanza">
+                                                    <l rend="indent">Little Lamb, I'll tell thee, </l>
+                                                    <l rend="indent">Little Lamb, I'll tell thee: </l>
+                                                    <l>He is called by thy name, </l>
+                                                    <l>For he calls himself a Lamb. </l>
+                                                    <l>He is meek &amp; he is mild; </l>
+                                                    <l>He became a little child. </l>
+                                                    <l>I a child &amp; thou a lamb. </l>
+                                                    <l>We are called by his name. </l>
+                                                    <l rend="indent">Little Lamb, God bless thee! </l>
+                                                    <l rend="indent">Little Lamb, God bless thee!</l>
+                                            </lg>
+                                    </div2>
+                                    <!-- ... -->
+                            </div1></body>
+            </text>
+    </egXML>
+        <note type="bibl">Based on a TEI P4 XML encoding of <bibl><author>Blake, William</author> (<date when="1789">1789</date>). <title>Songs of Innocence and of Experience</title>. <pubPlace>London</pubPlace>: <publisher>W Blake</publisher>.</bibl> Encoded and made available by the University of Virginia Library, Text Collection at <ref target="http://etext.lib.virginia.edu/toc/modeng/public/BlaSong.html">http://etext.lib.virginia.edu/toc/modeng/public/BlaSong.html</ref></note>
+        <!-- 
+                $Date: 2010-07-13 17:36:06 +0200 (di, 13 jul 2010) $
+                $Id: blake.xml 251 2010-07-13 15:36:06Z ron.vandenbranden $  -->
+</div><div xml:id="browning" type="example">
+    <head>Robert Browning: <title>Porphyria's Lover</title></head>
+    <p>The following example is the poem <title>Porphyria's Lover</title> by Robert Browning. Although no formal line groups are discerned, it has a systematic rhyme scheme repeating every 5 lines. This is indicated in the outmost <gi>lg</gi>'s <att>rhyme</att> attribute. Some of the lines break up syntactic sentences; those have been marked with the value "yes" for an <att>enjamb</att> attribute.</p>
+    <egXML xmlns="http://www.tei-c.org/ns/Examples">
+        <lg rhyme="ababb">
+            <l>THE rain set early in to-night,</l>
+            <l>The sullen wind was soon awake,</l>
+            <l>It tore the elm-tops down for spite,</l>
+            <l>And did its worst to vex the lake:</l>
+            <l>I listen'd with heart fit to break.</l>
+            <l>When glided in Porphyria; straight</l>
+            <l>She shut the cold out and the storm,</l>
+            <l enjamb="yes">And kneel'd and made the cheerless grate</l>
+            <l>Blaze up, and all the cottage warm;</l>
+            <l enjamb="yes">Which done, she rose, and from her form</l>
+            <l>Withdrew the dripping cloak and shawl,</l>
+            <l enjamb="yes">And laid her soil'd gloves by, untied</l>
+            <l>Her hat and let the damp hair fall,</l>
+            <l>And, last, she sat down by my side</l>
+            <l>And call'd me. When no voice replied,</l>
+            <l>She put my arm about her waist,</l>
+            <l>And made her smooth white shoulder bare,</l>
+            <l>And all her yellow hair displaced,</l>
+            <l>And, stooping, made my cheek lie there,</l>
+            <l>And spread, o'er all, her yellow hair,</l>
+            <l enjamb="yes">Murmuring how she loved me—she</l>
+            <l>Too weak, for all her heart's endeavour,</l>
+            <l>To set its struggling passion free</l>
+            <l>From pride, and vainer ties dissever,</l>
+            <l>And give herself to me for ever.</l>
+            <l>But passion sometimes would prevail,</l>
+            <l>Nor could to-night's gay feast restrain</l>
+            <l>A sudden thought of one so pale</l>
+            <l>For love of her, and all in vain:</l>
+            <l>So, she was come through wind and rain.</l>
+            <l>Be sure I look'd up at her eyes</l>
+            <l>Happy and proud; at last I knew</l>
+            <l enjamb="yes">Porphyria worshipp'd me; surprise</l>
+            <l>Made my heart swell, and still it grew</l>
+            <l>While I debated what to do.</l>
+            <l>That moment she was mine, mine, fair,</l>
+            <l>Perfectly pure and good: I found</l>
+            <l enjamb="yes">A thing to do, and all her hair</l>
+            <l>In one long yellow string I wound</l>
+            <l>Three times her little throat around,</l>
+            <l>And strangled her. No pain felt she;</l>
+            <l>I am quite sure she felt no pain.</l>
+            <l>As a shut bud that holds a bee,</l>
+            <l enjamb="yes">I warily oped her lids: again</l>
+            <l>Laugh'd the blue eyes without a stain.</l>
+            <l>And I untighten'd next the tress</l>
+            <l enjamb="yes">About her neck; her cheek once more</l>
+            <l>Blush'd bright beneath my burning kiss:</l>
+            <l>I propp'd her head up as before,</l>
+            <l>Only, this time my shoulder bore</l>
+            <l>Her head, which droops upon it still:</l>
+            <l>The smiling rosy little head,</l>
+            <l>So glad it has its utmost will,</l>
+            <l>That all it scorn'd at once is fled,</l>
+            <l>And I, its love, am gain'd instead!</l>
+            <l enjamb="yes">Porphyria's love: she guess'd not how</l>
+            <l>Her darling one wish would be heard.</l>
+            <l>And thus we sit together now,</l>
+            <l>And all night long we have not stirr'd,</l>
+            <l>And yet God has not said a word!</l>
+        </lg>
+    </egXML>
+    <note type="bibl">TBE crafted example encoding of <title level="a">Porphyria's Lover</title>. In: <bibl><author>Browning, Robert</author> (<date when="1842">1842</date>), <title level="m">Dramatic Lyrics</title>.</bibl>
+    </note>
+    <!-- 
+        $Date: 2010-07-13 17:36:06 +0200 (di, 13 jul 2010) $
+        $Id: browning.xml 251 2010-07-13 15:36:06Z ron.vandenbranden $  -->
+</div><div xml:id="carroll" type="example">
+    <head>Lewis Carroll: <title>The Mouse's Tale</title></head>
+    <p>The following example is an excerpt from Lewis Carroll's <title>The Mouse's Tale</title>, a poem appearing in the third chapter of <title>Alice in Wonderland</title>. It is a concrete poem in which the lines consist of only a couple of words, laid out in such a way that they visualise the mouse's winding tail:</p>
+    <figure><graphic url="images/examples/TBED04v00/aliceMouse.jpg"/></figure>
+    <p>For the encoder, this specific visual layout challenges the TEI's orientation towards logical structures to some extent. In the example, the visual lines are encoded as logical lines (<gi>l</gi>); the visual particularities (font size, indentation) are formalised as values of a <att>rend</att> attribute on each line. Of course, any value system is allowed for the <att>rend</att> attribute; it's up to the rendition layer to decide how to interpret these values and format them on the screen / in print.</p>
+    <p>Alternatively, the lines could have been treated on a more logical level, spanning multiple physical lines. The line breaks then could have been encoded with <gi>lb/</gi> elements, and specific visual characteristics as values for <att>rend</att> attributes on <gi>seg</gi> elements. Since the spaces are quite significant, the TEI special purpose element <ref target="http://www.tei-c.org/release/doc/tei-p5-doc/html/ref-space.html"><gi>space</gi></ref> could have been used as well.</p>
+    <egXML xmlns="http://www.tei-c.org/ns/Examples">
+        <lg>
+            <l rend="font-size(110%) indent(-60)">"Fury said to</l>
+            <l rend="font-size(100%) indent(-40px)">a mouse, That</l>
+            <l rend="font-size(100%) indent(0px)">he met</l>
+            <l rend="font-size(100%) indent(10px)">in the</l>
+            <l rend="font-size(100%) indent(20px)">house,</l>
+            <l rend="font-size(100%) indent(17px)">'Let us</l>
+            <l rend="font-size(100%) indent(5px)">both go</l>
+            <l rend="font-size(100%) indent(-7px)">to law:</l>
+            <l rend="font-size(100%) indent(-23px)"><hi rend="italic">I</hi> will</l>
+            <l rend="font-size(100%) indent(-26px)">prosecute</l>
+            <l rend="font-size(90%) indent(-40px)"><hi rend="italic">you.</hi> —</l>
+            <l rend="font-size(90%) indent(-30px)">Come, I'll</l>
+            <l rend="font-size(90%) indent(-20px)">take no</l>
+            <l rend="font-size(90%) indent(-7px)">denial;</l>
+            <l rend="font-size(90%) indent(19px)">We must</l>
+            <l rend="font-size(90%) indent(45px)">have a</l>
+            <l rend="font-size(90%) indent(67px)">trial:</l>
+            <l rend="font-size(90%) indent(80px)">For</l>
+            <l rend="font-size(80%) indent(70px)">really</l>
+            <l rend="font-size(80%) indent(57px)">this</l>
+            <l rend="font-size(80%) indent(75px)">morning</l>
+            <l rend="font-size(80%) indent(95px)">I've</l>
+            <l rend="font-size(80%) indent(77px)">nothing</l>
+            <l rend="font-size(80%) indent(57px)">to do.'</l>
+            <l rend="font-size(70%) indent(38px)">Said the</l>
+            <l rend="font-size(70%) indent(30px)">mouse to</l>
+            <l rend="font-size(70%) indent(18px)">the cur,</l>
+            <l rend="font-size(70%) indent(22px)">'Such a</l>
+            <l rend="font-size(70%) indent(37px)">trial,</l>
+            <l rend="font-size(70%) indent(27px)">dear sir,</l>
+            <l rend="font-size(70%) indent(9px)">With no</l>
+            <l rend="font-size(70%) indent(-8px)">jury or</l>
+            <l rend="font-size(70%) indent(-18px)">judge,</l>
+            <l rend="font-size(70%) indent(-6px)">would be</l>
+            <l rend="font-size(70%) indent(7px)">wasting</l>
+            <l rend="font-size(70%) indent(25px)">our breath.'</l>
+            <l rend="font-size(60%) indent(30px)">'I'll be</l>
+            <l rend="font-size(60%) indent(24px)">judge,</l>
+            <l rend="font-size(60%) indent(15px)">I'll be</l>
+            <l rend="font-size(60%) indent(2px)">jury,'</l>
+            <l rend="font-size(60%) indent(-4px)">Said</l>
+            <l rend="font-size(60%) indent(17px)">cunning</l>
+            <l rend="font-size(60%) indent(29px)">old Fury;</l>
+            <l rend="font-size(60%) indent(37px)">'I'll try</l>
+            <l rend="font-size(60%) indent(51px)">the whole</l>
+            <l rend="font-size(60%) indent(70px)">cause,</l>
+            <l rend="font-size(60%) indent(65px)">and</l>
+            <l rend="font-size(60%) indent(60px)">condemn</l>
+            <l rend="font-size(60%) indent(60px)">you</l>
+            <l rend="font-size(60%) indent(68px)">to</l>
+            <l rend="font-size(60%) indent(82px)">death.' "</l>
+        </lg>
+    </egXML>
+    <note type="bibl">TBE crafted example encoding of <bibl><author>Carroll, Lewis</author> (<date when="1865">1865</date>). <title level="m">Alice's Adventures in Wonderland</title>. <pubPlace>New York</pubPlace>: <publisher>D. Appleton and co.</publisher>, <extent>37</extent></bibl>, based on its hypertext encoding at <ref target="http://bootless.net/mouse.html">http://bootless.net/mouse.html</ref>.
+    </note>
+    <!-- 
+        $Date: 2010-07-13 17:36:06 +0200 (di, 13 jul 2010) $
+        $Id: carroll.xml 251 2010-07-13 15:36:06Z ron.vandenbranden $  -->
+</div><div xml:id="shakespeare" type="example">
+    <head>William Shakespeare: <title>Sonnet 17</title></head>
+    <p>The following example illustrates very elaborate encoding of a sonnet by William Shakespeare. As most sonnets, this poem is structurally analysed in three quatrains and one couplet. The lines themselves are further divided in metrical feet (<tag>seg type="foot"</tag>) whose metrical analysis is provided in their containing <gi>lg</gi>'s <att>met</att> attribute. For feet that metrically diverge from the metrical system the actual metrical realisation is given in a <gi>real</gi> attribute. Where a foot runs over several syntactic phrases, the boundary between these phrases is marked with a <gi>caesura</gi> element. The rhyme scheme is encoded in the <att>rhyme</att> attribute at the stanza level. In the example, the relevant <gi>teiHeader</gi> fragment is included for clarity's sake.</p>
+    <note>Note how the original whitespace is preserved in the <gi>seg</gi> elements.</note>
+    <egXML xmlns="http://www.tei-c.org/ns/Examples">
+        <TEI xmlns="http://www.tei-c.org/ns/1.0">
+            <teiHeader>
+                <encodingDesc>
+                    <!--...-->
+                    <metDecl pattern="((+|-)+\|?/?)*">
+                        <metSym value="trochee" terminal="false">+-</metSym>
+                        <metSym value="iamb" terminal="false">-+</metSym>
+                        <metSym value="spondee" terminal="false">++</metSym>
+                        <metSym value="pyrrhic" terminal="false">--</metSym>
+                        <metSym value="amphibrach" terminal="false">-+-</metSym>
+                        <metSym value="anapaest" terminal="false">--+</metSym>
+                        <metSym value="+">metrical promimence</metSym>
+                        <metSym value="-">metrical non-prominence</metSym>
+                        <metSym value="|">foot boundary</metSym>
+                        <metSym value="/">metrical line boundary</metSym>
+                    </metDecl>
+                    <metDecl>
+                        <p>Metrically prominent syllables are marked '+' and other syllables '-'. Foot
+                            divisions are marked by a vertical bar, and line divisions with a solidus.</p>
+                        <p>This notation may be applied to any metrical unit, of any size (including, for
+                            example, individual feet as well as groups of lines).</p>
+                        <p>The 'real' attribute has been used to indicate possible variations in the iambic
+                            base metre. Where this attribute is not included, it is assumed each foot
+                            inherits the iambic metre defined for the overall division of text.</p>
+                        <p>The 'met' attribute has been used in feet which have a missing or additional
+                            syllable rather than the two syllables expected, although the line may still
+                            confirm to the metre of the poem.</p>
+                    </metDecl>
+                </encodingDesc>
+                <!--...-->
+            </teiHeader>
+            <text>
+                <body><lg type="poem" met="-+ | -+ | -+ | -+ | -+ /">
+                        <head>
+                            <title>Sonnet 17</title>
+                        </head>
+                        <lg type="sonnet" rhyme="abab cdcd efef gg">
+                            <lg type="quatrain">
+                                <l>
+                                    <seg type="foot" real="+-"> Who will</seg>
+                                    <seg type="foot"> believe</seg>
+                                    <seg type="foot"> my verse</seg>
+                                    <seg type="foot"> in time</seg>
+                                    <seg type="foot"> to come,</seg>
+                                </l>
+                                <l>
+                                    <seg type="foot">If it</seg>
+                                    <seg type="foot"> were fill'd</seg>
+                                    <seg type="foot"> with your</seg>
+                                    <seg type="foot"> most high</seg>
+                                    <seg type="foot" real="+-"> deserts?</seg>
+                                </l>
+                                <l>
+                                    <seg type="foot">Though yet,</seg>
+                                    <seg type="foot" real="+-"> heaven knows,</seg>
+                                    <seg type="foot"> it is</seg>
+                                    <seg type="foot"> but as</seg>
+                                    <seg type="foot"> a tomb</seg>
+                                </l>
+                                <l>
+                                    <seg type="foot">Which hides</seg>
+                                    <seg type="foot"> your life </seg>
+                                    <seg type="foot">and shows</seg>
+                                    <seg type="foot"> not half</seg>
+                                    <seg type="foot"> your parts. </seg>
+                                </l>
+                            </lg>
+                            <lg type="quatrain">
+                                <l enjamb="y">
+                                    <seg type="foot">If I</seg>
+                                    <seg type="foot"> could write</seg>
+                                    <seg type="foot"> the beau</seg>
+                                    <seg type="foot">ty of </seg>
+                                    <seg type="foot"> your eyes</seg>
+                                </l>
+                                <l>
+                                    <seg type="foot" real="--">And in</seg>
+                                    <seg type="foot" real="++"> fresh num</seg>
+                                    <seg type="foot">bers num</seg>
+                                    <seg type="foot">ber all</seg>
+                                    <seg type="foot" met="-+-"> your graces,</seg>
+                                </l>
+                                <l>
+                                    <seg type="foot">The age</seg>
+                                    <seg type="foot"> to come</seg>
+                                    <seg type="foot"> would say</seg>
+                                    <seg type="foot"> ‘This po</seg>
+                                    <seg type="foot">et lies; </seg>
+                                </l>
+                                <l>
+                                    <seg type="foot">Such heaven</seg>
+                                    <seg type="foot">ly touch</seg>
+                                    <seg type="foot">es ne'er</seg>
+                                    <seg type="foot"> touch'd earth</seg>
+                                    <seg type="foot" met="-+-">ly faces’. </seg>
+                                </l>
+                            </lg>
+                            <lg type="quatrain">
+                                <l>
+                                    <seg type="foot">So should</seg>
+                                    <seg type="foot"> my pap</seg>
+                                    <seg type="foot">ers, <caesura/>yell</seg>
+                                    <seg type="foot">owed with</seg>
+                                    <seg type="foot"> their age,</seg>
+                                </l>
+                                <l>
+                                    <seg type="foot">Be scorn'd</seg>
+                                    <seg type="foot"> like old</seg>
+                                    <seg type="foot" real="+-"> men of </seg>
+                                    <seg type="foot">less truth</seg>
+                                    <seg type="foot"> than tongue; </seg>
+                                </l>
+                                <l>
+                                    <seg type="foot">And your</seg>
+                                    <seg type="foot"> true rights</seg>
+                                    <seg type="foot"> be term'</seg>
+                                    <seg type="foot"> a po</seg>
+                                    <seg type="foot">et's rage,</seg>
+                                </l>
+                                <l>
+                                    <seg type="foot">And stretch</seg>
+                                    <seg type="foot">ed me</seg>
+                                    <seg type="foot">tre of </seg>
+                                    <seg type="foot">an an</seg>
+                                    <seg type="foot">tique song. </seg>
+                                </l>
+                            </lg>
+                            <lg type="couplet">
+                                <l>
+                                    <seg type="foot">But were</seg>
+                                    <seg type="foot"> some child</seg>
+                                    <seg type="foot"> of yours</seg>
+                                    <seg type="foot"> alive</seg>
+                                    <seg type="foot"> that time,</seg>
+                                </l>
+                                <l>
+                                    <seg type="foot">You should</seg>
+                                    <seg type="foot"> live twice-</seg>
+                                    <seg type="foot">in it,</seg>
+                                    <caesura/>
+                                    <seg type="foot"> and in</seg>
+                                    <seg type="foot"> my rhyme. </seg>
+                                </l>
+                            </lg>
+                        </lg>
+                    </lg></body>
+            </text>
+        </TEI>
+    </egXML>
+    <note type="bibl">Based on a TEI P4 XML encoding of <bibl><editor>Islam, Mubina</editor> (<date when="2004">2004</date>). <title level="m">A Selection of Sonnets: electronic edition encoded in XML with a TEI DTD</title>. Unpublished Master's Dissertation, <pubPlace>London</pubPlace>: <publisher>University College London</publisher></bibl> (based on 
+        <bibl><author>Alexander, Peter</author> (<date when="1978">1978</date>) <title level="m">The Complete Works of William Shakespeare</title>. <pubPlace>London</pubPlace>: <publisher>Collins</publisher>.</bibl>).</note>
+    <!-- 
+        $Date: 2010-07-13 17:36:06 +0200 (di, 13 jul 2010) $
+        $Id: shakespeare.xml 251 2010-07-13 15:36:06Z ron.vandenbranden $  -->
+</div><div xml:id="swinburne" type="example">
+    <head>Algernon Charles Swinburne: <title>Sestina</title></head>
+    <p>This example features a so-called <soCalled>Sestina</soCalled>, a highly structured verse form consisting of 6 six-line stanzas followed by 1 three-line stanza. While the same set of six words conclude the lines of each stanza, in each stanza they occur in a different order. Since Swinburne in this example adheres to a strictly alternating rhyming scheme (if the internal rhyme of the tercet is not taken into account), the line ending patterns in this example vary from the traditional structural pattern for a sestina. </p>
+    <p>In this example, the rhyming scheme is indicated per stanza, using the <att>rhyme</att> attribute on the stanza's <gi>lg</gi> element. Rhyming words are marked with <gi>rhyme</gi> elements, with a <att>label</att> attribute indicating their place in the rhyming scheme. In order to trace the line ending scheme, the ending words of the first stanza have been identified with a <att>xml:id</att> attribute. Since they were already marked with a <gi>rhyme</gi> element, identification happens on this level. In the other stanzas, each line ending word is connected to its counterpart of the first stanza with a <att>corresp</att> attribute. This is one of the global linking attributes, whose value formalises a correspondence relationship with another identified element (see <ref target="http://tei.oucs.ox.ac.uk/P5/Guidelines-web/en/html/SA.html#SACS">P5 16.4 Correspondence and Alignment</ref>). Since the reference is to a local element (an identified element in the same document), its value takes the form of a shorthand local pointer by simply preceding the target's <att>xml:id</att> value with a hash sign <code>#</code>.  Here too, the <gi>rhyme</gi> element provides a sufficient peg for pointing out this correspondence. Otherwise, if no other element would have been available, a <gi>seg</gi> element could be introduced for identifying or referring to a span of text. 
+<!--        
+        If the order of the different line ending words is characterised as a formula using a capital letter for each unique word, the following pattern emerges throughout the sestets:   
+<list
+            type="ordered">
+            <item>ABCDEF</item>
+            <item>FAEBDC</item>
+            <item>CFDABE</item>
+            <item>ECBFAD</item>
+            <item>DEACFB</item>
+            <item>BDFECA</item>
+        </list>
+-->
+</p>
+    <egXML xmlns="http://www.tei-c.org/ns/Examples">
+        <lg type="sestina">
+            <lg type="sestet" rhyme="ababab">
+                <l>I saw my soul at rest upon a <rhyme label="a" xml:id="A">day</rhyme></l>
+                <l>As a bird sleeping in the nest of <rhyme label="b" xml:id="B">night</rhyme>,</l>
+                <l>Among soft leaves that give the starlight <rhyme label="a" xml:id="C">way</rhyme></l>
+                <l>To touch its wings but not its eyes with <rhyme label="b" xml:id="D">light</rhyme>;</l>
+                <l>So that it knew as one in visions <rhyme label="a" xml:id="E">may</rhyme>,</l>
+                <l>And knew not as men waking, of <rhyme label="b" xml:id="F">delight</rhyme>.</l>
+            </lg>
+            <lg type="sestet" rhyme="ababab">
+                <l>This was the measure of my soul's <rhyme label="a" corresp="#F">delight</rhyme>;</l>
+                <l>It had no power of joy to fly by <rhyme label="b" corresp="#A">day</rhyme>,</l>
+                <l>Nor part in the large lordship of the <rhyme label="a" corresp="#D">light</rhyme>;</l>
+                <l>But in a secret moon-beholden <rhyme label="b" corresp="#C">way</rhyme></l>
+                <l>Had all its will of dreams and pleasant <rhyme label="a" corresp="#B">night</rhyme>,</l>
+                <l>And all the love and life that sleepers <rhyme label="b" corresp="#E">may</rhyme>.</l>
+            </lg>
+            <lg type="sestet" rhyme="ababab">
+                <l>But such life's triumph as men waking <rhyme label="a" corresp="#E">may</rhyme></l>
+                <l>It might not have to feed its faint <rhyme label="b" corresp="#F">delight</rhyme></l>
+                <l>Between the stars by night and sun by <rhyme label="a" corresp="#A">day,</rhyme></l>
+                <l>Shut up with green leaves and a little <rhyme label="b" corresp="#D">light;</rhyme></l>
+                <l>Because its way was as a lost star's <rhyme label="a" corresp="#C">way,</rhyme></l>
+                <l>A world's not wholly known of day or <rhyme label="b" corresp="#B">night.</rhyme></l>
+            </lg>
+            <lg type="sestet" rhyme="ababab">
+                <l>All loves and dreams and sounds and gleams of <rhyme label="a" corresp="#B">night</rhyme></l>
+                <l>Made it all music that such minstrels <rhyme label="b" corresp="#E">may,</rhyme></l>
+                <l>And all they had they gave it of <rhyme label="a" corresp="#F">delight;</rhyme></l>
+                <l>But in the full face of the fire of <rhyme label="b" corresp="#A">day</rhyme></l>
+                <l>What place shall be for any starry <rhyme label="a" corresp="#D">light,</rhyme></l>
+                <l>What part of heaven in all the wide sun's <rhyme label="b" corresp="#C">way?</rhyme></l>
+            </lg>
+            <lg type="sestet" rhyme="ababab">
+                <l>Yet the soul woke not, sleeping by the <rhyme label="a" corresp="#C">way,</rhyme></l>
+                <l>Watched as a nursling of the large-eyed <rhyme label="b" corresp="#B">night,</rhyme></l>
+                <l>And sought no strength nor knowledge of the <rhyme label="a" corresp="#A">day,</rhyme></l>
+                <l>Nor closer touch conclusive of <rhyme label="b" corresp="#F">delight,</rhyme></l>
+                <l>Nor mightier joy nor truer than dreamers <rhyme label="a" corresp="#E">may,</rhyme></l>
+                <l>Nor more of song than they, nor more of <rhyme label="b" corresp="#D">light.</rhyme></l>
+            </lg>
+            <lg type="sestet" rhyme="ababab">
+                <l>For who sleeps once and sees the secret <rhyme label="a" corresp="#D">light</rhyme></l>
+                <l>Whereby sleep shows the soul a fairer <rhyme label="b" corresp="#C">way</rhyme></l>
+                <l>Between the rise and rest of day and <rhyme label="a" corresp="#B">night,</rhyme></l>
+                <l>Shall care no more to fare as all men <rhyme label="b" corresp="#E">may,</rhyme></l>
+                <l>But be his place of pain or of <rhyme label="a" corresp="#F">delight,</rhyme></l>
+                <l>There shall he dwell, beholding night as <rhyme label="b" corresp="#A">day.</rhyme></l>
+            </lg>
+            <lg type="tercet" rhyme="abbaab">
+                <l>Song, have thy <rhyme label="a" corresp="#A">day</rhyme> and take thy fill of <rhyme label="b" corresp="#D">light</rhyme></l>
+                <l>Before the <rhyme label="b" corresp="#B">night</rhyme> be fallen across thy <rhyme label="a" corresp="#C">way;</rhyme></l>
+                <l>Sing while he <rhyme label="a" corresp="#E">may</rhyme>, man hath no long <rhyme label="b" corresp="#F">delight.</rhyme></l>
+            </lg>
+        </lg>
+    </egXML>
+        <note type="bibl">TBE crafted example encoding of <title level="a">Sestina</title>. In: <bibl><author>Swinburne, Algernon Charles</author> (<date when="1924">1924</date>), <title level="m">Swinburne's Collected Poetical Works</title>. <pubPlace>London</pubPlace>: <publisher>William Heinemann</publisher>, <extent>330-31</extent>.</bibl></note>
+        <!-- 
+                $Date: 2010-07-13 17:36:06 +0200 (di, 13 jul 2010) $
+                $Id: swinburne.xml 251 2010-07-13 15:36:06Z ron.vandenbranden $  -->
+</div></body>
+    </text>
+    <!-- 
+        $Date: 2011-11-17 15:10:43 +0100 (do, 17 nov 2011) $
+        $Id: TBED04v00.xml 270 2011-11-17 14:10:43Z ron.vandenbranden $  -->
+</TEI>
