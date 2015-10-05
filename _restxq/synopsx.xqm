@@ -79,5 +79,5 @@ declare
   %output:method('html')
   %output:html-version('5.0')
 function install() { 
-  fn:doc($G:TEMPLATES||'defaultLayout.xhtml')
+  fn:doc($G:TEMPLATES||'default.xhtml')
 };
