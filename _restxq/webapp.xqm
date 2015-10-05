@@ -77,7 +77,11 @@ declare
 function home() {
   let $project := synopsx.lib.commons:getDefaultProject()
   return if($project = '') then
-    <rest:forward>/synopsx/install</rest:forward>
+  <rest:response>
+    <http:response status="303" message="See Other">
+      <http:header name="location" value="/synopsx/home"/>
+    </http:response>
+  </rest:response>
   else 
    <rest:forward>/{$project}/home</rest:forward>
 };
@@ -180,4 +184,3 @@ function getIncTemplate($myProject, $myIncTemplate) as node() {
    let $templateName := 'inc_' || $myIncTemplate || '.xhtml'
   return fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $templateName))/*
 }; :)
-
