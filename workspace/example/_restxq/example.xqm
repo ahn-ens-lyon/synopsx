@@ -86,6 +86,35 @@ function home() {
 };
 
 (:~
+ : this resource function is the html representation of the corpus resource
+ :
+ : @return an html representation of the corpus resource with a bibliographical list
+ : the HTML serialization also shows a bibliographical list
+ :)
+declare 
+  %restxq:path('/example/text/{$id}')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function textHtml($id) {
+  let $queryParams := map {
+  'project' : $example.webapp:project,
+  'dbName' :  $example.webapp:db,
+  'model' : 'tei' ,
+  'function' : 'getTextById',
+  'id':$id
+  }
+ let $outputParams := map {
+  'lang' : 'fr',
+  'layout' : 'home.xhtml',
+  'pattern' : 'inc_defaultItem.xhtml'
+  (: specify an xslt mode and other kind of output options :)
+  }
+return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+};  
+
+
+(:~
  : this resource function is the corpus resource
  :
  : @return an HTTP message with Content-location against the user-agent request
@@ -135,107 +164,3 @@ function textsHtml() {
     }
  return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 };
-
-declare 
-  %restxq:path('/example/resp')
-  %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
-function respHtml() {
-    let $queryParams := map {
-    'project' : $example.webapp:project,
-    'dbName' :  $example.webapp:db,
-    'model' : 'tei' ,
-    'function' : 'getRespList'
-    }
-    
-     let $outputParams := map {
-    'lang' : 'fr',
-    'layout' : 'home.xhtml',
-    'pattern' : 'inc_respItem.xhtml'
-    (: specify an xslt mode and other kind of output options :)
-    }
-    
-    
- return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
-};
-
-declare 
-  %restxq:path('/example/bibl')
-  %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
-function biblHtml() {
-    let $queryParams := map {
-    'project' : $example.webapp:project,
-    'dbName' :  $example.webapp:db,
-    'model' : 'tei' ,
-    'function' : 'getBiblList'
-    }
-    
-    let $outputParams := map {
-    'lang' : 'fr',
-    'layout' : 'home.xhtml',
-    'pattern' : 'inc_BiblItem.xhtml'
-    (: specify an xslt mode and other kind of output options :)
-    }
-    
-      
- return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
-};
-
-(:~
- : this resource function is a corpus list for testing
- :
- : @param $pattern a GET param giving the name of the calling HTML tag
- : @return an html representation of the corpus list
- : @todo use this tag !
- :)
-declare 
-  %restxq:path("/example/inc/texts")
- (:  %restxq:query-param("pattern", "{$pattern}") :)
-function corpusListHtml() {
-    let $queryParams := map {
-    'project' : $example.webapp:project,
-    'dbName' :  $example.webapp:db,
-    'model' : 'tei' ,
-    'function' : 'getTextsList'
-    }
-    
-   let $outputParams := map {
-    'lang' : 'fr',
-    'layout' : 'inc_defaultList.xhtml',
-    'pattern' : 'inc_defaultItem.xhtml'
-    (: specify an xslt mode and other kind of output options :)
-    }
-   return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
-};
-
-(:~
- : this resource function is a bibliographical list for testing
- :
- : @param $pattern a GET param giving the name of the calling HTML tag
- : @return an html representation of the bibliographical list
- : @todo use this tag !
- :)
-declare 
-  %restxq:path("/example/inc/resp")
-  %restxq:query-param("pattern", "{$pattern}")
-function biblioListHtml($pattern as xs:string?) {
-  let $queryParams := map {
-    'project' : $example.webapp:project,
-    'dbName' :  $example.webapp:db,
-    'model' : 'tei' ,
-    'function' : 'getRespList'
-    }
-
-  let $outputParams := map {
-    'lang' : 'fr',
-    'layout' : 'inc_defaultList.xhtml',
-    'pattern' : 'inc_RespItem.xhtml'
-    (: specify an xslt mode and other kind of output options :)
-    }
-        
-return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
-};  
-

@@ -118,7 +118,7 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
     then fn:QName($uri, $functionName)
     else if ($function/@uri = 'synopsx.models.' || $modelName) 
       then fn:QName('synopsx.models.' || $modelName, $functionName)
-      else   fn:QName('synopsx.models.mixed', 'notFound') (: give default or error :)
+      else   fn:QName('synopsx.lib.commons', 'notFound') (: give default or error :)
 };
 
 (:~
@@ -164,6 +164,29 @@ declare function error($queryParams as map(*), $err:code as xs:QName, $err:addit
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
 };
+
+declare function  notFound($queryParams) {
+  let $meta := map{
+    'title' : 'We did not find what you were looking for...'
+    }
+  let $content := ()
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+declare function  getHomeContent($queryParams) {
+   let $meta := map{
+    'title' : 'This is how SynopsX welcomes you...'
+    }
+  let $content := ()
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
 
 (:~
  : this function built document node with dbName and path

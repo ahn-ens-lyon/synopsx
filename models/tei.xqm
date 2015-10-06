@@ -44,7 +44,6 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
   let $texts := synopsx.lib.commons:getDb($queryParams)//tei:teiCorpus
   let $meta := map{
     'title' : 'Liste des corpus', 
-    'quantity' : getQuantity($texts, ' texte'),
     'author' : getAuthors($texts),
     'copyright'  : getCopyright($texts),
     'description' : getAbstract($texts),
@@ -68,7 +67,6 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
   let $corpus := synopsx.lib.commons:getDb($queryParams)//tei:teiCorpus[@xml:id=map:get($queryParams, 'id')]
   let $meta := map{
     'title' : getTitles($corpus), 
-    'quantity' : getQuantity($corpus, ' texte(s)'),
     'author' : getAuthors($corpus),
     'copyright'  : getCopyright($corpus),
     'description' : getAbstract($corpus),
@@ -91,12 +89,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
 declare function getTextsList($queryParams as map(*)) as map(*) {
   let $texts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
   let $meta := map{
-    'title' : 'Liste des textes', 
-    'quantity' : getQuantity($texts, ' texte'),
-    'author' : getAuthors($texts),
-    'copyright'  : getCopyright($texts),
-    'description' : getAbstract($texts),
-    'keywords' : getKeywords($texts)
+    'title' : fn:count($texts) || ' Texte(s) TEI dans la base ' || $queryParams('dbName') 
     }
   let $content := for $text in $texts return getHeader($text)
   return  map{
@@ -172,7 +165,7 @@ declare function getText($item as element()) {
     'title' : getTitles($item/tei:teiHeader),
     'date' : getDate($item/tei:teiHeader),
     'author' : getAuthors($item/tei:teiHeader),
-    'tei' : $item
+    'tei' : $item/tei:text
   }
 };
 
@@ -188,7 +181,8 @@ declare function getHeader($item as element()) {
     'title' : getTitles($item/tei:teiHeader),
     'date' : getDate($item/tei:teiHeader),
     'author' : getAuthors($item/tei:teiHeader),
-    'description' : getAbstract($item/tei:teiHeader)
+    'description' : getAbstract($item/tei:teiHeader),
+    'id': fn:data($item/@xml:id)
   }
 };
 
@@ -238,7 +232,7 @@ declare function getResp($item as element()) {
  :)
 declare function getTitles($content as element()*){
   fn:string-join(
-    for $title in $content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title/text()
+    for $title in $content/tei:fileDesc/tei:titleStmt/tei:title/text()
     return fn:string-join($title), ' ')
 };
 
@@ -275,7 +269,7 @@ declare function getAbstract($content as element()*){
 declare function getAuthors($content as element()*){
   fn:string-join(
     fn:distinct-values(
-      for $name in $content//tei:titleStmt//tei:name//text()
+      for $name in $content//tei:titleStmt//tei:author//text()
         return fn:string-join($name, ' - ')
       ), 
     ', ')
@@ -360,19 +354,6 @@ declare function getName($named as element()*){
     )
 };
 
-(:~
- : this function built a quantity message
- : @param $content texts to process
- : @return concatenate quantity and a message
- : @todo to internationalize
- :)
-declare function getQuantity($content as element()*, $unit as xs:string){
-  fn:normalize-space(
-    if (fn:count($content) > 1) 
-      then fn:count($content) || ' ' || $unit || 's disponibles'
-      else fn:count($content) || $unit || ' disponible'
-    )
-};
 
 (:~
  : this function get abstract

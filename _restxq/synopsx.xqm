@@ -28,7 +28,6 @@ module namespace synopsx.synopsx = 'synopsx.synopsx' ;
 import module namespace G = 'synopsx.globals' at '../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
 
-import module namespace synopsx.models.mixed = 'synopsx.models.mixed' at '../models/mixed.xqm' ;
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
 
 declare default function namespace 'synopsx.synopsx' ;
@@ -58,7 +57,7 @@ declare
 function home(){
   let $queryParams := map {
     'project' : $synopsx.synopsx:syn,
-    'model' : 'mixed' ,
+    'model' : 'lib.commons' ,
     'function' : 'getHomeContent'
     }
   let $outputParams := map {
@@ -68,16 +67,4 @@ function home(){
     (: specify an xslt mode and other kind of output options :)
     }  
  return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
-};
-
-(:~
- : this resource function is the installation
- : @todo installation process
- :)
-declare 
-  %restxq:path('/synopsx/install')
-  %output:method('html')
-  %output:html-version('5.0')
-function install() { 
-  fn:doc($G:TEMPLATES||'default.xhtml')
 };

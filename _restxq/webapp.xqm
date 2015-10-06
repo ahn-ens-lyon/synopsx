@@ -135,7 +135,7 @@ function home($myProject, $myFunction) {
     }
     let $outputParams := map {
     'lang' : 'fr',
-    'layout' : 'home.xhtml',
+    'layout' : 'default.xhtml',
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
