@@ -2,11 +2,11 @@
 <?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_lite.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_lite.rng" type="application/xml"
 	schematypens="http://purl.oclc.org/dsdl/schematron"?>
-<TEI xmlns="http://www.tei-c.org/ns/1.0" xml:id="synopsx">
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
          <titleStmt>
-            <title>SynopsX. A lightweight XML publishing framework</title>
+            <title>Title</title>
          </titleStmt>
          <publicationStmt>
             <p>Publication information</p>        
@@ -22,22 +22,21 @@
             <p>SynopsX est un système de publication léger, entièrement fondé sur des technologies XML à partir de la base de données XML native BaseX. Initié par l'Atelier des Humanités Numériques de Lyon (AHN), le projet est développé comme logiciel libre par une équipe de plusieurs contributeurs issus du monde académique. Le logiciel libre et open source est basé sur les fonctionnalités RESTXQ implémentées par BaseX.</p>
             <p>Dans son état actuel, le logiciel permet :</p>
             <list>
-            <item> une publication personnalisée de sources textuelles XML-TEI, </item>
-               <item> une publication d'entrepôt OAI-PMH,</item>
-               <item>  une articulation entre des sources EAD et XML-TEI,</item>
-               <item> de disposer d'un moteur de recherche sommaire,</item>
+               <item>une publication personnalisée de sources textuelles XML-TEI, </item>
+               <item>une publication d'entrepôt OAI-PMH,</item>
+               <item>une articulation entre des sources EAD et XML-TEI,</item>
+               <item>de disposer d'un moteur de recherche sommaire,</item>
             </list><p>Le code du logiciel se caractérise par son extrême concision et son caractère modulaire. Il est donc très aisé de se l'approprier et de l'adapter à ses propres besoins. Ce logiciel est déjà en production pour différentes applications web de l'ENS Lyon. Plusieurs partenaires membres du consortium Cahier lyonnais et parisiens (ANR Ampère, et Projet des Guides de Paris notamment) participent déjà au projet.</p>
          </div>
          <div n="workshop-en">
             <head>Start a new synopsX project</head>
             <p>
-               <hi>Java requirement :</hi>
+               <hi>Java requirements on your laptop :</hi>
                <list>
-                  <item> make sure you have a Java JDK environnement 8 or 8+ installed on your computer (Java JRE not enough) :</item>
-                  <item>to download the last JDK Environnement go this Oracle Page : </item>
-                  <item>http://www.objis.com/formation-java/tutoriel-java-installation-jdk.html</item>
-                  <item>Choose the appropriate version (system + processor : i.e. Linux x64) before downloading</item>
-                  <item>Go to you /Downloads/ page and Double click on the dmg file : i.e. : jdk-8u60-macosx-x64.dmg</item>
+                  <item>Make sure you have a Java JDK environnement 8 or 8+ installed on your computer (Java JRE not enough) : 
+                     to download the last JDK Environnement go this Oracle Page : http://www.objis.com/formation-java/tutoriel-java-installation-jdk.html</item>
+                  <item>Choose the appropriate version (system + processor : i.e. Mac OSX x64) before downloading</item>
+                  <item>Go to you /Downloads/ page and Double click on the install file : i.e. : jdk-8u60-macosx-x64.dmg or jdk-8u60-macosx-x64.exe</item>
                   <item>Finish installation</item>
                   <item>If you open a terminal you should get the right Java JDK version with the following command : java -version </item>
                </list>
@@ -46,7 +45,7 @@
             <p>
                <hi>Installing BaseX :</hi>
                <list>
-                  <item>go to http://basex.org/</item>
+                  <item>Go to http://basex.org/</item>
                   <item>Click on "Download BaseX 8.3 »</item>
                </list>
             </p>
@@ -55,12 +54,20 @@
             <p>
                <hi>Installing SynopsX :</hi>
               <list>
-                 <item>go to https://github.com/ahn-ens-lyon/synopsx</item>
-                 <item>if you don’t have a github app : download Zip </item>
-                 <item> unzip synopsx-dev.zip</item>
-                 <item>rename synopsx-dev to synopsx</item>
-                 <item>place synopsx directory in basex/webapp</item>
+                 <item>Go to https://github.com/ahn-ens-lyon/synopsx</item>
+                 <item>If you don’t have a github app : download Zip </item>
+                 <item>Unzip synopsx-dev.zip</item>
+                 <item>Rename synopsx-dev to synopsx</item>
+                 <item>Place synopsx directory in basex/webapp</item>
               </list>
+            </p>
+            <p><hi>Ajouter le processeur Saxon :</hi>
+               <list>
+                  <item>Dowload http://sourceforge.net/projects/saxon/files/latest/download?source=files</item>
+                  <item>Unzip downloaded file</item>
+                  <item>install on following file : synopsx/lib</item>
+               </list>
+               
             </p>
          </div>
          
@@ -70,12 +77,11 @@
                <hi>Pré-requis Java :</hi>
                <list>
                   <item>Installez un environnement Java JDK 8 or 8+  sur votre ordinateur (l’environnement Java JRE ne sera pas suffisant pour faire fonctionner baseX en ligne de commande) :</item>
-                  <item>RDV sur cette page d’Oracle pour télécharger la bonne version : </item>
-                  <item> http://www.objis.com/formation-java/tutoriel-java-installation-jdk.html</item>
+                  <item>RDV sur cette page d’Oracle pour télécharger la bonne version : http://www.objis.com/formation-java/tutoriel-java-installation-jdk.html</item>
                   <item>Choisissez la version à télécharger en fonction du système d’exploitation et sur processeur de votre ordinateur (ex: Linux x64)</item>
-                  <item>Allez dans votre page de téléchargements Downloads/ et double-cliquez sur le fichier .dmg : i.e. : jdk-8u60-macosx-x64.dmg</item> 
+                  <item>Allez dans votre page de téléchargements Downloads/ et double-cliquez sur le fichier d'installation : i.e. : jdk-8u60-macosx-x64.dmg ou jdk-8u60-macosx-x64.exe</item> 
                   <item>Finalisez votre installation</item>
-               <item>Vous pouvez vérifier la version Java JDK installée avec la ligne suivante dans un terminal :
+                  <item>Vous pouvez vérifier la version Java JDK installée avec la ligne suivante dans un terminal :
                   java -version </item>
                </list>
             </p>
@@ -89,14 +95,22 @@
             <p>
                <hi>Installer SynopsX :</hi>
                <list>
-                  <item> Allez sur : https://github.com/ahn-ens-lyon/synopsx</item>
-                  <item>Si vous n’avez pas d'applicatif github : download Zip </item>
+                  <item>Allez sur : https://github.com/ahn-ens-lyon/synopsx</item>
+                  <item>Si vous n’avez pas d'applicatif github cliquez sur : "download Zip" </item>
                   <item>déziper synopsx-dev.zip</item>
                   <item>renommer  synopsx-dev to synopsx</item>
                   <item>Déposer le dossier synopsx dans basex/webapp</item>
                </list>
             </p>
-            </div>
+            <p><hi>Ajouter le processeur Saxon :</hi>
+               <list>
+                  <item>Télécharger http://sourceforge.net/projects/saxon/files/latest/download?source=files</item>
+                  <item>Dézipper le dossier téléchargé</item>
+                  <item>L'installer sur synopsx/lib</item>
+               </list>
+            
+            </p>
+         </div>
       </body>
   </text>
 </TEI>
