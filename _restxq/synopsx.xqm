@@ -31,6 +31,7 @@ import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/
 
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
 
+
 declare default function namespace 'synopsx.synopsx' ;
 
 declare variable $synopsx.synopsx:project := 'synopsx';
@@ -57,6 +58,7 @@ declare
   %updating
 function install(){
   db:create("synopsx", $G:FILES||"xml/synopsx.xml", (), map {'chop':fn:false()}),
+   db:create("example", $G:FILES||"xml/sample.xml", (), map {'chop':fn:false()}),
   db:output(web:redirect("/synopsx/home"))
 };
 
@@ -79,8 +81,8 @@ function home(){
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
-    'pattern' : 'inc_defaultItem.xhtml'
-    (: specify an xslt mode and other kind of output options :)
+    'pattern' : 'inc_defaultItem.xhtml',
+    'xsl' : 'tei2html5.xsl'
     }  
  return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 };

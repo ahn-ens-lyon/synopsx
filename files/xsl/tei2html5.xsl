@@ -8,6 +8,7 @@
     https://raw.github.com/GrantLS/TEI-Boilerplate/master/content/teibp.xsl
     -->
     
+    <xsl:import href="tei2html.xsl"/>
     
     <xsl:template match="@xml:id">
         <!-- @xml:id is copied to @id, which browsers can use

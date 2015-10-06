@@ -75,15 +75,9 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function home() {
-  let $project := synopsx.lib.commons:getDefaultProject()
-  return if($project = '') then
-  <rest:response>
-    <http:response status="303" message="See Other">
-      <http:header name="location" value="/synopsx/home"/>
-    </http:response>
-  </rest:response>
-  else 
-   <rest:forward>/{$project}/home</rest:forward>
+   web:redirect(if(db:exists("synopsx"))
+              then '/example' 
+              else '/synopsx/install')
 };
 
 
@@ -173,14 +167,3 @@ function home($myProject, $myFunction, $value) {
    return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 }; 
 
-
-
-(: declare 
-  %restxq:path("/{$myProject}/inc/{$myIncTemplate}")
-function getIncTemplate($myProject, $myIncTemplate) as node() {
-   let $queryParams := map {
-    'project' :$myProject
-    }
-   let $templateName := 'inc_' || $myIncTemplate || '.xhtml'
-  return fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $templateName))/*
-}; :)
