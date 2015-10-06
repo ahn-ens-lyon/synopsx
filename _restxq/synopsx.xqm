@@ -27,23 +27,37 @@ module namespace synopsx.synopsx = 'synopsx.synopsx' ;
 
 import module namespace G = 'synopsx.globals' at '../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm' ;
 
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
 
 declare default function namespace 'synopsx.synopsx' ;
 
-declare variable $synopsx.synopsx:syn := 'synopsx';
+declare variable $synopsx.synopsx:project := 'synopsx';
+declare variable $synopsx.synopsx:db := synopsx.lib.commons:getProjectDB($synopsx.synopsx:project) ;
 (:~
  : this resource function redirects to the synopsx' home
  :)
 declare 
   %restxq:path('/synopsx')
 function index() {
-  <rest:response>
-    <http:response status='303' message='See Other'>
-      <http:header name='location' value='/synopsx/home'/>
-    </http:response>
-  </rest:response>
+  web:redirect(if(db:exists("synopsx"))
+              then '/synopsx/home' 
+              else '/synopsx/install')
+};
+
+(:~
+ : this resource function is the synopsx' home
+ : @todo give contents
+ :)
+declare 
+  %restxq:path('/synopsx/install')
+  %output:method('html')
+  %output:html-version('5.0')
+  %updating
+function install(){
+  db:create("synopsx", $G:FILES||"xml/synopsx.xml", (), map {'chop':fn:false()}),
+  db:output(web:redirect("/synopsx/home"))
 };
 
 (:~
@@ -56,9 +70,11 @@ declare
   %output:html-version('5.0')
 function home(){
   let $queryParams := map {
-    'project' : $synopsx.synopsx:syn,
-    'model' : 'lib.commons' ,
-    'function' : 'getHomeContent'
+    'project' : $synopsx.synopsx:project,
+    'dbName' :  $synopsx.synopsx:db,
+    'model' : 'tei' ,
+    'function' : 'getTextById',
+    'id':'synopsx'
     }
   let $outputParams := map {
     'lang' : 'fr',

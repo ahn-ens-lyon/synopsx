@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_lite.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_lite.rng" type="application/xml"
+	schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <teiHeader>
+      <fileDesc>
+         <titleStmt>
+            <title>Title</title>
+         </titleStmt>
+         <publicationStmt>
+            <p>Publication information</p>        
+         </publicationStmt>
+         <sourceDesc>
+            <p>Information about the source</p>
+         </sourceDesc>
+      </fileDesc>
+  </teiHeader>
+  <text>
+      <body>
+         <p>SynopsX est un système de publication léger, entièrement fondé sur des technologies XML à partir de la base de données XML native BaseX. Initié par l'Atelier des Humanités Numériques de Lyon (AHN), le projet est développé comme logiciel libre par une équipe de plusieurs contributeurs issus du monde académique. Le logiciel libre et open source est basé sur les fonctionnalités RESTXQ implémentées par BaseX.</p>
+         <p>Dans son état actuel, le logiciel permet :</p>
+         <list><item> une publication personnalisée de sources textuelles XML-TEI, </item>
+            <item> une publication d'entrepôt OAI-PMH,</item>
+            <item>  une articulation entre des sources EAD et XML-TEI,</item>
+            <item> de disposer d'un moteur de recherche sommaire,</item>
+         </list><p>Le code du logiciel se caractérise par son extrême concision et son caractère modulaire. Il est donc très aisé de se l'approprier et de l'adapter à ses propres besoins. Ce logiciel est déjà en production pour différentes applications web de l'ENS Lyon. Plusieurs partenaires membres du consortium Cahier lyonnais et parisiens (ANR Ampère, et Projet des Guides de Paris notamment) participent déjà au projet.</p>
+         
+      </body>
+  </text>
+</TEI>
