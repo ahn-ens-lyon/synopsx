@@ -114,7 +114,16 @@ declare
   %restxq:path('/synopsx/config')
   %output:method('html')
   %rest:query-param("project",  "{$project}")
-  %output:html-version('5.0')
-function config($project) as element() {
-  <span>{$project}</span>
+  %updating
+function config($project) {
+   db:create-backup('synopsx'),
+     (: supprimer tout attribut défault préexistant :)
+     delete node db:open('synopsx', 'config.xml')//@default,
+     (: si le projet existe, lui ajouter l'attribut default=true :)
+     if (db:open('synopsx', 'config.xml')//dbName/text() = $project) then insert node (attribute { 'default' } { 'true' }) into db:open('synopsx', 'config.xml')//project[dbName/text()=$project]
+      else insert node <project default="true"> 
+      <resourceName>{$project}</resourceName>
+      <dbName>{$project}</dbName>
+  </project>      into db:open('synopsx', 'config.xml')//projects,
+  db:output(web:redirect("/synopsx/config"))  
 };

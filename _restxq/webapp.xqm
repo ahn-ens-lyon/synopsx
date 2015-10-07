@@ -76,7 +76,7 @@ declare
   %output:html-version("5.0")
 function home() {
    web:redirect(if(db:exists("synopsx"))
-              then '/example' 
+              then '/synopsx' (: @TODO : rediriger vers le projet par défault :)
               else '/synopsx/install')
 };
 
