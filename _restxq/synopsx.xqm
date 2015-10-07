@@ -28,6 +28,7 @@ module namespace synopsx.synopsx = 'synopsx.synopsx' ;
 import module namespace G = 'synopsx.globals' at '../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm' ;
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../models/synopsx.xqm' ;
 
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
 
@@ -84,4 +85,36 @@ function home(){
     (: specify an xslt mode and other kind of output options :)
     }  
  return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+};
+
+declare 
+  %rest:GET
+  %restxq:path('/synopsx/config')
+  %output:method('html')
+  %output:html-version('5.0')
+function config() as element(html) {
+  let $queryParams := map {
+    'project' : $synopsx.synopsx:project,
+    'dbName' :  $synopsx.synopsx:db,
+    'model' : 'synopsx' ,
+    'function' : 'getProjectsList'
+    }
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'config.xhtml',
+    'pattern' : 'inc_configItem.xhtml'
+    (: specify an xslt mode and other kind of output options :)
+    }  
+ return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+
+};
+
+declare 
+  %rest:POST
+  %restxq:path('/synopsx/config')
+  %output:method('html')
+  %rest:query-param("project",  "{$project}")
+  %output:html-version('5.0')
+function config($project) as element() {
+  <span>{$project}</span>
 };
