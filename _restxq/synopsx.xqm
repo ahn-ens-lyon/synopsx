@@ -80,8 +80,8 @@ function home(){
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
-    'pattern' : 'inc_defaultItem.xhtml'
-    (: specify an xslt mode and other kind of output options :)
+    'pattern' : 'inc_defaultItem.xhtml',
+    'xsl':'tei2html5.xsl'
     }  
  return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
 };
