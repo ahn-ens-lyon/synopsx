@@ -65,7 +65,7 @@
                <list>
                   <item>Dowload from (choose the zipped directory, on top of the page): http://sourceforge.net/projects/saxon/files/</item>
                   <item>Unzip downloaded file</item>
-                  <item>install on following file: basex/lib</item>
+                  <item>Put content on the following directory: basex/lib</item>
                </list>
                
             </p>
@@ -105,7 +105,7 @@
                <list>
                   <item>Télécharger depuis (choisir le dossier zipé en haut de la page) : http://sourceforge.net/projects/saxon/files/</item>
                   <item>Dézipper le dossier téléchargé</item>
-                  <item>L'installer sur basex/lib</item>
+                  <item>Installer le contenu dans basex/lib</item>
                </list>
             
             </p>
