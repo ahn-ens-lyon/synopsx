@@ -26,7 +26,6 @@ module namespace synopsx.synopsx = 'synopsx.synopsx' ;
  :)
 
 import module namespace G = 'synopsx.globals' at '../globals.xqm' ;
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm' ;
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../models/synopsx.xqm' ;
 
@@ -35,7 +34,7 @@ import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWr
 declare default function namespace 'synopsx.synopsx' ;
 
 declare variable $synopsx.synopsx:project := 'synopsx';
-declare variable $synopsx.synopsx:db := synopsx.lib.commons:getProjectDB($synopsx.synopsx:project) ;
+declare variable $synopsx.synopsx:db := synopsx.models.synopsx:getProjectDB($synopsx.synopsx:project) ;
 (:~
  : this resource function redirects to the synopsx' home
  :)
@@ -84,7 +83,7 @@ function home(){
     'pattern' : 'inc_defaultItem.xhtml',
     'xsl':'tei2html5.xsl'
     }  
- return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+ return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 };
 
 declare 
@@ -105,7 +104,7 @@ function config() as element(html) {
     'pattern' : 'inc_configItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }  
- return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+ return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 
 };
 

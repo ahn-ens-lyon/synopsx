@@ -25,7 +25,9 @@ module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' ;
  :
  :)
 
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
+
+import module namespace G = "synopsx.globals" at '../globals.xqm';
+import module namespace synopsx.mappings.htmlWrapping = "synopsx.mappings.htmlWrapping" at '../mappings/htmlWrapping.xqm';
 
 declare default function namespace "synopsx.models.synopsx";
 
@@ -54,7 +56,180 @@ declare function getProjectsList($queryParams as map(*)) as map(*) {
   };
 
 declare function getSynopsxStatus($queryParams as map(*)) as map(*) {
-  let $isProject := fn:exists(synopsx.lib.commons:getDb($queryParams)//project[/dbName=$queryParams('database')])
-  let $isDefault := $isProject and fn:exists(synopsx.lib.commons:getDb($queryParams)//project[@default="true"])
+  let $isProject := fn:exists(synopsx.models.synopsx:getDb($queryParams)//project[/dbName=$queryParams('database')])
+  let $isDefault := $isProject and fn:exists(synopsx.models.synopsx:getDb($queryParams)//project[@default="true"])
   return map {'database':$queryParams('database'),'isProject':fn:string($isProject), 'isDefault':fn:string($isDefault)}
+};
+
+(:~
+ : ~:~:~:~:~:~:~:~:~
+ : Function library
+ : ~:~:~:~:~:~:~:~:~
+ :)
+
+(:~
+ : this function get the default project
+ :
+ : @return the default project specified in the config file
+ :)
+declare function getDefaultProject() as xs:string {
+    if(db:exists('synopsx')) then
+      if(db:open('synopsx', 'config.xml')//project[@default="true"]/dbName/text()) then 
+         db:open('synopsx', 'config.xml')//project[@default="true"]/dbName/text()
+         else  db:open('synopsx', 'config.xml')//project[1]/resourceName/text()
+      else ''
+};
+
+(:~
+ : this function get the project data base
+ :
+ : @param $project the project name
+ : @return the dbName according to the project in the config file
+ :)
+declare function getProjectDB($project as xs:string) as xs:string {
+  if (db:open('synopsx', 'config.xml')//config/projects/project[resourceName/text() = $project]/dbName)
+   then db:open('synopsx', 'config.xml')//config/projects/project[resourceName/text() = $project]/dbName/text()
+  else ''
+};
+
+(:~
+ : this function built the layout path based on the project hierarchy
+ :
+ : @param $queryParams the query params
+ : @param $template the template name.extension
+ : @return a path 
+ :)
+declare function getLayoutPath($queryParams as map(*), $template as xs:string?) as xs:string { 
+  let $path := $G:WORKSPACE || map:get($queryParams, 'project') || '/templates/' || $template
+  return 
+    if (file:exists($path)) 
+    then $path
+    else if (file:exists($G:TEMPLATES || $template)) then $G:TEMPLATES || $template
+    else 
+        (: Test if we are looking for a main layout or a 'inc_*' layout:)
+        let $prefix := if (fn:contains($template, '_')) then fn:substring-before($template, '_') || '_' else ''
+         (: Test if we are looking for a inc_*List layout or a inc_*Item layout:)
+        let $suffix := if (fn:contains($template, 'List')) then 'List' else 'Item'
+        return $G:TEMPLATES || $prefix || 'default' || $suffix || '.xhtml'
+};
+
+(:~
+ : this function built the layout path based on the project hierarchy
+ :
+ : @param $queryParams the query params
+ : @param $template the template name.extension
+ : @return a path 
+ :)
+declare function getXsltPath($queryParams as map(*), $xsl as xs:string?) as xs:string { 
+  let $path :=  $G:WEBAPP || 'static/' || map:get($queryParams, 'project') || '/xsl/' || $xsl
+  return 
+    if (file:exists($path)) 
+    then $path
+    else if (file:exists($G:FILES || 'xsl/' || $xsl)) then $G:FILES || 'xsl/' || $xsl
+    else $G:FILES || 'xsl/' || 'tei2html.xsl'
+};
+
+(:~
+ : this function checks if the function exists in the given module
+ :
+ : @param module uri and function name
+ : @return a function QName
+ :
+ : @rmq the modules namespaces should be imported in the restxq
+ : @todo give a default function or an error
+ :)
+declare function getModelFunction($queryParams as map(*)) as xs:QName {
+  let $projectName :=  map:get($queryParams, 'project')
+  let $modelName := map:get($queryParams, 'model')
+  let $functionName := map:get($queryParams, 'function')
+  let $uri := $projectName || '.models.' || $modelName
+  let $context := inspect:context()
+  let $function := $context//function[@name = $functionName]
+  return if ($function/@uri = $uri) 
+    then fn:QName($uri, $functionName)
+    else if ($function/@uri = 'synopsx.models.' || $modelName) 
+      then fn:QName('synopsx.models.' || $modelName, $functionName)
+      else   fn:QName('synopsx.models.synopsx', 'notFound') (: give default or error :)
+};
+
+(:~
+ : this function build the html content and send it to the wrapper
+ :
+ : @param $queryParams the query params
+ : @param $queryParams the output params
+ : @return the html content or an error page
+ : @rmq this function requires to declare namespaces in synopsx (not so user friendly)
+ :)
+declare function htmlDisplay($queryParams as map(*), $outputParams as map(*)) as element(*){
+ try {
+    let $function := xs:QName(synopsx.models.synopsx:getModelFunction($queryParams))
+    let $data := fn:function-lookup($function, 1)($queryParams)
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  }catch err:*{   
+       synopsx.models.synopsx:error($queryParams, $err:code, $err:additional)
+    }
+};
+
+(:~
+ : this function shows the errors
+ :
+ : @param $queryParams the query params
+ : @param $err:code the error code
+ : @param $err:additional the error description, module, line and column numbers, error message
+ : @return an html view of the error messages
+ :)
+declare function error($queryParams as map(*), $err:code as xs:QName, $err:additional as xs:string) as element() {
+  let $error := map {
+    'title' : 'An error occured :(',
+    'error code' : fn:string($err:code),
+    'error stack trace' : $err:additional
+    }
+  let $data := map{
+    'meta' : $error,
+    'content' : $queryParams
+    }
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'error404.xhtml',
+    'pattern' : 'inc_errorItem.xhtml'
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data,  $outputParams)
+};
+
+declare function  notFound($queryParams) {
+  let $meta := map{
+    'title' : 'We did not find what you were looking for...'
+    }
+  let $content := ()
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+declare function  getHomeContent($queryParams) {
+   let $meta := map{
+    'title' : 'This is how SynopsX welcomes you...'
+    }
+  let $content := ()
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+
+(:~
+ : this function built document node with dbName and path
+ :
+ : @param $queryParams the query params
+ : @return one or several document-node according to dbName and path
+ :)
+declare function getDb($queryParams as map(*)) as document-node()* {
+  let $dbName := map:get($queryParams, 'dbName')
+  let $path := map:get($queryParams, 'path')
+  return
+    if ($path)
+    then db:open($dbName, $path)
+    else db:open($dbName)
 };

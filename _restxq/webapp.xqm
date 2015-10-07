@@ -26,7 +26,7 @@ module namespace synopsx.webapp = 'synopsx.webapp' ;
  :)
 
 import module namespace G = "synopsx.globals" at '../globals.xqm' ;
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../models/synopsx.xqm' ;
 import module namespace synopsx.models.tei = "synopsx.models.tei" at '../models/tei.xqm';
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
 
@@ -95,7 +95,7 @@ function home() {
 function home($myProject) {
   let $queryParams := map {
     'project' : $myProject,
-    'dbName' :  synopsx.lib.commons:getProjectDB($myProject),
+    'dbName' :  synopsx.models.synopsx:getProjectDB($myProject),
     'model' : 'tei' ,
     'function' :  'home'    }
     
@@ -106,7 +106,7 @@ function home($myProject) {
     (: specify an xslt mode and other kind of output options :)
     }
     
-    return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+    return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 }; 
 
 (:~
@@ -134,7 +134,7 @@ function home($myProject, $myFunction) {
     (: specify an xslt mode and other kind of output options :)
     }
         
-   return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+   return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 }; 
 
 
@@ -164,6 +164,6 @@ function home($myProject, $myFunction, $value) {
     (: specify an xslt mode and other kind of output options :)
     }
         
-   return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+   return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 }; 
 
