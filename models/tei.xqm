@@ -165,7 +165,7 @@ declare function getText($item as element()) {
     'title' : getTitles($item/tei:teiHeader),
     'date' : getDate($item/tei:teiHeader),
     'author' : getAuthors($item/tei:teiHeader),
-    'tei' : $item/tei:text
+    'text' : $item/tei:text
   }
 };
 

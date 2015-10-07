@@ -44,7 +44,8 @@ declare function getProjectsList($queryParams as map(*)) as map(*) {
   let $databases := db:list() 
   let $meta := map{
     'title' : 'Liste des bases de données',
-    'count' : fn:string(fn:count($databases))
+    'count' : fn:string(fn:count($databases)),
+    'defaultProject' : getDefaultProject()
     }
   let $content := for $database in $databases return 
     (map:put($queryParams, "database", $database),
@@ -74,8 +75,8 @@ declare function getSynopsxStatus($queryParams as map(*)) as map(*) {
  :)
 declare function getDefaultProject() as xs:string {
     if(db:exists('synopsx')) then
-      if(db:open('synopsx', 'config.xml')//project[@default="true"]/dbName/text()) then 
-         db:open('synopsx', 'config.xml')//project[@default="true"]/dbName/text()
+      if(db:open('synopsx', 'config.xml')//project[@default="true"]/resourceName/text()) then 
+         db:open('synopsx', 'config.xml')//project[@default="true"]/resourceName/text()
          else  db:open('synopsx', 'config.xml')//project[1]/resourceName/text()
       else ''
 };
@@ -200,23 +201,13 @@ declare function  notFound($queryParams) {
   let $meta := map{
     'title' : 'We did not find what you were looking for...'
     }
-  let $content := ()
+  let $content := map{'message': <p>Maybe you did not create your project´s files in the workspace directory ? </p>}
   return  map{
     'meta'    : $meta,
     'content' : $content
     }
 };
 
-declare function  getHomeContent($queryParams) {
-   let $meta := map{
-    'title' : 'This is how SynopsX welcomes you...'
-    }
-  let $content := ()
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
 
 
 (:~
@@ -226,8 +217,8 @@ declare function  getHomeContent($queryParams) {
  : @return one or several document-node according to dbName and path
  :)
 declare function getDb($queryParams as map(*)) as document-node()* {
-  let $dbName := map:get($queryParams, 'dbName')
-  let $path := map:get($queryParams, 'path')
+  let $dbName := $queryParams('dbName')
+  let $path := $queryParams('path')
   return
     if ($path)
     then db:open($dbName, $path)
