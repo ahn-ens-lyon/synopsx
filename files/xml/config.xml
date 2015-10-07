@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<config>
+  <workspacePath>synopsx/workspace/</workspacePath>
+  <projects>
+  <project xml:lang="fre"> 
+      <resourceName>synopsx</resourceName>
+      <dbName>synopsx</dbName>
+      <dbAdmin>
+        <adminName>admin</adminName>
+        <adminPassword>admin</adminPassword>
+      </dbAdmin> 
+  </project>      
+  <project xml:lang="fre" default="true"> 
+      <resourceName>example</resourceName>
+      <dbName>example</dbName>
+      <dbAdmin>
+        <adminName>admin</adminName>
+        <adminPassword>admin</adminPassword>
+      </dbAdmin> 
+  </project>      
+  <!-- To add a project, copy and uncomment below -->
+    <!--
+    <project xml:lang="fre">
+        <resourceName>your-project-name</resourceName>
+        <dbName>your-database-name</dbName>
+        <dbAdmin>
+          <adminName>admin</adminName>
+          <adminPassword>admin</adminPassword>
+        </dbAdmin> 
+    </project>
+    -->
+  </projects>
+</config>
