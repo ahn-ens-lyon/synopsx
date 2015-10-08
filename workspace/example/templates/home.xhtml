@@ -7,40 +7,123 @@
       <meta name="keywords" content="{subject}" />
       <link rel="copyright" href="{copyright}"/>
      
+     <!-- Bootstrap core CSS -->
+     <link href="/synopsx/files/css/bootstrap.css" rel="stylesheet" />
+     <link href="/synopsx/files/css/ahn.css" rel="stylesheet" />
      
-      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
-      <link href="/synopsx/files/css/main.css" rel="stylesheet" />
-      <link href="/synopsx/files/css/ahn.css" rel="stylesheet" />
-      
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-      <script src="/synopsx/files/js/synopsx.js"></script>
-      <!-- ajouter js pour lt IE 9 -->
+     <!-- JS -->
+     <script src="/synopsx/files/js/jquery.js"></script>
+     <script src="/synopsx/files/bootstrap/js/bootstrap.js"></script>
+     <script src="http://api.simile-widgets.org/exhibit/2.2.0/exhibit-api.js" type="text/javascript"></script>
+     
    </head>
-   <body>
- 
-<header data-url="inc_header"/>
+  <body id="home">
+    <div id="wrap">
+      
+      <!-- Top navigation bar -->
+      <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+       <div class="navbar container">
+         <div class="collapse navbar-collapse">
+           <ul class="nav navbar-nav">
+             <li class="active"><a href="/desanti/a-propos">à propos</a></li>
+             <li><a href="/mentions-legales">mentions légales</a></li>
+             <li><a href="/credits">crédits</a></li>
+             <li><a href="/contacts">contacts</a></li>
+           </ul>
+         </div> <!-- /.nav-collapse -->
+       </div> <!-- /.navbar container -->
+     </div><!-- /.navbar navbar-fixed-top navbar-inverse-->
 
-<div id="content" class="col-8 col-sm-8 col-lg-8 row row-offcanvas">
-  <div id="secondary" class="aside">
-  </div>
-  <div id="primary" class="home">
-  <br/><br/><br/><br/><br/><br/>
+     <div class="container">
+        
+        <!-- top row -->
+        <div class="row row-offcanvas">
+            <div class="col-xs-12 col-sm-12">
+                <p class="pull-right visible-xs">
+                  <button class="btn btn-primary btn-xs" data-toggle="offcanvas" type="button">
+                    Toggle nav
+                  </button>
+                </p><!-- /.col-xs-12 col-sm-12-->
+               
+                <!-- header content (site title, logos) -->
+                <header data-url="inc_header"/>
+                
+                <!-- banner -->
+                <div id="header-image">
+                  <img src="/synopsx/files/img/bandeau_Morand.jpg" />
+                </div>
+                
+                <!-- horizontal navigation -->
+                <div id="horizontal-nav">
+                  <ul class="navigation">
+                    <li class="nav-accueil current"><a href="/">Accueil</a></li>
+                    <li class="nav-lettres2"><a href="/">Lettres</a></li>
+                    <li class="nav-bios"><a href="/">Biographies</a></li>
+                    <li class="nav-lieux"><a href="/">Lieux</a></li>
+                  </ul>
+                  
+                </div>  
+            </div>
+        </div>
+       
+       <!-- main page content -->
+        <div id="content">
+          <div id="main row row-offcanvas row-offcanvas-right">
+            
+            <!-- Contextual navigation content -->
+            <div id="contextual">
+              <ul class="navigation">
+                <div class="well sidebar-nav">
+                  <h2>Les biographies</h2>
+                  <ul class="nav2">
+                    <a href="/"><img src="http://morand.ens-lyon.fr/facsimile/high_14II_035_3_024_1.jpg" width="160px" title="14II_035_3_024_1.jpg"/></a>
+                  </ul>
+                  <br/>
+                  <br/>
+                  <h2>Lien vers l'exposition En toutes lettres</h2>
+                  <ul class="nav2">
+                    <a href="http://www.archives-lyon.fr/archives/sections/fr/expositions/expositions_preceden2700/2012/expositions_2012/en_toutes_lettres.../"><img src="http://morand.ens-lyon.fr/img/exposition.jpg" width="160px" title="Exposition des A.M. de Lyon"/></a>
+                  </ul>
+                  <br/>
+                  <br/>
+                  <h2>Lien vers la frise chronologique</h2>
+                  <ul class="nav2">
+                    <a href="/"><img src="http://morand.ens-lyon.fr/img/Chrono.jpg" width="160px" title="Exposition des A.M. de Lyon"/></a>
+                  </ul>
+                  <br/>
+                  <br/>
+                  <h2>Site optimisé pour Mozilla Firefox (Mac et PC)</h2>
+                  <ul class="nav2">
+                    <a href="http://www.mozilla.org/fr/firefox/fx/"><img src="http://morand.ens-lyon.fr/img/firefox.jpg" width="140px" title="Site optimisé pour Firefox"/></a>
+                  </ul>
+                </div><!--/.well -->
+              </ul>
+              
+            </div>
+            <div id="main row row-offcanvas row-offcanvas-right">
+              <div class="col-8 col-sm-8 col-lg-8">
+                <h1>{title}</h1>
+                <div class="row">
+                  <section><ul>{content}</ul></section>
+                  <section data-url="inc_defaultList"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+       
+     </div> <!-- /.container-->
 
-<hr/>
+    <!-- footer -->
+     <footer data-url="inc_footer"/>
 
-  <section>
-    <h3>{title}</h3>
-    {content}
- </section>
-  </div> 
-</div>  
-<footer data-url="inc_footer"/>
-<script type="text/javascript">
+    <!-- Javascript -->
+     <script type="text/javascript">
          // synopsx's composition
          $(document).ready(function(){
               init();
          }); 
        </script>
+    </div>
    </body>
 </html>

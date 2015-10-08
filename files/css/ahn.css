@@ -58,14 +58,14 @@
 		font-size:2.4em;
 		line-height:1.5em;
 		margin-bottom:0.75em;
-		color: #d2bd46; /* Hyperprince */
+		color: #58BDD2; /* Hyperprince */
 	}
 	  
 	h2 {
 		font-family: Arial, Helvetica, sans-serif;
 		font-size:1.5em; 
 		font-weight:bold; 
-		color: #d2bd46; /* Hyperprince */
+		color: #58BDD2; /* Hyperprince */
 		letter-spacing: -1px;
 		line-height: 1;
 		margin: 1em 0 0.5em;
@@ -138,8 +138,8 @@
   	strong,b {font-weight:bold;}
   
   	/* Links */
-  	a:link {color: #d2bd46; /* Hyperprince */}
-  	a:visited {color:#d2bd46;}
+  	a:link {color: #58BDD2; /* Hyperprince */}
+  	a:visited {color:#58BDD2;}
   	a:hover {color:#BAA83E;}
   	a:active {color:#BAA83E;}
   
@@ -457,7 +457,7 @@
 		margin-left: 1em;
 		
 	}
-	#items.show #main {border:none;}
+	#items.show #content {border:none;}
 	#toolbar{
 		float:right;
 	}
@@ -639,11 +639,11 @@
 	.item-file {font-size:1.2em; line-height:1.5em; margin-bottom:1.5em;}
 	.no-results {margin:10px;}
 	#advanced_search_header {font-size:1.4em;}
-	#main #basic_search_header {font-size:1.4em;}
+	#content #basic_search_header {font-size:1.4em;}
 
 	/* =Exhibits */
 	#featured-exhibit a {color:#fff;}
-	#exhibit #main {border:none;}
+	#exhibit #content {border:none;}
 	.exhibit-section-nav,
 	.exhibit-page-nav {margin-left:0; margin-right:-18px;overflow:hidden;}
 	.exhibit-section-nav {
@@ -671,9 +671,9 @@
 	  
 	  #horizontal-nav {float:none; text-align:left; width:100%; clear:both; padding-top:0; position:absolute; top:0; left:0;}
 	  
-	  #content {padding:20px;}
+	  #main {padding:20px;}
 	  
-	  #main {width: auto; float:none; margin:0;}
+	  #content {width: auto; float:none; margin:0;}
 	  
 	  #contextual-nav {width:auto; float:none; margin:0;}
   }
@@ -685,7 +685,7 @@
 
 	@media (min-width: 768px) {
 		.container {
-			max-width: 96.774194%;
+			max-width: 100%;
 		}
 		.navbar-header {
 	    	float: left;
@@ -801,7 +801,7 @@
 			font-size:1.6em;
 			width:100%;
 			height:2em;
-			background-color: #d2bd46;
+			background-color: #58BDD2;
 			float: left;
 			font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 		}	
@@ -869,7 +869,7 @@
 	}
 
 	@media screen and (min-width:958px){
-		#content {
+		#main {
 			overflow:hidden;
 			display:block;
 			background-color:#FFFFFF;
@@ -905,9 +905,9 @@
 		    font-size:0.75em;
 		}
 
-		#main{
+		#content{
 			float: left;
-			width: 73%;
+			width: 100%;
 			padding: 10px;
 			margin: 0;
 			background:#fff;
@@ -948,8 +948,8 @@
 		}
 
 		 /* Links */
-		#contextual a:link {color: #d2bd46; /* couleur AHN */}
-		#contextual  a:visited {color:#d2bd46;}
+		#contextual a:link {color: #58BDD2; /* couleur AHN */}
+		#contextual  a:visited {color:#58BDD2;}
 		#contextual  a:hover {color:#BAA83E;}
 		#contextual  a:active {color:#BAA83E;}
 		#contextual-nav * {
@@ -979,7 +979,7 @@
 		#logo-partenaire-principal {
 			display: none;
 		}
-		#main{
+		#content{
 			float: left;
 			width: 90%;
 			padding-top:0%;
@@ -995,7 +995,7 @@
 		width:90%;
 		min-width: 30%;
 		height:13em;
-		background-color: #d2bd46;
+		background-color: #58BDD2;
 		float: left;
 		font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 		}	
@@ -1056,7 +1056,7 @@
 			padding-bottom: 0em;	
 			box-shadow: 5px 0px 12px #555; /* CSS3 */
 		}
-		#content {
+		#main {
 			overflow:hidden;
 			display:block;
 			background-color:#FFFFFF;
@@ -1115,8 +1115,8 @@
 		}
 
 		/* Links */
-		#contextual a:link {color: #d2bd46; /* couleur AHN */}
-		#contextual  a:visited {color:#d2bd46;}
+		#contextual a:link {color: #58BDD2; /* couleur AHN */}
+		#contextual  a:visited {color:#58BDD2;}
 		#contextual  a:hover {color:#BAA83E;}
 		#contextual  a:active {color:#BAA83E;}
 
@@ -1135,6 +1135,7 @@
 	@media (min-width: 1200px) {
 	  .container {
 	    max-width: 1895px;
+	    width:100%
 	  }
 	}
 /*                                                                       */	
@@ -1145,8 +1146,8 @@
 /* Styles pour ecrans d'au moins 1440px */
 
 	@media screen and (min-width:1440px)  {
-	    #content{width:1260px; }
-		#main{width:960px;  }
+	    #main{width:1260px; }
+		#content{width:73%;  }
 		#horizontal-nav ul {width: 1260px; margin-left:0.53447354%;}
 		#contextual{width:26%;}
 	}
@@ -1161,7 +1162,7 @@
 		  font-family: "Palatino Linotype", "Book Antiqua", "Times New Roman", Times, serif;
 	  }
 	  
-	  #content{
+	  #main{
 		  width:100%;
 		  margin:0;
 		  float:none;
