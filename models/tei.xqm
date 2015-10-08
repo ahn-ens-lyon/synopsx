@@ -55,6 +55,16 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'content' : $content
     }
 };
+declare function getProjectDescription($queryParams as map(*)) as map(*) {
+    let $text := synopsx.models.synopsx:getDb($queryParams)//tei:teiCorpus
+    let $meta := map{
+      }
+    let $content :=  map{'text':getAbstract($text)}
+    return  map{
+      'meta'    : $meta,
+      'content' : $content
+      }
+  };
 
 
 (:~

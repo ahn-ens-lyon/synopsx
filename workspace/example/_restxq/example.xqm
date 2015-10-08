@@ -74,13 +74,13 @@ function home() {
     'project' : $example.webapp:project,
     'dbName' :  $example.webapp:db,
     'model' : 'tei' ,
-    'function' : 'getTextsList'
+    'function' : 'getProjectDescription'
     }
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
-    'pattern' : 'inc_defaultItem.xhtml'
-    (: specify an xslt mode and other kind of output options :)
+    'pattern' : 'inc_textItem.xhtml',
+    'xsl':'tei2html5'
     }  
  return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 };
@@ -92,7 +92,7 @@ function home() {
  : the HTML serialization also shows a bibliographical list
  :)
 declare 
-  %restxq:path('/example/text/{$id}')
+  %restxq:path('/example/letter/{$id}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -124,7 +124,7 @@ return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
  : @bug not working curl -I -H "Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" http://localhost:8984/corpus/
  :)
 declare 
-  %restxq:path('/example/texts')
+  %restxq:path('/example/letters')
   %rest:produces('application/json')
   %output:method('json')
 function textsJS() {
@@ -145,7 +145,7 @@ function textsJS() {
  : the HTML serialization also shows a bibliographical list
  :)
 declare 
-  %restxq:path('/example/texts')
+  %restxq:path('/example/letters')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
