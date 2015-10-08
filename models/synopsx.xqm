@@ -48,18 +48,17 @@ declare function getProjectsList($queryParams as map(*)) as map(*) {
     'defaultProject' : getDefaultProject()
     }
   let $content := for $database in $databases return 
-    (map:put($queryParams, "database", $database),
-    getSynopsxStatus($queryParams))
+    getSynopsxStatus($queryParams, $database)
   return  map{
     'meta'    : $meta,
     'content' : $content
     }
   };
 
-declare function getSynopsxStatus($queryParams as map(*)) as map(*) {
+declare function getSynopsxStatus($queryParams as map(*), $database) as map(*) {
   let $isProject := fn:exists(synopsx.models.synopsx:getDb($queryParams)//project[/dbName=$queryParams('database')])
   let $isDefault := $isProject and fn:exists(synopsx.models.synopsx:getDb($queryParams)//project[@default="true"])
-  return map {'database':$queryParams('database'),'isProject':fn:string($isProject), 'isDefault':fn:string($isDefault)}
+  return map {'database':$database,'isProject':fn:string($isProject), 'isDefault':fn:string($isDefault)}
 };
 
 (:~

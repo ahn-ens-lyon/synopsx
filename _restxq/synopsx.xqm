@@ -98,12 +98,12 @@ function config() as element(html) {
     'model' : 'synopsx' ,
     'function' : 'getProjectsList'
     }
-  let $outputParams := map {
+  let $outputParams :=map {
     'lang' : 'fr',
     'layout' : 'config.xhtml',
     'pattern' : 'inc_configItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
-    }  
+    }
  return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 
 };
