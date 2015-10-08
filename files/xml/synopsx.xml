@@ -49,19 +49,7 @@
                   <item>Click on "Download BaseX 8.3"</item>
                </list>
             </p>
-            
-            
-            <p>
-               <hi>Install SynopsX:</hi>
-              <list>
-                 <item>Go to: https://github.com/ahn-ens-lyon/synopsx</item>
-                 <item>If you don’t have a github app: download the zipped synopsX directory</item>
-                 <item>Unzip synopsx-dev.zip</item>
-                 <item>Rename synopsx-dev to synopsx</item>
-                 <item>Place synopsx directory in basex/webapp</item>
-              </list>
-            </p>
-            <p><hi>Add a Saxon processor HE to SynopsX:</hi>
+                 <p><hi>Add Saxon processor HE to BaseX:</hi>
                <list>
                   <item>Dowload from (choose the zipped directory, on top of the page): http://sourceforge.net/projects/saxon/files/</item>
                   <item>Unzip downloaded file</item>
@@ -69,6 +57,20 @@
                </list>
                
             </p>
+            
+            <p>
+               <hi>Install SynopsX:</hi>
+              <list>
+                 <item>Go to: https://github.com/ahn-ens-lyon/synopsx</item> <!--  a la fin ce sera un répo synopsX propre et non le répo de l'AHN -->
+
+                 <item>If you don’t have a github app: download the zipped synopsX directory</item>
+                 <item>Unzip synopsx-dev.zip</item> <!--  A la fin ce sera la branche master et non dev -->
+
+                 <item>Rename synopsx-dev to synopsx</item>
+                 <item>Place synopsx directory in basex/webapp</item>
+              </list>
+            </p>
+       
          </div>
          
          <div n="atelier-fr">
@@ -91,24 +93,24 @@
                   <item>Cliquez sur : "Download BaseX 8.3"</item>
               </list>
             </p>
-            <p>
-               <hi>Installer SynopsX :</hi>
-               <list>
-                  <item>Allez sur : https://github.com/ahn-ens-lyon/synopsx</item>
-                  <item>Si vous n’avez pas d'applicatif github cliquez sur : "download Zip" </item>
-                  <item>déziper synopsx-dev.zip</item>
-                  <item>renommer le dossier "synopsx-dev" en "synopsx"</item>
-                  <item>Déposer le dossier synopsx dans basex/webapp</item>
-               </list>
-            </p>
-            <p><hi>Ajouter le processeur Saxon HE à synopsX :</hi>
+             <p><hi>Ajouter le processeur Saxon HE à BaseX :</hi>
                <list>
                   <item>Télécharger depuis (choisir le dossier zipé en haut de la page) : http://sourceforge.net/projects/saxon/files/</item>
                   <item>Dézipper le dossier téléchargé</item>
                   <item>Installer le contenu dans basex/lib</item>
-               </list>
-            
+               </list>         
             </p>
+            <p>
+               <hi>Installer SynopsX :</hi>
+               <list>
+                  <item>Allez sur : https://github.com/ahn-ens-lyon/synopsx</item><!--  a la fin ce sera un répo synopsX propre et non le répo de l'AHN -->
+                  <item>Si vous n’avez pas d'applicatif github cliquez sur : "download Zip" </item>
+                  <item>déziper synopsx-dev.zip</item>
+                  <item>renommer le dossier "synopsx-dev" en "synopsx"</item> <!--  A la fin ce sera la branche master et non dev -->
+                  <item>Déposer le dossier synopsx dans basex/webapp</item>
+               </list>
+            </p>
+           
          </div>
       </body>
   </text>

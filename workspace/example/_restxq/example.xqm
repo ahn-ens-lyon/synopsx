@@ -27,7 +27,7 @@ module namespace example.webapp = 'example.webapp' ;
 
 (: Import synopsx's globals variables and libraries :)
 import module namespace G = "synopsx.globals" at '../../../globals.xqm' ;
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 
 (: Put here all import modules declarations as needed :)
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
@@ -40,7 +40,7 @@ declare default function namespace 'example.webapp' ;
 
 
 declare variable $example.webapp:project := 'example' ;
-declare variable $example.webapp:db := synopsx.lib.commons:getProjectDB($example.webapp:project) ;
+declare variable $example.webapp:db := synopsx.models.synopsx:getProjectDB($example.webapp:project) ;
 
 
 
@@ -82,7 +82,7 @@ function home() {
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }  
- return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+ return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 };
 
 (:~
@@ -110,7 +110,7 @@ function textHtml($id) {
   'pattern' : 'inc_textItem.xhtml'
   (: specify an xslt mode and other kind of output options :)
   }
-return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 };  
 
 
@@ -134,7 +134,7 @@ function textsJS() {
       'model' : 'tei',
       'function' : 'getTextsList'
     }    
-   let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+   let $function := xs:QName(synopsx.models.synopsx:getModelFunction($queryParams))
     return fn:function-lookup($function, 1)($queryParams)
 };
 
@@ -162,5 +162,5 @@ function textsHtml() {
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
- return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+ return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 };

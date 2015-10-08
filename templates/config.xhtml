@@ -23,12 +23,22 @@
 
 <div class="container">
 <div class="row">
-
- <h3>{title}</h3>
+ <hr/>
+  <hr/>
+ <section>
+ <h1>{title}</h1>
  <hr/>
   <section>
-      {content}  
+      <h1><span>{count}</span> &#160; bases</h1>
+      <p>Projet par défaut : <span>{defaultProject}</span></p>
+      <p>Séléctionnez la base de données du projet par défault</p>
+      <p>Si votre base n'existe pas encore, créez-la &#160;<a href="/dba/create-db" target="_blank">dans le module d'administration</a> &#160;  puis  &#160; <a href="/synopsx/config">cliquez ici</a></p>
+      <form action="/synopsx/config" method="POST">
+        {content}
+        <input type="submit" value="OK"/>
+      </form>  
   </section>  
+   </section>
 </div>
 </div>
 

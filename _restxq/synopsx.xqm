@@ -26,15 +26,15 @@ module namespace synopsx.synopsx = 'synopsx.synopsx' ;
  :)
 
 import module namespace G = 'synopsx.globals' at '../globals.xqm' ;
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../models/tei.xqm' ;
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../models/synopsx.xqm' ;
 
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
 
 declare default function namespace 'synopsx.synopsx' ;
 
 declare variable $synopsx.synopsx:project := 'synopsx';
-declare variable $synopsx.synopsx:db := synopsx.lib.commons:getProjectDB($synopsx.synopsx:project) ;
+declare variable $synopsx.synopsx:db := synopsx.models.synopsx:getProjectDB($synopsx.synopsx:project) ;
 (:~
  : this resource function redirects to the synopsx' home
  :)
@@ -80,8 +80,49 @@ function home(){
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
-    'pattern' : 'inc_defaultItem.xhtml'
-    (: specify an xslt mode and other kind of output options :)
+    'pattern' : 'inc_defaultItem.xhtml',
+    'xsl':'tei2html5.xsl'
     }  
- return synopsx.lib.commons:htmlDisplay($queryParams, $outputParams)
+ return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
+};
+
+declare 
+  %rest:GET
+  %restxq:path('/synopsx/config')
+  %output:method('html')
+  %output:html-version('5.0')
+function config() as element(html) {
+  let $queryParams := map {
+    'project' : $synopsx.synopsx:project,
+    'dbName' :  $synopsx.synopsx:db,
+    'model' : 'synopsx' ,
+    'function' : 'getProjectsList'
+    }
+  let $outputParams :=map {
+    'lang' : 'fr',
+    'layout' : 'config.xhtml',
+    'pattern' : 'inc_configItem.xhtml'
+    (: specify an xslt mode and other kind of output options :)
+    }
+ return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
+
+};
+
+declare 
+  %rest:POST
+  %restxq:path('/synopsx/config')
+  %output:method('html')
+  %rest:query-param("project",  "{$project}")
+  %updating
+function config($project) {
+   db:create-backup('synopsx'),
+     (: supprimer tout attribut défault préexistant :)
+     delete node db:open('synopsx', 'config.xml')//@default,
+     (: si le projet existe, lui ajouter l'attribut default=true :)
+     if (db:open('synopsx', 'config.xml')//dbName/text() = $project) then insert node (attribute { 'default' } { 'true' }) into db:open('synopsx', 'config.xml')//project[dbName/text()=$project]
+      else insert node <project default="true"> 
+      <resourceName>{$project}</resourceName>
+      <dbName>{$project}</dbName>
+  </project>      into db:open('synopsx', 'config.xml')//projects,
+  db:output(web:redirect("/synopsx/config"))  
 };

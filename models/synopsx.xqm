@@ -1,8 +1,8 @@
 xquery version '3.0' ;
-module namespace synopsx.lib.commons = 'synopsx.lib.commons' ;
+module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' ;
 
 (:~
- : This module is a function library for SynopsX
+ : This module is for SynopsX models
  :
  : @version 2.0 (Constantia edition)
  : @since 2014-11-10 
@@ -25,10 +25,41 @@ module namespace synopsx.lib.commons = 'synopsx.lib.commons' ;
  :
  :)
 
+
 import module namespace G = "synopsx.globals" at '../globals.xqm';
 import module namespace synopsx.mappings.htmlWrapping = "synopsx.mappings.htmlWrapping" at '../mappings/htmlWrapping.xqm';
 
-declare default function namespace 'synopsx.lib.commons' ;
+declare default function namespace "synopsx.models.synopsx";
+
+
+
+
+(:~
+ : this function returns a sequence of map for meta and content 
+ : !! the result structure has changed to allow sorting early in mapping
+ : 
+ : @rmq for testing with new htmlWrapping
+ :)
+declare function getProjectsList($queryParams as map(*)) as map(*) {
+  let $databases := db:list() 
+  let $meta := map{
+    'title' : 'Liste des bases de données',
+    'count' : fn:string(fn:count($databases)),
+    'defaultProject' : getDefaultProject()
+    }
+  let $content := for $database in $databases return 
+    getSynopsxStatus($queryParams, $database)
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+  };
+
+declare function getSynopsxStatus($queryParams as map(*), $database) as map(*) {
+  let $isProject := fn:exists(synopsx.models.synopsx:getDb($queryParams)//project[/dbName=$queryParams('database')])
+  let $isDefault := $isProject and fn:exists(synopsx.models.synopsx:getDb($queryParams)//project[@default="true"])
+  return map {'database':$database,'isProject':fn:string($isProject), 'isDefault':fn:string($isDefault)}
+};
 
 (:~
  : ~:~:~:~:~:~:~:~:~
@@ -42,11 +73,11 @@ declare default function namespace 'synopsx.lib.commons' ;
  : @return the default project specified in the config file
  :)
 declare function getDefaultProject() as xs:string {
-    if(file:exists($G:CONFIGFILE)) then
-      if(fn:doc($G:CONFIGFILE)//project[@default="true"]/resourceName/text()) then 
-        fn:doc($G:CONFIGFILE)//project[@default="true"]/resourceName/text()
-      else fn:doc($G:CONFIGFILE)//project[1]/resourceName/text()
-    else ''
+    if(db:exists('synopsx')) then
+      if(db:open('synopsx', 'config.xml')//project[@default="true"]/resourceName/text()) then 
+         db:open('synopsx', 'config.xml')//project[@default="true"]/resourceName/text()
+         else  db:open('synopsx', 'config.xml')//project[1]/resourceName/text()
+      else ''
 };
 
 (:~
@@ -118,7 +149,7 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
     then fn:QName($uri, $functionName)
     else if ($function/@uri = 'synopsx.models.' || $modelName) 
       then fn:QName('synopsx.models.' || $modelName, $functionName)
-      else   fn:QName('synopsx.lib.commons', 'notFound') (: give default or error :)
+      else   fn:QName('synopsx.models.synopsx', 'notFound') (: give default or error :)
 };
 
 (:~
@@ -131,11 +162,11 @@ declare function getModelFunction($queryParams as map(*)) as xs:QName {
  :)
 declare function htmlDisplay($queryParams as map(*), $outputParams as map(*)) as element(*){
  try {
-    let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+    let $function := xs:QName(synopsx.models.synopsx:getModelFunction($queryParams))
     let $data := fn:function-lookup($function, 1)($queryParams)
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   }catch err:*{   
-       synopsx.lib.commons:error($queryParams, $err:code, $err:additional)
+       synopsx.models.synopsx:error($queryParams, $err:code, $err:additional)
     }
 };
 
@@ -169,23 +200,13 @@ declare function  notFound($queryParams) {
   let $meta := map{
     'title' : 'We did not find what you were looking for...'
     }
-  let $content := ()
+  let $content := map{'message': <p>Maybe you did not create your project´s files in the workspace directory ? </p>}
   return  map{
     'meta'    : $meta,
     'content' : $content
     }
 };
 
-declare function  getHomeContent($queryParams) {
-   let $meta := map{
-    'title' : 'This is how SynopsX welcomes you...'
-    }
-  let $content := ()
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
 
 
 (:~
@@ -195,8 +216,8 @@ declare function  getHomeContent($queryParams) {
  : @return one or several document-node according to dbName and path
  :)
 declare function getDb($queryParams as map(*)) as document-node()* {
-  let $dbName := map:get($queryParams, 'dbName')
-  let $path := map:get($queryParams, 'path')
+  let $dbName := $queryParams('dbName')
+  let $path := $queryParams('path')
   return
     if ($path)
     then db:open($dbName, $path)

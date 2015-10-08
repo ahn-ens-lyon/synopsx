@@ -26,7 +26,7 @@ module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping'
  :)
 
 import module namespace G = "synopsx.globals" at '../globals.xqm' ;
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ; 
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../models/synopsx.xqm' ; 
 
 import module namespace synopsx.mappings.tei2html = 'synopsx.mappings.tei2html' at 'tei2html.xqm' ; 
 
@@ -58,7 +58,7 @@ declare default function namespace 'synopsx.mappings.htmlWrapping' ;
  :)
 declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
   let $meta := map:get($data, 'meta')
-  let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
+  let $layout := synopsx.models.synopsx:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
   let $wrap := fn:doc($layout)
   let $regex := '\{(.*?)\}'
   return
@@ -103,7 +103,7 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
     else ''
   let $order := map:get($queryParams, 'order')
   let $contents := map:get($data, 'content')
-  let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
+  let $pattern := synopsx.models.synopsx:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
   for $content in $contents
   order by (: @see http://jaketrent.com/post/xquery-dynamic-order/ :)
     if ($order = 'descending') then map:get($content, $sorting) else () ascending,
@@ -185,7 +185,7 @@ declare function render($queryParams as map(*), $outputParams as map(*), $value 
       then synopsx.mappings.tei2html:entry($value, $options)
     else if ($xsl) 
       then for $node in $value
-           return xslt:transform($node, synopsx.lib.commons:getXsltPath($queryParams, $xsl))/*
+           return xslt:transform($node, synopsx.models.synopsx:getXsltPath($queryParams, $xsl))/*
       else $value
 };
 
@@ -209,7 +209,7 @@ declare function render($queryParams as map(*), $outputParams as map(*), $value 
 declare function wrapperNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
   let $meta := map:get($data, 'meta')
   let $layout := map:get($outputParams, 'layout')
-  let $wrap := fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $layout))
+  let $wrap := fn:doc(synopsx.models.synopsx:getLayoutPath($queryParams, $layout))
   let $regex := '\{(.+?)\}'
   return
     $wrap/* update (
@@ -233,7 +233,7 @@ declare function wrapperNew($queryParams as map(*), $data as map(*), $outputPara
 declare function patternNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as node()* {
   let $contents := map:get($data, 'content')
   let $pattern := map:get($outputParams, 'pattern')
-  let $pattern := fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $pattern))
+  let $pattern := fn:doc(synopsx.models.synopsx:getLayoutPath($queryParams, $pattern))
   let $regex := '\{(.+?)\}'
   for $content in $contents
   return

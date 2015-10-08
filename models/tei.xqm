@@ -25,7 +25,7 @@ module namespace synopsx.models.tei = 'synopsx.models.tei' ;
  :
  :)
 
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../lib/commons.xqm' ;
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../models/synopsx.xqm' ;
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
@@ -41,7 +41,7 @@ declare default function namespace "synopsx.models.tei";
  : @rmq for testing with new htmlWrapping
  :)
 declare function getCorpusList($queryParams as map(*)) as map(*) {
-  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:teiCorpus
+  let $texts := synopsx.models.synopsx:getDb($queryParams)//tei:teiCorpus
   let $meta := map{
     'title' : 'Liste des corpus', 
     'author' : getAuthors($texts),
@@ -64,7 +64,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
  : @rmq for testing with new htmlWrapping
  :)
 declare function getCorpusById($queryParams as map(*)) as map(*) {
-  let $corpus := synopsx.lib.commons:getDb($queryParams)//tei:teiCorpus[@xml:id=map:get($queryParams, 'id')]
+  let $corpus := synopsx.models.synopsx:getDb($queryParams)//tei:teiCorpus[@xml:id=map:get($queryParams, 'id')]
   let $meta := map{
     'title' : getTitles($corpus), 
     'author' : getAuthors($corpus),
@@ -87,7 +87,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
  : @rmq for testing with new htmlWrapping
  :)
 declare function getTextsList($queryParams as map(*)) as map(*) {
-  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
+  let $texts := synopsx.models.synopsx:getDb($queryParams)//tei:TEI
   let $meta := map{
     'title' : fn:count($texts) || ' Texte(s) TEI dans la base ' || $queryParams('dbName') 
     }
@@ -106,7 +106,7 @@ declare function getTextsList($queryParams as map(*)) as map(*) {
  : @rmq for testing with new htmlWrapping
  :)
 declare function getTextById($queryParams as map(*)) as map(*) {
-  let $text := synopsx.lib.commons:getDb($queryParams)//tei:TEI[@xml:id=map:get($queryParams, 'id')]
+  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[@xml:id=map:get($queryParams, 'id')]
   let $meta := map{
     'title' : getTitles($text),
     'author' : getAuthors($text),
@@ -165,7 +165,7 @@ declare function getText($item as element()) {
     'title' : getTitles($item/tei:teiHeader),
     'date' : getDate($item/tei:teiHeader),
     'author' : getAuthors($item/tei:teiHeader),
-    'tei' : $item/tei:text
+    'text' : $item/tei:text
   }
 };
 

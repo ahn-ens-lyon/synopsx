@@ -9,7 +9,6 @@
     -->
     
     <xsl:import href="tei2html.xsl"/>
-    
     <xsl:template match="@xml:id">
         <!-- @xml:id is copied to @id, which browsers can use
 			for internal links.
