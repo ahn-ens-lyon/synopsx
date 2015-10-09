@@ -161,8 +161,8 @@ function textHtml($id) {
   }
  let $outputParams := map {
   'lang' : 'fr',
-  'layout' : 'default.xhtml',
-  'pattern' : 'inc_defaultItem.xhtml'
+  'layout' : 'home.xhtml',
+  'pattern' : 'inc_textItem.xhtml'
   (: specify an xslt mode and other kind of output options :)
   }
 return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
