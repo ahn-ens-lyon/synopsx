@@ -74,7 +74,8 @@ function home() {
     'project' : $example.webapp:project,
     'dbName' :  $example.webapp:db,
     'model' : 'tei' ,
-    'function' : 'getProjectDescription'
+    'function' : 'queryCorpusList',
+    'id' : $example.webapp:project
     }
   let $outputParams := map {
     'lang' : 'fr',
@@ -85,33 +86,6 @@ function home() {
  return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 };
 
-(:~
- : this resource function is the html representation of the corpus resource
- :
- : @return an html representation of the corpus resource with a bibliographical list
- : the HTML serialization also shows a bibliographical list
- :)
-declare 
-  %restxq:path('/example/letter/{$id}')
-  %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
-function textHtml($id) {
-  let $queryParams := map {
-  'project' : $example.webapp:project,
-  'dbName' :  $example.webapp:db,
-  'model' : 'tei' ,
-  'function' : 'getTextById',
-  'id':$id
-  }
- let $outputParams := map {
-  'lang' : 'fr',
-  'layout' : 'home.xhtml',
-  'pattern' : 'inc_textItem.xhtml'
-  (: specify an xslt mode and other kind of output options :)
-  }
-return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
-};  
 
 
 (:~
@@ -132,7 +106,7 @@ function textsJS() {
       'project' : $example.webapp:project,     
       'dbName' : $example.webapp:db,
       'model' : 'tei',
-      'function' : 'getTextsList'
+      'function' : 'queryTEIList'
     }    
    let $function := xs:QName(synopsx.models.synopsx:getModelFunction($queryParams))
     return fn:function-lookup($function, 1)($queryParams)
@@ -154,13 +128,42 @@ function textsHtml() {
     'project' : $example.webapp:project,
     'dbName' :  $example.webapp:db,
     'model' : 'tei' ,
-    'function' : 'getTextsList'
+    'function' : 'queryTEIList'
     }
    let $outputParams := map {
     'lang' : 'fr',
-    'layout' : 'home.xhtml',
+    'layout' : 'default.xhtml',
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
  return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 };
+
+
+(:~
+ : this resource function is the html representation of the corpus resource
+ :
+ : @return an html representation of the corpus resource with a bibliographical list
+ : the HTML serialization also shows a bibliographical list
+ :)
+declare 
+  %restxq:path('/example/letter/{$id}')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function textHtml($id) {
+  let $queryParams := map {
+  'project' : $example.webapp:project,
+  'dbName' :  $example.webapp:db,
+  'model' : 'tei' ,
+  'function' : 'queryTEIList',
+  'id':$id
+  }
+ let $outputParams := map {
+  'lang' : 'fr',
+  'layout' : 'default.xhtml',
+  'pattern' : 'inc_defaultItem.xhtml'
+  (: specify an xslt mode and other kind of output options :)
+  }
+return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
+};  

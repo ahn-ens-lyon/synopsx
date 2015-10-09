@@ -40,49 +40,63 @@ declare default function namespace "synopsx.models.tei";
  : 
  : @rmq for testing with new htmlWrapping
  :)
-declare function getCorpusList($queryParams as map(*)) as map(*) {
-  let $texts := synopsx.models.synopsx:getDb($queryParams)//tei:teiCorpus
-  let $meta := map{
-    'title' : 'Liste des corpus', 
-    'author' : getAuthors($texts),
-    'copyright'  : getCopyright($texts),
-    'description' : getAbstract($texts),
-    'keywords' : getKeywords($texts)
+declare function queryCorpusList($queryParams as map(*)) as map(*) {
+  let $texts := getCorpusItems($queryParams)
+   let $missingIds := fn:count($texts[fn:not(@xml:id)])
+   
+   let $meta := map{
+    'title' : fn:count($texts) || ' corpus TEI dans la base ' || $queryParams('dbName') ,
+      'msg' :  if ($missingIds = 0 ) then '' else 'WARNING : ' || $missingIds || ' teiCorpus elements require(s) the @xml:id attribute (generating errors in the SynopsX webapp !)'
     }
-  let $content := for $text in $texts return getHeader($text)
+  let $content := for $text in $texts return getCorpusMap($text)
   return  map{
     'meta'    : $meta,
     'content' : $content
     }
 };
-declare function getProjectDescription($queryParams as map(*)) as map(*) {
-    let $text := synopsx.models.synopsx:getDb($queryParams)//tei:teiCorpus
-    let $meta := map{
-      }
-    let $content :=  map{'text':getAbstract($text)}
-    return  map{
-      'meta'    : $meta,
-      'content' : $content
+
+
+declare function getCorpusItems($queryParams){
+
+  let $sequence := synopsx.models.synopsx:getDb($queryParams)//tei:teiCorpus
+  (: TODO : analyse query params : is an id specified ?  is a sorting order specified ? ... :)
+  return 
+      if ($queryParams('id'))  then $sequence[@xml:id = $queryParams('id')] else $sequence
+};
+
+
+
+
+
+
+declare function getCorpusMap($item as item()) as map(*) {
+ map{
+      'description':getProjectDesc($item),
+      'title' : getTitles($item),
+            'msg' : if(fn:string($item/@xml:id)) then () else 'missing  teiCorpus xml:id attribute'
       }
   };
-
-
+  
 (:~
  : this function returns a sequence of map for meta and content 
  : !! the result structure has changed to allow sorting early in mapping
  : 
  : @rmq for testing with new htmlWrapping
  :)
-declare function getCorpusById($queryParams as map(*)) as map(*) {
-  let $corpus := synopsx.models.synopsx:getDb($queryParams)//tei:teiCorpus[@xml:id=map:get($queryParams, 'id')]
-  let $meta := map{
-    'title' : getTitles($corpus), 
-    'author' : getAuthors($corpus),
-    'copyright'  : getCopyright($corpus),
-    'description' : getAbstract($corpus),
-    'keywords' : getKeywords($corpus)
+(:~
+ : this function returns a sequence of map for meta and content 
+ : !! the result structure has changed to allow sorting early in mapping
+ : 
+ : @rmq for testing with new htmlWrapping
+ :)
+declare function queryTEIList($queryParams as map(*)) as map(*) {
+  let $texts := getTEIItems($queryParams)
+  let $missingIds := fn:count($texts[fn:not(@xml:id)])
+   let $meta := map{
+    'title' : fn:count($texts) || ' TEI in database ' || $queryParams('dbName') ,
+    'msg' :  if ($missingIds = 0 ) then '' else 'WARNING : ' || $missingIds || ' TEI elements require(s) the @xml:id attribute (generating errors in the SynopsX webapp !)'
     }
-  let $content :=  for $text in $corpus return getText($text)
+  let $content := for $text in $texts return getTEIMap($text)
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -90,48 +104,29 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
 };
 
 
-(:~
- : this function returns a sequence of map for meta and content 
- : !! the result structure has changed to allow sorting early in mapping
- : 
- : @rmq for testing with new htmlWrapping
- :)
-declare function getTextsList($queryParams as map(*)) as map(*) {
-  let $texts := synopsx.models.synopsx:getDb($queryParams)//tei:TEI
-  let $meta := map{
-    'title' : fn:count($texts) || ' Texte(s) TEI dans la base ' || $queryParams('dbName') 
-    }
-  let $content := for $text in $texts return getHeader($text)
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
+declare function getTEIItems($queryParams){
+
+  let $sequence := synopsx.models.synopsx:getDb($queryParams)//tei:TEI
+  (: TODO : analyse query params : is an id specified ?  is a sorting order specified ? ... :)
+  return 
+      if ($queryParams('id'))  then $sequence[@xml:id = $queryParams('id')] else $sequence
 };
 
 
-(:~
- : this function returns a sequence of map for meta and content 
- : !! the result structure has changed to allow sorting early in mapping
- : 
- : @rmq for testing with new htmlWrapping
- :)
-declare function getTextById($queryParams as map(*)) as map(*) {
-  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[@xml:id=map:get($queryParams, 'id')]
-  let $meta := map{
-    'title' : getTitles($text),
-    'author' : getAuthors($text),
-    'copyright'  : getCopyright($text),
-    'description' : getAbstract($text),
-    'keywords' : getKeywords($text)
-    }
-  let $content :=  getText($text)
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
 
 
+
+
+declare function getTEIMap($item as item()) as map(*) {
+ map{
+      'description':getProjectDesc($item),
+      'title' : getTitles($item),
+      'text' : $item/tei:text,
+      'id' : fn:string($item/@xml:id) ,
+      'msg' : if(fn:string($item/@xml:id)) then () else 'missing  TEI xml:id attribute'
+      }
+  };
+  
 
 (:~
  : this function creates a map of two maps : one for metadata, one for content data
@@ -191,7 +186,7 @@ declare function getHeader($item as element()) {
     'title' : getTitles($item/tei:teiHeader),
     'date' : getDate($item/tei:teiHeader),
     'author' : getAuthors($item/tei:teiHeader),
-    'description' : getAbstract($item/tei:teiHeader),
+    'description' : getProjectDesc($item/tei:teiHeader),
     'id': fn:data($item/@xml:id)
   }
 };
@@ -242,7 +237,7 @@ declare function getResp($item as element()) {
  :)
 declare function getTitles($content as element()*){
   fn:string-join(
-    for $title in $content/tei:fileDesc/tei:titleStmt/tei:title/text()
+    for $title in $content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title/text()
     return fn:string-join($title), ' ')
 };
 
@@ -264,7 +259,7 @@ declare function getBiblTitles($content as element()*){
  : @param $content texts to process
  : @return a tei abstract
  :)
-declare function getAbstract($content as element()*){
+declare function getProjectDesc($content as element()*){
    fn:string-join(
     for $abstract in $content//tei:projectDesc
     return fn:normalize-space($abstract),

@@ -63,7 +63,6 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
   let $regex := '\{(.*?)\}'
   return
     $wrap/* update (
-      (: todo : call wrapping, rendering and injecting functions for these inc layouts too :)
       for $text in .//*[@data-url] 
             let $incOutputParams := map:put($outputParams, 'layout', $text/@data-url || '.xhtml')
             let $inc :=  wrapper($queryParams, $data, $incOutputParams)
@@ -71,7 +70,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
       (: keys :)      
       for $text in .//@*
         where fn:matches($text, $regex)
-        return replace value of node $text with replaceOrLeave($text, $meta),
+        return replace value of node $text with replace($text, $meta, fn:false()),
       for $text in .//text()
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')       
@@ -81,7 +80,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
            let $value := map:get($meta, $key)
            return if ($value instance of node()* and  fn:not(fn:empty($value))) 
            then replace node $text with render($queryParams, $outputParams, $value)
-           else replace node $text with replaceOrDelete($text, $meta)      
+           else replace node $text with replace($text, $meta, fn:true())      
      (: inc :)
     
       )
@@ -113,14 +112,14 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
     fn:doc($pattern)/* update (
        for $text in .//@*
         where fn:matches($text, $regex)
-        return replace value of node $text with replaceOrLeave($text, $content),
+        return replace value of node $text with replace($text, $content, fn:false()),
       for $text in .//text()
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key)
         return if ($value instance of node()* and fn:not(fn:empty($value))) 
           then replace node $text with render($queryParams, $outputParams, $value)
-          else replace node $text with replaceOrDelete($text, $content)
+          else replace node $text with replace($text, $content, fn:true())
       )
 };
 
@@ -133,37 +132,18 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
  : @return an updated text
  :
  :)
-declare function replaceOrLeave($text as xs:string, $input as map(*)) as xs:string {
+declare function replace($text as xs:string, $input as map(*), $delete as xs:boolean) as xs:string {
   let $tokens := fn:tokenize($text, '\{|\}')
   let $updated := fn:string-join( 
     for $token in $tokens
     let $value := map:get($input, $token)
     return if (fn:empty($value)) 
-      then $token (: leave :)
+      then if ($delete) then () (: delete :) else $token (: leave :)
       else $value
     )
   return $updated
 };
 
-(:~
- : this function update the text with input content
- : it deletes the non matching parts of the string (unrelevant keys in body, etc.)
- : @param $text the text node to process
- : @param $input the content to dispatch
- : @return an updated text
- :
- :)
-declare function replaceOrDelete($text as xs:string, $input as map(*)) as xs:string {
-  let $tokens := fn:tokenize($text, '\{|\}')
-  let $updated := fn:string-join( 
-    for $token in $tokens
-    let $value := map:get($input, $token)
-    return if (fn:empty($value)) 
-      then () (: delete :)
-      else $value
-    )
-  return $updated
-};
 
 (:~
  : this function dispatch the rendering based on $outpoutParams
