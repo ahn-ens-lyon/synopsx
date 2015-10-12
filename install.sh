@@ -14,7 +14,7 @@ mkdir -p $tempDir
 cd $tempDir
 
 echo "Installing BaseX from "$baseXFileUrl" in "$basexInstallationDirectory
-wget $baseXFileUrl .
+wget $baseXFileUrl 
 unzip BaseX83.zip
 rm BaseX83.zip
 mkdir -p $basexInstallationDirectory
@@ -24,7 +24,7 @@ echo "BaseX installed"
 echo "Installing Saxon from "$saxonUrl" in "$basexInstallationDirectory"basex/lib"
 mkdir -p $tempDir"/saxon"
 cd $tempDir"/saxon"
-wget $saxonUrl .
+wget $saxonUrl 
 unzip SaxonHE9-6-0-7J.zip
 rm SaxonHE9-6-0-7J.zip
 mv *.jar $basexInstallationDirectory"lib"
@@ -32,7 +32,7 @@ echo "Saxon installed"
 
 
 echo "Installing SynopsX from"$synopsxUrl" in "$synopsxBaseDirectory"synopsx"
-wget "$synopsxUrl" .
+wget "$synopsxUrl" 
 unzip $synopsxBranch".zip"
 rm $synopsxBranch".zip"
 mkdir -p $synopsxBaseDirectory
@@ -41,7 +41,7 @@ ln -s $synopsxBaseDirectory"synopsx" $basexInstallationDirectory"basex/webapp"
 rm $basexInstallationDirectory"basex/webapp/restxq.xqm"
 
 echo "Installing dba from"$dba" in "$synopsxBaseDirectory"/dba"
-wget "$dbaUrl" .
+wget "$dbaUrl" 
 unzip master.zip
 rm master.zip
 mv dba-master $synopsxBaseDirectory"dba"
