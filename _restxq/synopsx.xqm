@@ -74,12 +74,12 @@ function home(){
     'project' : $synopsx.synopsx:project,
     'dbName' :  $synopsx.synopsx:db,
     'model' : 'tei' ,
-    'function' : 'getTextById',
+    'function' : 'queryTEIList',
     'id':'synopsx'
     }
   let $outputParams := map {
     'lang' : 'fr',
-    'layout' : 'home.xhtml',
+    'layout' : 'synopsx.xhtml',
     'pattern' : 'inc_defaultItem.xhtml',
     'xsl':'tei2html5.xsl'
     }  

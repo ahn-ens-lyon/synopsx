@@ -25,10 +25,10 @@
        <div class="navbar container">
          <div class="collapse navbar-collapse">
            <ul class="nav navbar-nav">
-             <li class="active"><a href="/desanti/a-propos">à propos</a></li>
-             <li><a href="/mentions-legales">mentions légales</a></li>
-             <li><a href="/credits">crédits</a></li>
-             <li><a href="/contacts">contacts</a></li>
+             <li class="active"><a href="/example/a-propos">à propos</a></li>
+             <li><a href="/example/mentions-legales">mentions légales</a></li>
+             <li><a href="/example/credits">crédits</a></li>
+             <li><a href="/example/contacts">contacts</a></li>
            </ul>
          </div> <!-- /.nav-collapse -->
        </div> <!-- /.navbar container -->
@@ -57,7 +57,7 @@
                 <div id="horizontal-nav">
                   <ul class="navigation">
                     <li class="nav-accueil current"><a href="/">Accueil</a></li>
-                    <li class="nav-lettres2"><a href="letters">Lettres</a></li>
+                    <li class="nav-lettres2"><a href="/example/letters">Lettres</a></li>
                   </ul>
                   
                 </div>  
@@ -100,10 +100,12 @@
             </div>
             <div id="main row row-offcanvas row-offcanvas-right">
               <div class="col-8 col-sm-8 col-lg-8">
-                <h1>{title}</h1>
+
                 <div class="row">
-                  <section><ul>{content}</ul></section>
-                  <section data-url="inc_defaultList"/>
+                  <section>
+                  {content}
+                  </section>
+           
                 </div>
               </div>
             </div>

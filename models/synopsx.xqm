@@ -198,9 +198,9 @@ declare function error($queryParams as map(*), $err:code as xs:QName, $err:addit
 
 declare function  notFound($queryParams) {
   let $meta := map{
-    'title' : 'We did not find what you were looking for...'
+    'title' : 'No function ' || $queryParams('function') || ' in model ' || $queryParams('model')
     }
-  let $content := map{'message': <p>Maybe you did not create your project´s files in the workspace directory ? </p>}
+  let $content := map{'text': <p>Maybe you did not create your project´s files in the workspace directory ? </p>}
   return  map{
     'meta'    : $meta,
     'content' : $content

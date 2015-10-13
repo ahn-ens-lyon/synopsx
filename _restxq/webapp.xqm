@@ -97,12 +97,12 @@ function home($myProject) {
     'project' : $myProject,
     'dbName' :  synopsx.models.synopsx:getProjectDB($myProject),
     'model' : 'tei' ,
-    'function' :  'home'    }
+    'function' :  'queryTEIList'    }
     
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'home.xhtml',
-    'pattern' : 'inc_defaultItem.xhtml'
+    'pattern' : 'inc_defaultList.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
     
@@ -116,50 +116,21 @@ function home($myProject) {
  : the HTML serialization also shows a bibliographical list
  :)
 declare 
-  %restxq:path('/{$myProject}/{$myFunction}')
+  %restxq:path('/{$myProject}/text/{$id}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function home($myProject, $myFunction) {
+function textHtml($myProject, $id) {
   let $queryParams := map {
     'project' : $myProject,
-    'dbName' :  $myProject,
+    'dbName' :   synopsx.models.synopsx:getProjectDB($myProject),
     'model' : 'tei' ,
-    'function' : $myFunction
+    'function' : 'queryTEIList',
+    'id' : $id
     }
     let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'default.xhtml',
-    'pattern' : 'inc_defaultItem.xhtml'
-    (: specify an xslt mode and other kind of output options :)
-    }
-        
-   return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
-}; 
-
-
-(:~
- : this resource function is the html representation of the corpus resource
- :
- : @return an html representation of the corpus resource with a bibliographical list
- : the HTML serialization also shows a bibliographical list
- :)
-declare 
-  %restxq:path('/{$myProject}/{$myFunction}/{$value}')
-  %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
-function home($myProject, $myFunction, $value) {
-  let $queryParams := map {
-    'project' : $myProject,
-    'dbName' :  $myProject,
-    'model' : 'tei' ,
-    'function' : $myFunction,
-    'id' : $value
-    }
-    let $outputParams := map {
-    'lang' : 'fr',
-    'layout' : 'home.xhtml',
     'pattern' : 'inc_defaultItem.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
