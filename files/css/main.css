@@ -598,21 +598,22 @@ header.navigation {
   height: 60px;
   width: 100%;
   z-index: 999; }
-  header.navigation .navigation-wrapper {
-    max-width: 68em;
-    margin-left: auto;
+  
+header.navigation .navigation-wrapper {
+    max-width: 70%;
+    margin-left: 30%;
     margin-right: auto;
     position: relative;
     z-index: 9999; }
-    header.navigation .navigation-wrapper:after {
+header.navigation .navigation-wrapper:after {
       content: "";
       display: table;
       clear: both; }
-    header.navigation .navigation-wrapper:after {
+header.navigation .navigation-wrapper:after {
       content: "";
       display: table;
       clear: both; }
-  header.navigation .logo {
+header.navigation .logo {
     float: left;
     max-height: 60px;
     padding-left: 1em;
