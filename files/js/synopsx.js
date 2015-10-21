@@ -26,8 +26,9 @@ function init(){
               $(this).removeClass('current');
            });
            var path = location.pathname;
- 
-      $('a[href^="'+path+'"]').parent('li').addClass('current');
+           var res = path.split("/"); 
+           var menupath = "/"+res[1]+"/"+res[2];
+           $('a[href^="'+menupath+'"]').parent('li').addClass('current');
  
 
 
