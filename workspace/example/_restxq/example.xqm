@@ -31,6 +31,7 @@ import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '..
 
 (: Put here all import modules declarations as needed :)
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
+import module namespace synopsx.models.ead = 'synopsx.models.ead' at '../../../models/ead.xqm' ;
 
 (: Put here all import declarations for mapping according to models :)
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
@@ -74,7 +75,7 @@ function home() {
     'project' : $example.webapp:project,
     'dbName' :  $example.webapp:db,
     'model' : 'tei' ,
-    'function' : 'queryCorpusList',
+    'function' : 'queryCorpus',
     'id' : $example.webapp:project
     }
   let $outputParams := map {
@@ -106,7 +107,7 @@ function textsJS() {
       'project' : $example.webapp:project,     
       'dbName' : $example.webapp:db,
       'model' : 'tei',
-      'function' : 'queryTEIList'
+      'function' : 'queryTEI'
     }    
    let $function := xs:QName(synopsx.models.synopsx:getModelFunction($queryParams))
     return fn:function-lookup($function, 1)($queryParams)
@@ -128,7 +129,7 @@ function textsHtml() {
     'project' : $example.webapp:project,
     'dbName' :  $example.webapp:db,
     'model' : 'tei' ,
-    'function' : 'queryTEIList'
+    'function' : 'queryTEI'
     }
    let $outputParams := map {
     'lang' : 'fr',
@@ -156,7 +157,7 @@ function textHtml($id) {
   'project' : $example.webapp:project,
   'dbName' :  $example.webapp:db,
   'model' : 'tei' ,
-  'function' : 'queryTEIList',
+  'function' : 'queryTEI',
   'id':$id
   }
  let $outputParams := map {
@@ -167,3 +168,59 @@ function textHtml($id) {
   }
 return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
 };  
+
+
+(:~
+ : this resource function is the html representation of the corpus resource
+ :
+ : @return an html representation of the corpus resource with a bibliographical list
+ : the HTML serialization also shows a bibliographical list
+ :)
+declare 
+  %restxq:path('/example/ead')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function eadHtml() {
+  let $queryParams := map {
+  'project' : $example.webapp:project,
+  'dbName' :  $example.webapp:db,
+  'model' : 'ead' ,
+  'function' : 'queryEad'
+  }
+ let $outputParams := map {
+  'lang' : 'fr',
+  'layout' : 'home.xhtml',
+  'pattern' : 'inc_eadItem.xhtml'
+  (: specify an xslt mode and other kind of output options :)
+  }
+return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
+};  
+
+(:~
+ : this resource function is the html representation of the corpus resource
+ :
+ : @return an html representation of the corpus resource with a bibliographical list
+ : the HTML serialization also shows a bibliographical list
+ :)
+declare 
+  %restxq:path('/example/ead/c')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function cHtml() {
+  let $queryParams := map {
+  'project' : $example.webapp:project,
+  'dbName' :  $example.webapp:db,
+  'model' : 'ead' ,
+  'function' : 'queryC'
+  }
+ let $outputParams := map {
+  'lang' : 'fr',
+  'layout' : 'home.xhtml',
+  'pattern' : 'inc_cItem.xhtml'
+  (: specify an xslt mode and other kind of output options :)
+  }
+return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
+};  
+

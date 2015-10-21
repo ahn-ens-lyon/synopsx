@@ -40,12 +40,12 @@ declare default function namespace "synopsx.models.tei";
  : 
  : @rmq for testing with new htmlWrapping
  :)
-declare function queryCorpusList($queryParams as map(*)) as map(*) {
+declare function queryCorpus($queryParams as map(*)) as map(*) {
   let $texts := getCorpusItems($queryParams)
    let $missingIds := fn:count($texts[fn:not(@xml:id)])
    
    let $meta := map{
-    'title' : fn:count($texts) || ' corpus TEI dans la base ' || $queryParams('dbName') ,
+    'title' : fn:count($texts) || ' corpus TEI' ,
       'msg' :  if ($missingIds = 0 ) then '' else 'WARNING : ' || $missingIds || ' teiCorpus elements require(s) the @xml:id attribute (generating errors in the SynopsX webapp !)'
     }
   let $content := for $text in $texts return getCorpusMap($text)
@@ -73,7 +73,7 @@ declare function getCorpusMap($item as item()) as map(*) {
  map{
       'description':getProjectDesc($item),
       'title' : getTitles($item),
-            'msg' : if(fn:string($item/@xml:id)) then () else 'missing  teiCorpus xml:id attribute'
+      'msg' : checkEncoding($item)
       }
   };
   
@@ -89,11 +89,11 @@ declare function getCorpusMap($item as item()) as map(*) {
  : 
  : @rmq for testing with new htmlWrapping
  :)
-declare function queryTEIList($queryParams as map(*)) as map(*) {
+declare function queryTEI($queryParams as map(*)) as map(*) {
   let $texts := getTEIItems($queryParams)
   let $missingIds := fn:count($texts[fn:not(@xml:id)])
    let $meta := map{
-    'title' : fn:count($texts) || ' TEI in database ' || $queryParams('dbName') ,
+    'title' : fn:count($texts) || ' TEI texts' ,
     'msg' :  if ($missingIds = 0 ) then '' else 'WARNING : ' || $missingIds || ' TEI elements require(s) the @xml:id attribute (generating errors in the SynopsX webapp !)'
     }
   let $content := for $text in $texts return getTEIMap($text)
@@ -121,9 +121,11 @@ declare function getTEIMap($item as item()) as map(*) {
  map{
       'description':getProjectDesc($item),
       'title' : getTitles($item),
+      'date' : getDate($item/tei:teiHeader),
+      'author' : getAuthors($item/tei:teiHeader),
       'text' : $item/tei:text,
       'id' : fn:string($item/@xml:id) ,
-      'msg' : if(fn:string($item/@xml:id)) then () else 'missing  TEI xml:id attribute'
+      'msg' : checkEncoding($item)
       }
   };
   
@@ -131,7 +133,7 @@ declare function getTEIMap($item as item()) as map(*) {
 (:~
  : this function creates a map of two maps : one for metadata, one for content data
  :)
-declare function getBiblList($queryParams) {
+declare function queryBibl($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:bibl
   let $meta := map{
     'title' : 'Bibliographie'
@@ -146,7 +148,7 @@ declare function getBiblList($queryParams) {
 (:~
  : this function creates a map of two maps : one for metadata, one for content data
  :)
-declare function getRespList($queryParams) {
+declare function queryResp($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:respStmt
   let $meta := map{
     'title' : 'Responsables de l édition'
@@ -158,21 +160,7 @@ declare function getRespList($queryParams) {
     }
 };
 
-(:~
- : this function creates a map for a corpus item with teiHeader 
- :
- : @param $item a corpus item
- : @return a map with content for each item
- : @rmq subdivised with let to construct complex queries (EC2014-11-10)
- :)
-declare function getText($item as element()) {
-  map {
-    'title' : getTitles($item/tei:teiHeader),
-    'date' : getDate($item/tei:teiHeader),
-    'author' : getAuthors($item/tei:teiHeader),
-    'text' : $item/tei:text
-  }
-};
+
 
 (:~
  : this function creates a map for a corpus item with teiHeader 
@@ -393,4 +381,10 @@ declare function getBack($content as element()*){
  map {
     'tei' :   $content//tei:back
   }
+};
+
+declare function checkEncoding($item as element()*){
+  let $checkId := if($item/@xml:id) then () else 'missing  TEI xml:id attribute'
+  (: Add other checkings here if needed then concatane them in return :)
+  return $checkId
 };

@@ -74,7 +74,7 @@ function home(){
     'project' : $synopsx.synopsx:project,
     'dbName' :  $synopsx.synopsx:db,
     'model' : 'tei' ,
-    'function' : 'queryTEIList',
+    'function' : 'queryTEI',
     'id':'synopsx'
     }
   let $outputParams := map {

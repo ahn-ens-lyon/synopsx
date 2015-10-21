@@ -97,7 +97,7 @@ function home($myProject) {
     'project' : $myProject,
     'dbName' :  synopsx.models.synopsx:getProjectDB($myProject),
     'model' : 'tei' ,
-    'function' :  'queryTEIList'    }
+    'function' :  'queryTEI'    }
     
     let $outputParams := map {
     'lang' : 'fr',
@@ -125,7 +125,7 @@ function textHtml($myProject, $id) {
     'project' : $myProject,
     'dbName' :   synopsx.models.synopsx:getProjectDB($myProject),
     'model' : 'tei' ,
-    'function' : 'queryTEIList',
+    'function' : 'queryTEI',
     'id' : $id
     }
     let $outputParams := map {
