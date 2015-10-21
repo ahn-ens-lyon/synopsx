@@ -99,7 +99,7 @@ function home() {
  : @bug not working curl -I -H "Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" http://localhost:8984/corpus/
  :)
 declare 
-  %restxq:path('/example/letters')
+  %restxq:path('/example/tei')
   %rest:produces('application/json')
   %output:method('json')
 function textsJS() {
@@ -120,7 +120,7 @@ function textsJS() {
  : the HTML serialization also shows a bibliographical list
  :)
 declare 
-  %restxq:path('/example/letters')
+  %restxq:path('/example/tei')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -148,7 +148,7 @@ function textsHtml() {
  : the HTML serialization also shows a bibliographical list
  :)
 declare 
-  %restxq:path('/example/letter/{$id}')
+  %restxq:path('/example/tei/{$id}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")

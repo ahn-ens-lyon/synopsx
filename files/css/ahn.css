@@ -161,7 +161,7 @@
 		border-width: 3px; 
 	    border:1px; border-style:dotted;
 	    padding:0.5em 0.5em;
-		text-align:middle;
+		text-align:center;
 		color: #333; /* AHN */
 		font-weight:bold;
   	}
@@ -467,7 +467,7 @@
 		margin-bottom:0.7em;
 	}
 	.featured h2 {
-		background:#transparent;
+		background:transparent;
 		
 	}
 
@@ -915,14 +915,14 @@
 		#contextual-nav li {
 		    font-size:1em;
 		    color: #000;
-		    background-color: none;
+		    background-color: transparent;
 		    list-style-type: none;
 
 		}
 
 		ul.navigation li a, #contextual-nav a {
 		    color:#000;
-		    background-color: none;
+		    background-color: transparent;
 		    border:none;
 		    text-decoration: none;
 		}
@@ -954,7 +954,7 @@
 		#contextual  a:active {color:#BAA83E;}
 		#contextual-nav * {
 		    margin-bottom:0;
-		    background-color: none;
+		    background-color: transparent;
 		}
 	}
 
@@ -962,7 +962,7 @@
 		#site-title{
 			width:77%;
 			font-size:1em;
-			margin-left:left;
+			margin-left:auto;
 			margin-right:auto;
 			background-color:#FFF;
 
@@ -1073,7 +1073,7 @@
 
 		 #contextual-nav * {
 		    margin-bottom:0;
-		    background-color: none;
+		    background-color: transparent;
 		}
 
 		ul.nav {
@@ -1084,14 +1084,14 @@
 		ul.navigation li, #contextual-nav li {
 		    font-size:1em;
 		    color: #000;
-		    background-color: none;
+		    background-color: transparent;
 		    list-style-type: none;
 
 		}
 
 		ul.navigation li a, #contextual-nav a {
 		    color:#000;
-		    background-color: none;
+		    background-color: transparent;
 		    border:none;
 		    text-decoration: none;
 		}
