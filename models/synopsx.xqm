@@ -41,24 +41,25 @@ declare default function namespace "synopsx.models.synopsx";
  : @rmq for testing with new htmlWrapping
  :)
 declare function getProjectsList($queryParams as map(*)) as map(*) {
-  let $databases := db:list() 
+  let $projects := db:open('synopsx', 'config.xml')//project
   let $meta := map{
-    'title' : 'Liste des bases de données',
-    'count' : fn:string(fn:count($databases)),
+    'title' : 'Liste des projets',
+    'count' : fn:string(fn:count($projects)),
     'defaultProject' : getDefaultProject()
     }
-  let $content := for $database in $databases return 
-    getSynopsxStatus($queryParams, $database)
+  let $content := for $project in $projects return 
+    getSynopsxStatus($project)
   return  map{
     'meta'    : $meta,
     'content' : $content
     }
   };
 
-declare function getSynopsxStatus($queryParams as map(*), $database) as map(*) {
-  let $isProject := fn:exists(synopsx.models.synopsx:getDb($queryParams)//project[/dbName=$queryParams('database')])
-  let $isDefault := $isProject and fn:exists(synopsx.models.synopsx:getDb($queryParams)//project[@default="true"])
-  return map {'database':$database,'isProject':fn:string($isProject), 'isDefault':fn:string($isDefault)}
+declare function getSynopsxStatus($project) as map(*) {
+  let $isDefault := if (fn:exists($project/@default) and $project/@default=fn:true())
+                    then "checked"
+                    else ""
+  return fn:trace(map {'project':fn:string($project/resourceName/text()), 'isDefault':$isDefault})
 };
 
 (:~
