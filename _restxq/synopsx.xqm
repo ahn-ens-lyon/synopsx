@@ -115,14 +115,42 @@ declare
   %rest:query-param("project",  "{$project}")
   %updating
 function config($project) {
-   db:create-backup('synopsx'),
-     (: supprimer tout attribut défault préexistant :)
-     delete node db:open('synopsx', 'config.xml')//@default,
-     (: si le projet existe, lui ajouter l'attribut default=true :)
-     if (db:open('synopsx', 'config.xml')//dbName/text() = $project) then insert node (attribute { 'default' } { 'true' }) into db:open('synopsx', 'config.xml')//project[dbName/text()=$project]
-      else insert node <project default="true"> 
-      <resourceName>{$project}</resourceName>
-      <dbName>{$project}</dbName>
-  </project>      into db:open('synopsx', 'config.xml')//projects,
-  db:output(web:redirect("/synopsx/config"))  
+    db:create-backup('synopsx'),
+    delete node db:open('synopsx', 'config.xml')//@default, (: supprimer tout attribut défault préexistant :)
+    insert node (attribute { 'default' } { 'true' }) into db:open('synopsx', 'config.xml')//project[resourceName/text()=$project],
+    db:output(web:redirect("/synopsx/config"))  
+};
+
+
+declare 
+  %rest:GET
+  %restxq:path('/synopsx/create-project')
+  %output:method('html')
+  %output:html-version('5.0')
+function create_project() as element(html) {
+  let $queryParams := map {
+    
+    }
+  let $outputParams :=map {
+    'lang' : 'fr',
+    'layout' : 'create-project.xhtml'
+    }
+ return synopsx.models.synopsx:htmlDisplay($queryParams, $outputParams)
+};
+
+declare 
+  %rest:POST
+  %restxq:path('/synopsx/create-project')
+  %output:method('html')
+  %rest:query-param("project",  "{$project}")
+  %updating
+function create_project($project) {
+  db:create($project, (), (), map { 'chop': fn:true(), 'textindex': fn:true(),'attrindex': fn:true() }),
+  insert node 
+      <project> 
+        <resourceName>{$project}</resourceName>
+        <dbName>{$project}</dbName>
+      </project>      
+  into db:open('synopsx', 'config.xml')//projects,
+  db:output(web:redirect("/synopsx/config"))
 };

@@ -27,26 +27,30 @@
  <hr/>
   <hr/>
  <section>
- <h1>{title}</h1>
+ <h1>New project</h1>
  <hr/>
   <section>
-      <p>Default project : <span>{defaultProject}</span></p>
-      <p>Change default project</p>
-      <form action="/synopsx/config" method="POST" class="form-inline">
-        <select name="project">
-        {content}
-      </select>
-        <input type="submit" value="OK"  style="display:inline;"/>
+      <form action="/synopsx/create-project" method="POST">
+        <input type="text" name="project"/>
+        <input type="submit" value="OK"/>
       </form>  
-
-
-
   </section>  
-    <a href="/synopsx/create-project"> Create new project </a>
    </section>
 </div>
 </div>
 
+<!-- <div id="content">
+
+  <section id="primary" class="home">
+
+
+  <section>
+    <h3>{title}</h3>
+      {content}  
+  </section>  
+  
+ </section> 
+</div> -->  
 <footer data-url="inc_footer"/>
 <script type="text/javascript">
         // synopsx's composition
