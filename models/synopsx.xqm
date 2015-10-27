@@ -59,7 +59,7 @@ declare function getSynopsxStatus($project) as map(*) {
   let $isDefault := if (fn:exists($project/@default) and $project/@default=fn:true())
                     then "checked"
                     else ""
-  return fn:trace(map {'project':fn:string($project/resourceName/text()), 'isDefault':$isDefault})
+  return map {'project':fn:string($project/resourceName/text()), 'isDefault':$isDefault}
 };
 
 (:~
