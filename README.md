@@ -1,33 +1,43 @@
-Synopsx
-=======
+# Synopsx
+
 
 SynopsX is a light framework to publish full XML corpus with BaseX XML native database.
 
-Installation
----
+## Installation
 
-SynopsX 2.0 requires BaseX version 8.0
+### Prerequisites
+SynopsX requires Java version 8
 
-```bash
-  git clone https//github.com/ahn-ens-lyon/synopsx.git synopsx
-  cd <path-to-basex>/webapp
-  ln -s <path-to-synospx>/ synopsx
-```
+Make sure you have the last Java JDK installed on your computer (having the last Java JRE version installed won't be enough). Download the last JDK Environnement from this Oracle Page: http://www.objis.com/formation-java/tutoriel-java-installation-jdk.html
 
-Configuration
----
+Before downloading choose the appropriate version (system + processor: i.e. Mac OSX x64)
 
-Copy paste 'config.sample' to 'config.xml'
+Go to you Downloads directory and double-click on the installation file: i.e.: jdk-8u60-macosx-x64.dmg or jdk-8u60-macosx-x64.exe
 
-```bash
-  cd <path-to-synopsx>
-  cp config.sample config.xml
-```
+Complete installation
 
-Then open 'config.xml' in an editor and complete with your informations. Copy/paste the exemple to create as many projects as needed. The @default attribute is used to define a default home.
+Open a terminal to check the Java JDK version with the following command: java -version
 
-Creates your projects directories in the 'workspace/' directory as specified in the 'config.xml'.  
+### Automatic installation
 
----
+For Mac OS and Linux, you may use the [install.sh](https://raw.githubusercontent.com/synopsx/synopsx/master/install.sh) script
 
-Enjoy !
+### Manual installation
+
+#### BaseX installation:
+
+* Go to http://basex.org/
+* Click on "Download BaseX 8.3"
+
+#### Add Saxon processor HE to BaseX:
+* Download from (choose the zipped directory, on top of the page): http://sourceforge.net/projects/saxon/files/
+* Unzip downloaded file
+* Put content on the following directory: basex/lib
+
+#### SynopsX installation
+
+* Go to: https://github.com/synopsx/synopsx
+* Download the zipped synopsX directory
+* Unzip synopsx-master.zip
+* Rename synopsx-master to synopsx
+* Place synopsx directory in basex/webapp
