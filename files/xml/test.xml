@@ -6,10 +6,10 @@
   <teiHeader>
       <fileDesc>
          <titleStmt>
-            <title>Title</title>
+            <title>Test</title>
          </titleStmt>
          <publicationStmt>
-            <p>Publication Information</p>
+            <p>From oxygen webapp</p>
          </publicationStmt>
          <sourceDesc>
             <p>Information about the source</p>
